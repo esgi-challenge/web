@@ -1,0 +1,69 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-push-image:
+    name: Deploy image to gcloud artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GCP with service account
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+
+      - name: Configure docker to use gcp 
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+      - name: Build flutter web app
+        run: flutter build web
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: |
+            europe-west1-docker.pkg.dev/challenge-esgi-419811/challenge-esgi-service-repository/web-preprod:${{ github.sha }}
+            europe-west1-docker.pkg.dev/challenge-esgi-419811/challenge-esgi-service-repository/web-preprod:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+  deploy-cloud-run:
+    name: Deploy To Cloud run
+    runs-on: ubuntu-latest
+    needs: build-push-image
+    steps:
+      - name: Check out the repo
+        uses: "actions/checkout@v4"
+
+      - name: Log in to GCP with service account
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+
+      - id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: "challenge-esgi-preprod-web"
+          image: "europe-west1-docker.pkg.dev/challenge-esgi-419811/challenge-esgi-service-repository/web-preprod:latest"
+          region: europe-west1
