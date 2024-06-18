@@ -7,12 +7,15 @@ import 'package:web/class/class_screen.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
+import 'package:web/l10n/l10n.dart';
 import 'package:web/schedule/schedule_screen.dart';
 import 'package:web/school/school_screen.dart';
 import 'package:web/login/login_screen.dart';
 import 'package:web/student/student_screen.dart';
 import 'package:web/teacher/teacher_screen.dart';
 import 'package:web/welcome/welcome_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -127,6 +130,11 @@ class App extends StatelessWidget {
       routerConfig: _router,
       debugShowCheckedModeBanner: true,
       title: 'Studies',
+      // supportedLocales: AppLocalizations.supportedLocales,
+      // locale: const Locale('fr'),
+      // localizationsDelegates: const [
+      //   AppLocalizations.delegate,
+      // ],
       theme: ThemeData(
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: Colors.white,

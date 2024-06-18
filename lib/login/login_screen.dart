@@ -51,10 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              height: constraints.maxHeight * 0.8, // 80% de la hauteur disponible
+                            SizedBox(
+                              height: constraints.maxHeight * 0.8,
                               child: Image.asset(
-                                'login.png',
+                                'images/login.png',
                                 fit: BoxFit.contain,
                               ),
                             ),

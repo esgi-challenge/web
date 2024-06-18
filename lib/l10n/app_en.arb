@@ -1,0 +1,10 @@
+{
+    "@@locale": "en",
+    "hello": "Hello",
+    "schools": "Schools",
+    "schoolClass": "Class",
+    "students": "Students",
+    "teachers": "Teachers",
+    "schedules": "Schedules",
+    "grades": "Grades"
+}
