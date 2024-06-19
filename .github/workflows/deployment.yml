@@ -32,6 +32,9 @@ jobs:
       - name: Configure docker to use gcp 
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
+      - name: Install flutter dependencies
+        run: flutter pub get
+
       - name: Build flutter web app
         run: flutter build web
 

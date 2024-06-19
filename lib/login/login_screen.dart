@@ -1,92 +1,173 @@
 import 'package:flutter/material.dart';
+import 'package:heroicons/heroicons.dart';
+import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final email = TextEditingController();
+  final password = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    email.dispose();
+    password.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          width: 400,
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.purple[50],
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3),
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.fromRGBO(72, 2, 151, 1),
+                  Color.fromRGBO(51, 2, 108, 1),
+                ],
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 50), //temporary space
-              Text(
-                'Studies',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email, color: Colors.orange),
-                  hintText: 'johndoe@gmail.com',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: constraints.maxHeight * 0.8,
+                              child: Image.asset(
+                                'images/login.png',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock, color: Colors.orange),
-                  hintText: 'Password',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  const SizedBox(width: 32),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Center(
+                          child: Text(
+                            "Studies",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 37,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: email,
+                                decoration: const InputDecoration(
+                                  hintText: "Enter your email",
+                                  hintStyle: TextStyle(color: Colors.white),
+                                  prefixIcon: HeroIcon(
+                                    HeroIcons.atSymbol,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              TextFormField(
+                                controller: password,
+                                decoration: const InputDecoration(
+                                  hintText: "Enter your password",
+                                  hintStyle: TextStyle(color: Colors.white),
+                                  prefixIcon: HeroIcon(
+                                    HeroIcons.lockClosed,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                obscureText: true,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 18,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  GoRouter router = GoRouter.of(context);
+                                  print(email.text);
+                                  print(password.text);
+                                  router.go('/');
+                                },
+                                style: TextButton.styleFrom(
+                                  minimumSize: Size.zero,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                    color: Color.fromRGBO(249, 178, 53, 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color.fromRGBO(249, 178, 53, 0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 5,
+                                        offset: Offset(
+                                            0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Se Connecter",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-              SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Mot de passe oublié ?',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // login 
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  'Se connecter',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
-      backgroundColor: Colors.purple,
     );
   }
 }
