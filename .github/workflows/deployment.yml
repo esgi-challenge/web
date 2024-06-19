@@ -35,9 +35,6 @@ jobs:
       - name: Install flutter dependencies
         run: flutter pub get
 
-      - name: Add translation
-        run: flutter gen-l10n
-
       - name: Build flutter web app
         run: flutter build web
 
