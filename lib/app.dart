@@ -7,6 +7,7 @@ import 'package:web/class/class_screen.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
+import 'package:web/register/register_screen.dart';
 import 'package:web/schedule/schedule_screen.dart';
 import 'package:web/school/school_screen.dart';
 import 'package:web/login/login_screen.dart';
@@ -25,6 +26,13 @@ final _router = GoRouter(
       path: '/login',
       pageBuilder: (context, state) {
         return const NoTransitionPage(child: LoginScreen());
+      },
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: '/register',
+      pageBuilder: (context, state) {
+        return const NoTransitionPage(child: RegisterScreen());
       },
     ),
     ShellRoute(
