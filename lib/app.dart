@@ -12,9 +12,11 @@ import 'package:web/register/register_screen.dart';
 import 'package:web/schedule/schedule_screen.dart';
 import 'package:web/school/school_screen.dart';
 import 'package:web/login/login_screen.dart';
+import 'package:web/sector/sector_screen.dart';
 import 'package:web/student/student_screen.dart';
 import 'package:web/teacher/teacher_screen.dart';
 import 'package:web/welcome/welcome_screen.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -78,7 +80,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/sectors',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: SchoolScreen());
+              return const NoTransitionPage(child: SectorScreen());
             },
           ),
           GoRoute(
@@ -192,64 +194,111 @@ class SideNavigationBar extends StatefulWidget {
 
 class _SideNavigationBarBarState extends State<SideNavigationBar> {
   int _selectedIndex = 0;
+  late List<MyCustomSideBarItem> tabs;
+  late String firstname;
 
-  static const List<MyCustomSideBarItem> tabs = [
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.academicCap),
-      label: 'École',
-      initialLocation: '/schools',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.buildingOffice),
-      label: 'Campus',
-      initialLocation: '/campus',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.briefcase),
-      label: 'Filières',
-      initialLocation: '/sectors',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.presentationChartBar),
-      label: 'Classes',
-      initialLocation: '/class',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.userGroup),
-      label: 'Élèves',
-      initialLocation: '/students',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.user),
-      label: 'Intervenants',
-      initialLocation: '/teachers',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.calendarDays),
-      label: 'EDT',
-      initialLocation: '/schedules',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.pencilSquare),
-      label: 'Emplois du Temps',
-      initialLocation: '/grades',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.noSymbol),
-      label: 'Absences',
-      initialLocation: '/absences',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.document),
-      label: 'Documents',
-      initialLocation: '/documents',
-    ),
-    MyCustomSideBarItem(
-      icon: HeroIcon(HeroIcons.informationCircle),
-      label: 'Informations',
-      initialLocation: '/informations',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
+    int userKind = decodedToken['user']['userKind'];
+    firstname = decodedToken['user']['firstname'];
+
+    tabs = _getTabsForUserKind(userKind);
+  }
+
+  List<MyCustomSideBarItem> _getTabsForUserKind(int? userKind) {
+    switch (userKind) {
+      case 1:
+        //Teacher
+        return [
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.calendarDays),
+            label: 'Schedule',
+            initialLocation: '/schedules',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.pencilSquare),
+            label: 'Grades',
+            initialLocation: '/grades',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.document),
+            label: 'Documents',
+            initialLocation: '/documents',
+          ),        
+        ];
+      case 3:
+        //Superadmin
+        return [
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.academicCap),
+            label: 'Schools',
+            initialLocation: '/schools',
+          ),
+        ];   
+      case 2:
+      default:
+        //Admin
+        return [
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.academicCap),
+            label: 'École',
+            initialLocation: '/schools',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.buildingOffice),
+            label: 'Campus',
+            initialLocation: '/campus',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.briefcase),
+            label: 'Filières',
+            initialLocation: '/sectors',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.presentationChartBar),
+            label: 'Classes',
+            initialLocation: '/class',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.userGroup),
+            label: 'Élèves',
+            initialLocation: '/students',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.user),
+            label: 'Intervenants',
+            initialLocation: '/teachers',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.calendarDays),
+            label: 'Emplois du Temps',
+            initialLocation: '/schedules',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.pencilSquare),
+            label: 'Notes',
+            initialLocation: '/grades',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.noSymbol),
+            label: 'Absences',
+            initialLocation: '/absences',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.document),
+            label: 'Documents',
+            initialLocation: '/documents',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.informationCircle),
+            label: 'Informations',
+            initialLocation: '/informations',
+          ),
+        ];    
+    }
+  }
 
   void _goOtherTab(BuildContext context, int index) {
     if (index == _selectedIndex) return;
@@ -283,7 +332,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   backgroundImage: AssetImage('profile.jpg'),
                 ),
                 const SizedBox(height: 10),
-                const Text('Bonjour Antoine', style: TextStyle(fontSize: 20)),
+                Text('Bonjour $firstname', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
