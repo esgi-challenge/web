@@ -16,4 +16,11 @@ class AuthService {
     await prefs.setString(_authKey, jwt);
     return jwt;
   }
+
+
+  static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_authKey);
+    jwt = null;
+  }
 }

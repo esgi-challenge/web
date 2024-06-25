@@ -4,6 +4,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:web/absence/absence_screen.dart';
 import 'package:web/campus/campus_screen.dart';
 import 'package:web/class/class_screen.dart';
+import 'package:web/core/services/auth_services.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
@@ -20,6 +21,20 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 final _router = GoRouter(
   initialLocation: '/login',
   navigatorKey: _rootNavigatorKey,
+  redirect: (context, state) async {
+    final jwt = await AuthService.init();
+
+    final unprotectedPaths = ['/login', '/register'];
+    if(jwt == null && !unprotectedPaths.contains(state.fullPath)) {
+      return '/login';
+    }
+
+    if (jwt != null && (state.fullPath == '/login' || state.fullPath == '/register')) {
+      return '/';
+    }
+
+    return null;
+  },
   routes: [
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
@@ -55,6 +70,13 @@ final _router = GoRouter(
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/schools',
+            pageBuilder: (context, state) {
+              return const NoTransitionPage(child: SchoolScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/sectors',
             pageBuilder: (context, state) {
               return const NoTransitionPage(child: SchoolScreen());
             },
@@ -174,7 +196,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
   static const List<MyCustomSideBarItem> tabs = [
     MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.academicCap),
-      label: 'Schools',
+      label: 'École',
       initialLocation: '/schools',
     ),
     MyCustomSideBarItem(
@@ -183,28 +205,33 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
       initialLocation: '/campus',
     ),
     MyCustomSideBarItem(
+      icon: HeroIcon(HeroIcons.briefcase),
+      label: 'Filières',
+      initialLocation: '/sectors',
+    ),
+    MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.presentationChartBar),
-      label: 'Class',
+      label: 'Classes',
       initialLocation: '/class',
     ),
     MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.userGroup),
-      label: 'Students',
+      label: 'Élèves',
       initialLocation: '/students',
     ),
     MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.user),
-      label: 'Teachers',
+      label: 'Intervenants',
       initialLocation: '/teachers',
     ),
     MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.calendarDays),
-      label: 'Schedule',
+      label: 'EDT',
       initialLocation: '/schedules',
     ),
     MyCustomSideBarItem(
       icon: HeroIcon(HeroIcons.pencilSquare),
-      label: 'Grades',
+      label: 'Emplois du Temps',
       initialLocation: '/grades',
     ),
     MyCustomSideBarItem(
@@ -233,6 +260,11 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
       _selectedIndex = index;
     });
     router.go(location);
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    await AuthService.logout();
+    GoRouter.of(context).go('/login');
   }
 
   @override
@@ -268,6 +300,22 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                     },
                   ),
                 ),
+                ListTile(
+                  leading: const HeroIcon(
+                    HeroIcons.arrowLeftOnRectangle,
+                    color: Colors.red,
+                  ),
+                  title: const Text(
+                    'Déconnexion',
+                    style: TextStyle(
+                      color: Colors.red
+                    ),
+                  ),
+                  onTap: () {
+                    _logout(context);
+                  },
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
