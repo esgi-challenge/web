@@ -58,7 +58,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              'Il semblerait que vous n\'avez pas d\'ogranisme d\'éducation. Vous pouvez le créer en remplissant le formulaire suivant :',
+              'Il semblerait que vous n\'avez pas d\'organisme d\'éducation. Vous pouvez le créer en remplissant le formulaire suivant :',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),

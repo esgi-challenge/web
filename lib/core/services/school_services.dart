@@ -13,11 +13,12 @@ class SchoolService {
       headers: {'Authorization': 'Bearer $token'},
     );
 
-    // if (response.statusCode == 200) {
-    //   return jsonDecode(response.body);
-    // } else {
+    if (response.statusCode == 200) {
+      final decodedResponse = jsonDecode(response.body);
+      return decodedResponse[0];
+    } else {
       return null;
-    // }
+    }
   }
 
   Future<void> createSchool(String name) async {
