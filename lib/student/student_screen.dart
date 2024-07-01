@@ -2,22 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web/core/services/student_service.dart';
 import 'package:web/student/bloc/student_bloc.dart';
+import 'package:intl/intl.dart';
 
-class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key});
+class StudentScreen extends StatelessWidget {
+  StudentScreen({super.key});
 
-  @override
-  _StudentScreenState createState() => _StudentScreenState();
-}
-
-class _StudentScreenState extends State<StudentScreen> {
   final _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,29 +31,31 @@ class _StudentScreenState extends State<StudentScreen> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
+                  Flexible(
+                    flex: 1,
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
                         labelText: 'Rechercher un élève',
-                        border: OutlineInputBorder(),
                         suffixIcon: IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           onPressed: () {
                             _searchController.clear();
                             context.read<StudentBloc>().add(LoadStudents());
                           },
                         ),
                       ),
+                      onChanged: (query) {
+                        context.read<StudentBloc>().add(SearchStudents(query));
+                      },
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 500),
                   ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Inviter'),
-                  ),
+                      onPressed: () {},
+                      child: const Text('Inviter'),
+                    ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -92,29 +84,37 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   Widget _buildStudentTable(List<dynamic> students) {
-    return SingleChildScrollView(
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Nom')),
-          DataColumn(label: Text('Prénom')),
-          DataColumn(label: Text('Classe')),
-          DataColumn(label: Text('Email')),
-          DataColumn(label: Text('Action')),
-        ],
-        rows: students.map((student) {
-          return DataRow(
-            cells: [
-              DataCell(Text(student['lastname'])),
-              DataCell(Text(student['firstname'])),
-              DataCell(Text(student['classRefer'] ?? 'N/A')),
-              DataCell(Text(student['email'])),
-              DataCell(ElevatedButton(
-                onPressed: () {},
-                child: const Text('Voir'),
-              )),
-            ],
-          );
-        }).toList(),
+    return SizedBox(
+      width: double.infinity,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: const [
+            DataColumn(label: Text('Nom')),
+            DataColumn(label: Text('Prénom')),
+            DataColumn(label: Text('Classe')),
+            DataColumn(label: Text('Email')),
+            DataColumn(label: Text('Date de création')),
+            DataColumn(label: Text('Action')),
+          ],
+          rows: students.map((student) {
+            DateTime parsedDate = DateTime.parse(student['createdAt']);
+
+            return DataRow(
+              cells: [
+                DataCell(Text(student['lastname'])),
+                DataCell(Text(student['firstname'])),
+                DataCell(Text(student['classRefer'] ?? 'N/A')),
+                DataCell(Text(student['email'])),
+                DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                DataCell(ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Voir'),
+                )),
+              ],
+            );
+          }).toList(),
+        ),
       ),
     );
   }

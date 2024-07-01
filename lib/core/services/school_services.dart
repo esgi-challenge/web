@@ -1,22 +1,28 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SchoolService {
-  static const _baseUrl = 'http://localhost:8080/api/schools';
+  String? apiUrl = dotenv.env['API_URL'];
+  final dio = Dio();
 
   Future<Map<String, dynamic>?> getSchool() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
-    final response = await http.get(
-      Uri.parse(_baseUrl),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+    try {
+      final response = await dio.get(
+        '$apiUrl/api/schools',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'}
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      final decodedResponse = jsonDecode(response.body);
-      return decodedResponse[0];
-    } else {
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } on DioException {
       return null;
     }
   }
@@ -24,16 +30,22 @@ class SchoolService {
   Future<void> createSchool(String name) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
-    final response = await http.post(
-      Uri.parse(_baseUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'name': name}),
-    );
+    try{
+      final response = await dio.post(
+        '$apiUrl/api/schools',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: {'name': name},
+      );
 
-    if (response.statusCode != 201) {
+      if (response.statusCode != 201) {
+        throw Exception('Failed to create school');
+      }
+    } on DioException {
       throw Exception('Failed to create school');
     }
   }

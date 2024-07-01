@@ -32,6 +32,11 @@ jobs:
       - name: Configure docker to use gcp 
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
+      - name: Set api url
+        run: echo API_URL="$API_URL" > .env
+        env:
+          API_URL: ${{ secrets.API_URL }}
+
       - name: Install flutter dependencies
         run: flutter pub get
 

@@ -3,22 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web/core/services/school_services.dart';
 import 'package:web/school/bloc/school_bloc.dart';
 
-class SchoolScreen extends StatefulWidget {
-  const SchoolScreen({super.key});
+class SchoolScreen extends StatelessWidget {
+  SchoolScreen({super.key});
 
-  @override
-  State<SchoolScreen> createState() => _SchoolScreenState();
-}
-
-class _SchoolScreenState extends State<SchoolScreen> {
   final _formKey = GlobalKey<FormState>();
   final name = TextEditingController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    name.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
