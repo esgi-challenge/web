@@ -3,8 +3,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 import 'package:web/core/services/auth_services.dart';
-
-String apiUrl = "http://127.0.0.1:8080";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,11 +12,11 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final email = TextEditingController();
   final password = TextEditingController();
+  String? apiUrl = dotenv.env['API_URL'];
   final dio = Dio();
   bool _isError = false;
   bool _isLoading = false;

@@ -3,8 +3,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:dio/dio.dart';
-
-String apiUrl = "http://127.0.0.1:8080";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final firstname = TextEditingController();
   final lastname = TextEditingController();
   final password = TextEditingController();
+  String? apiUrl = dotenv.env['API_URL'];
   final dio = Dio();
   bool _isError = false;
   bool _isLoading = false;
