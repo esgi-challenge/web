@@ -25,13 +25,15 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       }
     });
 
-    on<SearchStudents>((event, emit) async {
-      print("test");
-      emit(StudentLoading());
-        final filteredStudents = originalStudents?.where((student) {
-          return student['lastname'].toLowerCase().contains(event.query.toLowerCase());
-        }).toList();
-        emit(StudentLoaded(students: filteredStudents!));
+    on<SearchStudents>((event, emit) {
+      if (originalStudents == null) return;
+
+      final query = event.query.toLowerCase();
+      final filteredStudents = originalStudents!.where((student) {
+        return student['lastname'].toLowerCase().startsWith(query);
+      }).toList();
+
+      emit(StudentLoaded(students: filteredStudents));
     });
   }
 }
