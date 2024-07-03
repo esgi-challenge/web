@@ -26,6 +26,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     });
 
     on<SearchStudents>((event, emit) {
+      emit(StudentLoading());
       if (originalStudents == null) return;
 
       final query = event.query.toLowerCase();
@@ -34,6 +35,55 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       }).toList();
 
       emit(StudentLoaded(students: filteredStudents));
+    });
+
+    on<AddStudent>((event, emit) async {
+      emit(StudentLoading());
+      try {
+        final student = await studentService.addStudent(event.email, event.firstname, event.lastname, event.password);
+
+        if (student != null) {
+          originalStudents!.add(student);
+          emit(StudentLoaded(students: originalStudents!));
+        } else {
+          emit(StudentError(errorMessage: "L'élève n'a pas pu être crée"));
+        }
+      } on Exception catch (e) {
+        emit(StudentError(errorMessage: e.toString()));
+      }
+    });
+
+    on<UpdateStudent>((event, emit) async {
+      emit(StudentLoading());
+      try {
+        final updatedStudent = await studentService.updateStudent(event.id, event.email, event.firstname, event.lastname);
+
+        if (updatedStudent != null) {
+          final userIndex = originalStudents!.indexWhere((element) => element["id"] == event.id); 
+          originalStudents![userIndex] = updatedStudent;
+          emit(StudentLoaded(students: originalStudents!));
+        } else {
+          emit(StudentError(errorMessage: "L'élève n'a pas pu être modifié"));
+        }
+      } on Exception catch (e) {
+        emit(StudentError(errorMessage: e.toString()));
+      }
+    });
+
+    on<DeleteStudent>((event, emit) async {
+      emit(StudentLoading());
+      try {
+        final isDeleted = await studentService.removeStudent(event.id);
+
+        if (isDeleted){
+          originalStudents!.removeWhere((student) => student["id"] == event.id);
+          emit(StudentLoaded(students: originalStudents!));
+        } else {
+          emit(StudentError(errorMessage: "L'élève n'a pas pu être supprimé"));
+        }
+      } on Exception catch (e) {
+        emit(StudentError(errorMessage: "L'élève n'a pas pu être supprimé"));
+      }
     });
   }
 }

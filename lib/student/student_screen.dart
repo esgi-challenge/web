@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:web/core/services/student_service.dart';
 import 'package:web/student/bloc/student_bloc.dart';
 import 'package:intl/intl.dart';
@@ -11,11 +12,47 @@ class StudentScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _firstnameController = TextEditingController();
   final _lastnameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final GlobalKey<FormState> _inviteFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _createFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _updateFormKey = GlobalKey<FormState>();
 
   void _clearInputs() {
     _emailController.clear();
     _firstnameController.clear();
     _lastnameController.clear();
+    _passwordController.clear();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email est requis';
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Entrez un email valide';
+    }
+    return null;
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Ce champ est requis';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Mot de passe est requis';
+    }
+    if (value.length < 8) {
+      return 'Le mot de passe doit avoir au moins 8 caractères';
+    }
+    if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])').hasMatch(value)) {
+      return 'Le mot de passe doit contenir au moins une majuscule et une minuscule';
+    }
+    return null;
   }
 
   @override
@@ -63,12 +100,16 @@ class StudentScreen extends StatelessWidget {
                     child: const Text('Inviter'),
                   ),
                   const SizedBox(width: 50),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showCreateDialog(context);
+                  BlocBuilder<StudentBloc, StudentState>(
+                    builder: (context, state) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          _showCreateDialog(context);
+                        },
+                        child: const Text('Ajouter'),
+                      );
                     },
-                    child: const Text('Ajouter'),
-                  ),
+                  )
                 ],
               ),
               const SizedBox(height: 16),
@@ -84,7 +125,7 @@ class StudentScreen extends StatelessWidget {
                     } else if (state is StudentError) {
                       return Center(child: Text('Erreur: ${state.errorMessage}'));
                     } else {
-                      return const Center(child: Text('Initial State'));
+                      return const Center(child: Text('Students'));
                     }
                   },
                 ),
@@ -102,26 +143,32 @@ class StudentScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Nouvel élève'),
-          content: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _firstnameController,
-                  decoration: const InputDecoration(labelText: 'Prénom'),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _lastnameController,
-                  decoration: const InputDecoration(labelText: 'Nom'),
-                ),
-              ],
+          content: Form(
+            key: _inviteFormKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    validator: _validateEmail,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _firstnameController,
+                    decoration: const InputDecoration(labelText: 'Prénom'),
+                    validator: _validateName,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _lastnameController,
+                    decoration: const InputDecoration(labelText: 'Nom'),
+                    validator: _validateName,
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -134,8 +181,10 @@ class StudentScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                _clearInputs();
-                Navigator.of(context).pop();
+                if (_inviteFormKey.currentState!.validate()) {
+                  _clearInputs();
+                  Navigator.of(context).pop();
+                }
               },
               child: const Text('Inviter'),
             ),
@@ -145,56 +194,78 @@ class StudentScreen extends StatelessWidget {
     );
   }
 
-    void _showCreateDialog(BuildContext context) {
+  void _showCreateDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Ajouter un élève'),
-          content: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: BlocProvider.of<StudentBloc>(context),
+          child: Builder (
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Ajouter un élève'),
+                content: Form(
+                  key: _createFormKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          validator: _validateEmail,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _firstnameController,
+                          decoration: const InputDecoration(labelText: 'Prénom'),
+                          validator: _validateName,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _lastnameController,
+                          decoration: const InputDecoration(labelText: 'Nom'),
+                          validator: _validateName,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: const InputDecoration(labelText: 'Mot de passe'),
+                          obscureText: true,
+                          validator: _validatePassword,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _firstnameController,
-                  decoration: const InputDecoration(labelText: 'Prénom'),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _lastnameController,
-                  decoration: const InputDecoration(labelText: 'Nom'),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _lastnameController,
-                  decoration: const InputDecoration(labelText: 'Mot de passe'),
-                  obscureText: true,
-                ),
-              ],
-            ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _clearInputs();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_createFormKey.currentState!.validate()) {
+                        context.read<StudentBloc>().add(AddStudent(
+                          _emailController.text,
+                          _firstnameController.text,
+                          _lastnameController.text,
+                          _passwordController.text,
+                        ));
+                        _clearInputs();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Ajouter'),
+                  ),
+                ],
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _clearInputs();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _clearInputs();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Ajouter'),
-            ),
-          ],
         );
       },
     );
@@ -207,48 +278,112 @@ class StudentScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Détails de l\'élève'),
-          content: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: BlocProvider.of<StudentBloc>(context),
+          child: Builder(
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Détails de l\'élève'),
+                content: Form(
+                  key: _updateFormKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          validator: _validateEmail,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _firstnameController,
+                          decoration: const InputDecoration(labelText: 'Prénom'),
+                          validator: _validateName,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _lastnameController,
+                          decoration: const InputDecoration(labelText: 'Nom'),
+                          validator: _validateName,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _firstnameController,
-                  decoration: const InputDecoration(labelText: 'Prénom'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _clearInputs();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_updateFormKey.currentState!.validate()) {
+                        context.read<StudentBloc>().add(UpdateStudent(
+                          student['id'],
+                          _emailController.text,
+                          _firstnameController.text,
+                          _lastnameController.text,
+                        ));
+                        _clearInputs();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Modifier'),
+                  ),
+                ],
+              );
+            },
+          )
+        );
+      },
+    );
+  }
+
+  void _showStudentDeleteDialog(BuildContext context, dynamic student) {
+    String firstname = student['firstname'];
+    String lastname = student['lastname'];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: BlocProvider.of<StudentBloc>(context),
+          child: Builder(
+            builder: (context) {
+              return AlertDialog(
+                content: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Voulez vous vraiment supprimer l\'élève $firstname $lastname?')
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _lastnameController,
-                  decoration: const InputDecoration(labelText: 'Nom'),
-                ),
-              ],
-            ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<StudentBloc>().add(DeleteStudent(student['id']));
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Email: ${_emailController.text}');
-                print('Prénom: ${_firstnameController.text}');
-                print('Nom: ${_lastnameController.text}');
-                Navigator.of(context).pop();
-              },
-              child: const Text('Modifier'),
-            ),
-          ],
         );
       },
     );
@@ -257,37 +392,51 @@ class StudentScreen extends StatelessWidget {
   Widget _buildStudentTable(BuildContext context, List<dynamic> students) {
     return SizedBox(
       width: double.infinity,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const [
-            DataColumn(label: Text('Nom')),
-            DataColumn(label: Text('Prénom')),
-            DataColumn(label: Text('Classe')),
-            DataColumn(label: Text('Email')),
-            DataColumn(label: Text('Date de création')),
-            DataColumn(label: Text('Action')),
-          ],
-          rows: students.map((student) {
-            DateTime parsedDate = DateTime.parse(student['createdAt']);
-            return DataRow(
-              cells: [
-                DataCell(Text(student['lastname'])),
-                DataCell(Text(student['firstname'])),
-                DataCell(Text(student['classRefer'] ?? 'N/A')),
-                DataCell(Text(student['email'])),
-                DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                DataCell(ElevatedButton(
-                  onPressed: () {
-                    _showStudentDetailDialog(context, student);
-                  },
-                  child: const Text('Voir'),
-                )),
+      child: BlocBuilder<StudentBloc, StudentState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Nom')),
+                DataColumn(label: Text('Prénom')),
+                DataColumn(label: Text('Classe')),
+                DataColumn(label: Text('Email')),
+                DataColumn(label: Text('Date de création')),
+                DataColumn(label: Text('')),
+                DataColumn(label: Text(''))
               ],
-            );
-          }).toList(),
-        ),
-      ),
+              rows: students.map((student) {
+                DateTime parsedDate = DateTime.parse(student['createdAt']);
+                return DataRow(
+                  cells: [
+                    DataCell(Text(student['lastname'])),
+                    DataCell(Text(student['firstname'])),
+                    DataCell(Text(student['classRefer'] ?? 'N/A')),
+                    DataCell(Text(student['email'])),
+                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                    DataCell(ElevatedButton(
+                      onPressed: () {
+                        _showStudentDetailDialog(context, student);
+                      },
+                      child: const Text('Voir'),
+                    )),
+                    DataCell(ElevatedButton(
+                      onPressed: () {
+                        _showStudentDeleteDialog(context, student);
+                      },
+                      child: const HeroIcon(
+                        HeroIcons.trash,
+                        color: Colors.red,
+                      ),
+                    )),
+                  ],
+                );
+              }).toList(),
+            ),
+          );
+        },
+      )
     );
   }
 }

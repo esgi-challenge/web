@@ -26,4 +26,78 @@ class StudentService {
       return null;
     }
   }
+
+  Future addStudent(String email, String firstname, String lastname, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      final response = await dio.post(
+        '$apiUrl/api/schools/student/add',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'}
+        ),
+        data: {
+          'email': email,
+          'firstname': firstname,
+          'lastname': lastname,
+          'password': password
+        }
+      );
+
+      if (response.statusCode == 201) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } on DioException {
+      return null;
+    }
+  }
+
+  Future updateStudent(int id, String email, String firstname, String lastname) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      final response = await dio.put(
+        '$apiUrl/api/schools/student/update/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'}
+        ),
+        data: {
+          'email': email,
+          'firstname': firstname,
+          'lastname': lastname
+        }
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } on DioException {
+      return null;
+    }
+  }
+
+  Future<bool> removeStudent(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      final response = await dio.delete(
+        '$apiUrl/api/schools/student/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'}
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } on DioException {
+      return false;
+    }
+  }
 }
