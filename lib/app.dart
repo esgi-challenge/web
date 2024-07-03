@@ -108,7 +108,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/teachers',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: TeacherScreen());
+              return NoTransitionPage(child: TeacherScreen());
             },
           ),
           GoRoute(
@@ -214,12 +214,12 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.calendarDays),
-            label: 'Schedule',
+            label: 'Emplois du Temps',
             initialLocation: '/schedules',
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.pencilSquare),
-            label: 'Grades',
+            label: 'Notes',
             initialLocation: '/grades',
           ),
           const MyCustomSideBarItem(
@@ -233,7 +233,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.academicCap),
-            label: 'Schools',
+            label: 'Écoles',
             initialLocation: '/schools',
           ),
         ];   

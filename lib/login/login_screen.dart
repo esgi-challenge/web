@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:web/shared/input_validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -151,12 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'L\'email est requise';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validateEmail
                               ),
                               TextFormField(
                                 controller: password,
@@ -170,12 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 obscureText: true,
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Le mot de passe est requis';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validatePassword
                               ),
                               const SizedBox(
                                 height: 18,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:web/shared/input_validator.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -173,12 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'L\'email est requise';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validateEmail
                               ),
                               TextFormField(
                                 controller: firstname,
@@ -191,12 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Le prénom est requis';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validateName
                               ),
                               TextFormField(
                                 controller: lastname,
@@ -209,12 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Le nom de famille est requis';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validateName
                               ),
                               TextFormField(
                                 controller: password,
@@ -228,14 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 obscureText: true,
                                 style: const TextStyle(color: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Le mot de passe est requis';
-                                  } else if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).{8,}$').hasMatch(value)) {
-                                    return 'Le mot de passe doit contenir au moins 8 caractères, une majuscule et une minuscule';
-                                  }
-                                  return null;
-                                },
+                                validator: InputValidator.validatePassword
                               ),
                               const SizedBox(
                                 height: 18,

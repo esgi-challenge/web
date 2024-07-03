@@ -2,16 +2,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class StudentService {
+class TeacherService {
   String? apiUrl = dotenv.env['API_URL'];
   final dio = Dio();
 
-  Future<List<dynamic>?> getStudents() async {
+  Future<List<dynamic>?> getTeachers() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
       final response = await dio.get(
-        '$apiUrl/api/schools/users/student',
+        '$apiUrl/api/schools/users/teacher',
         options: Options(
           headers: {'Authorization': 'Bearer $token'}
         ),
@@ -27,12 +27,12 @@ class StudentService {
     }
   }
 
-  Future addStudent(String email, String firstname, String lastname, String password) async {
+  Future addTeacher(String email, String firstname, String lastname, String password) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
       final response = await dio.post(
-        '$apiUrl/api/schools/add/student',
+        '$apiUrl/api/schools/add/teacher',
         options: Options(
           headers: {'Authorization': 'Bearer $token'}
         ),
@@ -54,7 +54,7 @@ class StudentService {
     }
   }
 
-  Future updateStudent(int id, String email, String firstname, String lastname) async {
+  Future updateTeacher(int id, String email, String firstname, String lastname) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
@@ -80,12 +80,12 @@ class StudentService {
     }
   }
 
-  Future<bool> removeStudent(int id) async {
+  Future<bool> removeTeacher(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
       final response = await dio.delete(
-        '$apiUrl/api/schools/remove/student/$id',
+        '$apiUrl/api/schools/remove/teacher/$id',
         options: Options(
           headers: {'Authorization': 'Bearer $token'}
         ),

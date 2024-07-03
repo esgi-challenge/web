@@ -43,6 +43,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         final student = await studentService.addStudent(event.email, event.firstname, event.lastname, event.password);
 
         if (student != null) {
+          originalStudents ??= [];
           originalStudents!.add(student);
           emit(StudentLoaded(students: originalStudents!));
         } else {

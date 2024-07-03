@@ -4,6 +4,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:web/core/services/student_service.dart';
 import 'package:web/student/bloc/student_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:web/shared/input_validator.dart';
 
 class StudentScreen extends StatelessWidget {
   StudentScreen({super.key});
@@ -23,36 +24,6 @@ class StudentScreen extends StatelessWidget {
     _firstnameController.clear();
     _lastnameController.clear();
     _passwordController.clear();
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email est requis';
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return 'Entrez un email valide';
-    }
-    return null;
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Ce champ est requis';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Mot de passe est requis';
-    }
-    if (value.length < 8) {
-      return 'Le mot de passe doit avoir au moins 8 caractères';
-    }
-    if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])').hasMatch(value)) {
-      return 'Le mot de passe doit contenir au moins une majuscule et une minuscule';
-    }
-    return null;
   }
 
   @override
@@ -153,19 +124,19 @@ class StudentScreen extends StatelessWidget {
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
-                    validator: _validateEmail,
+                    validator: InputValidator.validateEmail,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _firstnameController,
                     decoration: const InputDecoration(labelText: 'Prénom'),
-                    validator: _validateName,
+                    validator: InputValidator.validateName,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _lastnameController,
                     decoration: const InputDecoration(labelText: 'Nom'),
-                    validator: _validateName,
+                    validator: InputValidator.validateName,
                   ),
                 ],
               ),
@@ -214,26 +185,26 @@ class StudentScreen extends StatelessWidget {
                         TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(labelText: 'Email'),
-                          validator: _validateEmail,
+                          validator: InputValidator.validateEmail,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _firstnameController,
                           decoration: const InputDecoration(labelText: 'Prénom'),
-                          validator: _validateName,
+                          validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _lastnameController,
                           decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: _validateName,
+                          validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
                           decoration: const InputDecoration(labelText: 'Mot de passe'),
                           obscureText: true,
-                          validator: _validatePassword,
+                          validator: InputValidator.validatePassword,
                         ),
                       ],
                     ),
@@ -295,19 +266,19 @@ class StudentScreen extends StatelessWidget {
                         TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(labelText: 'Email'),
-                          validator: _validateEmail,
+                          validator: InputValidator.validateEmail,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _firstnameController,
                           decoration: const InputDecoration(labelText: 'Prénom'),
-                          validator: _validateName,
+                          validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _lastnameController,
                           decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: _validateName,
+                          validator: InputValidator.validateName,
                         ),
                       ],
                     ),
