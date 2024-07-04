@@ -4,6 +4,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:web/absence/absence_screen.dart';
 import 'package:web/campus/campus_screen.dart';
 import 'package:web/class/class_screen.dart';
+import 'package:web/class_id/class_id_screen.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
@@ -94,7 +95,14 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/class',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: ClassScreen());
+              return NoTransitionPage(child: ClassScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/class/:id',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: ClassIdScreen(id: int.parse(state.pathParameters['id']!)));
             },
           ),
           GoRoute(
@@ -329,7 +337,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                 const SizedBox(height: 50),
                 const CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage('profile.jpg'),
+                  backgroundImage: AssetImage('default-picture.jpg'),
                 ),
                 const SizedBox(height: 10),
                 Text('Bonjour $firstname', style: const TextStyle(fontSize: 20)),

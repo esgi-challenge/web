@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/student_service.dart';
 import 'package:web/student/bloc/student_bloc.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,7 @@ class StudentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => StudentBloc(StudentService())..add(LoadStudents()),
+      create: (context) => StudentBloc(StudentService(), ClassService())..add(LoadStudents()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Élèves'),
@@ -90,7 +91,7 @@ class StudentScreen extends StatelessWidget {
                     if (state is StudentLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is StudentLoaded) {
-                      return _buildStudentTable(context, state.students);
+                      return _buildStudentTable(context, state.students, state.classes);
                     } else if (state is StudentNotFound) {
                       return const Center(child: Text('Aucun élève dans cette école'));
                     } else if (state is StudentError) {
@@ -360,7 +361,7 @@ class StudentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStudentTable(BuildContext context, List<dynamic> students) {
+  Widget _buildStudentTable(BuildContext context, List<dynamic> students, List<dynamic> classes) {
     return SizedBox(
       width: double.infinity,
       child: BlocBuilder<StudentBloc, StudentState>(
@@ -379,18 +380,24 @@ class StudentScreen extends StatelessWidget {
               ],
               rows: students.map((student) {
                 DateTime parsedDate = DateTime.parse(student['createdAt']);
+                String className = classes.firstWhere(
+                  (classSchool) => classSchool['id'] == student['classRefer'],
+                  orElse: () => {'name': 'N/A'}
+                )['name'];
                 return DataRow(
                   cells: [
                     DataCell(Text(student['lastname'])),
                     DataCell(Text(student['firstname'])),
-                    DataCell(Text(student['classRefer'] ?? 'N/A')),
+                    DataCell(Text(className)),
                     DataCell(Text(student['email'])),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(ElevatedButton(
                       onPressed: () {
                         _showStudentDetailDialog(context, student);
                       },
-                      child: const Text('Voir'),
+                      child: const HeroIcon(
+                        HeroIcons.pencil,
+                      ),
                     )),
                     DataCell(ElevatedButton(
                       onPressed: () {

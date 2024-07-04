@@ -269,7 +269,9 @@ class PathScreen extends StatelessWidget {
                       onPressed: () {
                         _showPathDetailDialog(context, path);
                       },
-                      child: const Text('Voir'),
+                      child: const HeroIcon(
+                        HeroIcons.pencil,
+                      ),
                     )),
                     DataCell(ElevatedButton(
                       onPressed: () {

@@ -9,8 +9,9 @@ class StudentLoading extends StudentState {}
 
 class StudentLoaded extends StudentState {
   final List<dynamic> students;
+  final List<dynamic> classes;
 
-  StudentLoaded({required this.students});
+  StudentLoaded({required this.students, required this.classes});
 }
 
 class StudentNotFound extends StudentState {}

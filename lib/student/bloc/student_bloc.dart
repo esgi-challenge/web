@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/student_service.dart';
 
 part 'student_event.dart';
@@ -7,16 +8,21 @@ part 'student_state.dart';
 
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
   final StudentService studentService;
+  final ClassService classService;
   List<dynamic>? originalStudents;
+  List<dynamic>? originalClasses;
 
-  StudentBloc(this.studentService) : super(StudentInitial()) {
+  StudentBloc(this.studentService, this.classService) : super(StudentInitial()) {
     on<LoadStudents>((event, emit) async {
       emit(StudentLoading());
       try {
         final students = await studentService.getStudents();
+        final classes = await classService.getClasses();
+
         if (students != null && students.isNotEmpty) {
           originalStudents = students;
-          emit(StudentLoaded(students: students));
+          originalClasses = classes;
+          emit(StudentLoaded(students: students, classes: classes!));
         } else {
           emit(StudentNotFound());
         }
@@ -34,7 +40,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         return student['lastname'].toLowerCase().startsWith(query);
       }).toList();
 
-      emit(StudentLoaded(students: filteredStudents));
+      emit(StudentLoaded(students: filteredStudents, classes: originalClasses!));
     });
 
     on<AddStudent>((event, emit) async {
@@ -45,7 +51,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (student != null) {
           originalStudents ??= [];
           originalStudents!.add(student);
-          emit(StudentLoaded(students: originalStudents!));
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         } else {
           emit(StudentError(errorMessage: "L'élève n'a pas pu être crée"));
         }
@@ -62,7 +68,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (updatedStudent != null) {
           final userIndex = originalStudents!.indexWhere((element) => element["id"] == event.id); 
           originalStudents![userIndex] = updatedStudent;
-          emit(StudentLoaded(students: originalStudents!));
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         } else {
           emit(StudentError(errorMessage: "L'élève n'a pas pu être modifié"));
         }
@@ -78,7 +84,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
         if (isDeleted){
           originalStudents!.removeWhere((student) => student["id"] == event.id);
-          emit(StudentLoaded(students: originalStudents!));
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         } else {
           emit(StudentError(errorMessage: "L'élève n'a pas pu être supprimé"));
         }

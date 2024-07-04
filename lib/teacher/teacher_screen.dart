@@ -388,7 +388,9 @@ class TeacherScreen extends StatelessWidget {
                       onPressed: () {
                         _showTeacherDetailDialog(context, teacher);
                       },
-                      child: const Text('Voir'),
+                      child: const HeroIcon(
+                        HeroIcons.pencil,
+                      ),
                     )),
                     DataCell(ElevatedButton(
                       onPressed: () {
