@@ -8,11 +8,11 @@ import 'package:web/core/services/auth_services.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
+import 'package:web/path/path_screen.dart';
 import 'package:web/register/register_screen.dart';
 import 'package:web/schedule/schedule_screen.dart';
 import 'package:web/school/school_screen.dart';
 import 'package:web/login/login_screen.dart';
-import 'package:web/sector/sector_screen.dart';
 import 'package:web/student/student_screen.dart';
 import 'package:web/teacher/teacher_screen.dart';
 import 'package:web/welcome/welcome_screen.dart';
@@ -78,9 +78,9 @@ final _router = GoRouter(
           ),
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
-            path: '/sectors',
+            path: '/paths',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: SectorScreen());
+              return NoTransitionPage(child: PathScreen());
             },
           ),
           GoRoute(
@@ -254,7 +254,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.briefcase),
             label: 'Filières',
-            initialLocation: '/sectors',
+            initialLocation: '/paths',
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.presentationChartBar),
