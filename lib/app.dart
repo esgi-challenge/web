@@ -88,7 +88,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/campus',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: CampusScreen());
+              return NoTransitionPage(child: CampusScreen());
             },
           ),
           GoRoute(
