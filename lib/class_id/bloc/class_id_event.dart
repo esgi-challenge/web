@@ -20,3 +20,9 @@ class AddStudent extends ClassIdEvent {
 
   AddStudent(this.id);
 }
+
+class SearchStudents extends ClassIdEvent {
+  final String query;
+
+  SearchStudents(this.query);
+}

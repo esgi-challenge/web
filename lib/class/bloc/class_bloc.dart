@@ -36,7 +36,7 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
       try {
         //Name different than usual because class is a reserved word
         final classSchool = await classService.addClass(event.name, event.pathId);
-
+        classSchool['students'] = [];
         if (classSchool != null) {
           originalClasses ??= [];
           originalClasses!.add(classSchool);

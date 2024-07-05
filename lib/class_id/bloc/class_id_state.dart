@@ -9,8 +9,9 @@ class ClassIdLoading extends ClassIdState {}
 
 class ClassIdLoaded extends ClassIdState {
   final dynamic classId;
+  final dynamic classLessStudents;
 
-  ClassIdLoaded({required this.classId});
+  ClassIdLoaded({required this.classId, required this.classLessStudents});
 }
 
 class ClassIdNotFound extends ClassIdState {}
