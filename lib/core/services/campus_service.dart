@@ -101,4 +101,31 @@ class CampusService {
       return false;
     }
   }
+
+  Future getLocationPredictions(String input) async {
+    String? apiUrl = dotenv.env['API_URL'];
+    final dio = Dio();
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      final response = await dio.post(
+        '$apiUrl/api/campus/gmap/location',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'}
+        ),
+        data: {
+          'input': input,
+        }
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } on DioException {
+      return null;
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,16 +10,24 @@ import 'package:web/campus/bloc/campus_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:web/shared/input_validator.dart';
 
-class CampusScreen extends StatelessWidget {
+class CampusScreen extends StatefulWidget {
   CampusScreen({super.key});
 
+  @override
+  _CampusScreenState createState() => _CampusScreenState();
+}
+
+class _CampusScreenState extends State<CampusScreen> {
   late GoogleMapController mapController;
 
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   final GlobalKey<FormState> _createFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _updateFormKey = GlobalKey<FormState>();
+
+  Timer? _debounce;
 
   void _clearInputs() {
     _nameController.clear();
@@ -88,54 +98,106 @@ class CampusScreen extends StatelessWidget {
           value: BlocProvider.of<CampusBloc>(context),
           child: Builder (
             builder: (context) {
-              return AlertDialog(
-                title: const Text('Ajouter un campus'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: InputValidator.validateName,
+              List<dynamic> predictions = [];
+              double choosedLatitude = 0.0;
+              double choosedLongitude = 0.0;
+
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                    return AlertDialog(
+                      title: const Text('Ajouter un campus'),
+                      content: Form(
+                        key: _createFormKey,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(labelText: 'Nom'),
+                                validator: InputValidator.validateName,
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _locationController,
+                                focusNode: _searchFocusNode,
+                                decoration: const InputDecoration(labelText: 'Localisation'),
+                                onChanged: (query) {
+                                  if (_debounce?.isActive ?? false) _debounce?.cancel();
+                                  _debounce = Timer(const Duration(milliseconds: 600), () async {
+                                    if (query.isNotEmpty) {
+                                      final response = await CampusService().getLocationPredictions(query);
+                                      setState(() {
+                                        predictions = response;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        predictions.clear();
+                                      });
+                                    }
+                                  });
+                                },
+                              ),
+                              if (predictions.isNotEmpty)
+                                SizedBox(
+                                  height: 250,
+                                  width: 300,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(8),
+                                    itemCount: predictions.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final prediction = predictions[index];
+                                      return ListTile(
+                                        title: Text(prediction['description']),
+                                        onTap: () {
+                                          setState(() {
+                                            predictions.clear();
+                                          });
+
+                                          _locationController.text = prediction['description'];
+                                          choosedLatitude = prediction['latitude'];
+                                          choosedLongitude = prediction['longitude'];
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _locationController,
-                          decoration: const InputDecoration(labelText: 'Localisation'),
-                          validator: InputValidator.validateName,
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text('Annuler'),
+                          onPressed: () {
+                            _clearInputs();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Ajouter'),
+                          onPressed: () {
+                            if (_createFormKey.currentState!.validate()) {
+                              context.read<CampusBloc>().add(AddCampus(
+                                choosedLatitude,
+                                choosedLongitude,
+                                _locationController.text,
+                                _nameController.text,
+                              ));
+                              _clearInputs();
+                              Navigator.of(context).pop();
+                            }
+                          },
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      _clearInputs();
-                      Navigator.of(context).pop();
+                    );
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_createFormKey.currentState!.validate()) {
-                        context.read<CampusBloc>().add(AddCampus(
-                          1,
-                          1,
-                          _locationController.text,
-                          _nameController.text,
-                        ));
-                        _clearInputs();
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text('Ajouter'),
-                  ),
-                ],
+                  );
+                },
               );
             },
           ),
@@ -146,7 +208,7 @@ class CampusScreen extends StatelessWidget {
 
   void _showCampusDetailDialog(BuildContext context, dynamic campus) {
     _nameController.text = campus['name'];
-    _locationController.text = campus['location'];
+    final location = campus['location'];
     final latitude = campus['latitude'];
     final longitude = campus['longitude'];
 
@@ -173,19 +235,10 @@ class CampusScreen extends StatelessWidget {
                             validator: InputValidator.validateName,
                           ),
                           const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _locationController,
-                            decoration: const InputDecoration(labelText: 'Localisation'),
-                            validator: InputValidator.validateName,
+                          Text(
+                            'Localisation: $location',
                           ),
                           const SizedBox(height: 16),
-                          Text(
-                            'Latitude: $latitude'
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Longitude: $longitude'
-                          ),
                           SizedBox(
                             height: 400,
                             width: 1000,
@@ -195,6 +248,12 @@ class CampusScreen extends StatelessWidget {
                                 target: LatLng(latitude, longitude),
                                 zoom: 11.0
                               ),
+                              markers: {
+                                Marker(
+                                  markerId: MarkerId(location),
+                                  position: LatLng(latitude, longitude)
+                                )
+                              },
                             )
                           )
                         ],
@@ -215,10 +274,10 @@ class CampusScreen extends StatelessWidget {
                       if (_updateFormKey.currentState!.validate()) {
                         context.read<CampusBloc>().add(UpdateCampus(
                           campus['id'],
-                          1,
-                          1,
+                          campus['latitude'],
+                          campus['longitude'],
+                          campus['location'],
                           _nameController.text,
-                          _locationController.text,
                         ));
                         _clearInputs();
                         Navigator.of(context).pop();
