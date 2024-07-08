@@ -19,7 +19,7 @@ class StudentService {
 
       if (response.statusCode == 200) {
         return response.data;
-      } else {
+      } else if (response.statusCode == 409){
         return null;
       }
     } on DioException {

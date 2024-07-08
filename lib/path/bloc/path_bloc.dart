@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/path_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'path_event.dart';
 part 'path_state.dart';
@@ -34,11 +37,16 @@ class PathBloc extends Bloc<PathEvent, PathState> {
           originalPaths ??= [];
           originalPaths!.add(path);
           emit(PathLoaded(paths: originalPaths!));
+          showSuccessToast("Filière ajoutée avec succès");
         } else {
-          emit(PathError(errorMessage: "La filière n'a pas pu être crée"));
+          showErrorToast("Erreur lors de l'ajout");
+          originalPaths ??= [];
+          emit(PathLoaded(paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(PathError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        originalPaths ??= [];
+        emit(PathLoaded(paths: originalPaths!));
       }
     });
 
@@ -51,11 +59,14 @@ class PathBloc extends Bloc<PathEvent, PathState> {
           final userIndex = originalPaths!.indexWhere((element) => element["id"] == event.id); 
           originalPaths![userIndex] = updatedPath;
           emit(PathLoaded(paths: originalPaths!));
+          showSuccessToast("Filière modifiée avec succès");
         } else {
-          emit(PathError(errorMessage: "La filière n'a pas pu être modifié"));
+          showErrorToast("Erreur lors de la modification");
+          emit(PathLoaded(paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(PathError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(PathLoaded(paths: originalPaths!));
       }
     });
 
@@ -67,11 +78,14 @@ class PathBloc extends Bloc<PathEvent, PathState> {
         if (isDeleted){
           originalPaths!.removeWhere((path) => path["id"] == event.id);
           emit(PathLoaded(paths: originalPaths!));
+          showSuccessToast("Filière supprimée avec succès");
         } else {
-          emit(PathError(errorMessage: "La filière n'a pas pu être supprimé"));
+          showErrorToast("Erreur lors de la suppression");
+          emit(PathLoaded(paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(PathError(errorMessage: "La filière n'a pas pu être supprimé"));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(PathLoaded(paths: originalPaths!));
       }
     });
   }

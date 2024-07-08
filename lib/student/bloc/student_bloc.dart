@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/student_service.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'student_event.dart';
 part 'student_state.dart';
@@ -53,11 +55,18 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           originalStudents!.add(student);
           originalClasses ??= [];
           emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          showSuccessToast("Étudiant ajouté avec succès");
         } else {
-          emit(StudentError(errorMessage: "L'élève n'a pas pu être crée"));
+          showErrorToast("Erreur lors de l'ajout");
+          originalStudents ??= [];
+          originalClasses ??= [];
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
-        emit(StudentError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        originalStudents ??= [];
+        originalClasses ??= [];
+        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
       }
     });
 
@@ -70,11 +79,14 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           final userIndex = originalStudents!.indexWhere((element) => element["id"] == event.id); 
           originalStudents![userIndex] = updatedStudent;
           emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          showSuccessToast("Étudiant modifié avec succès");
         } else {
-          emit(StudentError(errorMessage: "L'élève n'a pas pu être modifié"));
+          showErrorToast("Erreur lors de la modification");
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
-        emit(StudentError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
       }
     });
 
@@ -86,11 +98,14 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (isDeleted){
           originalStudents!.removeWhere((student) => student["id"] == event.id);
           emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          showSuccessToast("Étudiant supprimé avec succès");
         } else {
-          emit(StudentError(errorMessage: "L'élève n'a pas pu être supprimé"));
+          showErrorToast("Erreur lors de la suppression");
+          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
-        emit(StudentError(errorMessage: "L'élève n'a pas pu être supprimé"));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
       }
     });
   }

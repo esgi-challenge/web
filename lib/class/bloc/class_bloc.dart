@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/path_service.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'class_event.dart';
 part 'class_state.dart';
@@ -44,11 +45,16 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
           originalClasses ??= [];
           originalClasses!.add(classSchool);
           emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
+          showSuccessToast("Classe ajoutée avec succès");
         } else {
-          emit(ClassError(errorMessage: "La classe n'a pas pu être crée"));
+          showErrorToast("Erreur lors de l'ajout");
+          originalClasses ??= [];
+          emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(ClassError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        originalClasses ??= [];
+        emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
       }
     });
 
@@ -61,11 +67,14 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
           final userIndex = originalClasses!.indexWhere((element) => element["id"] == event.id); 
           originalClasses![userIndex] = updatedClass;
           emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
+          showSuccessToast("Classe modifiée avec succès");
         } else {
-          emit(ClassError(errorMessage: "La classe n'a pas pu être modifié"));
+          showErrorToast("Erreur lors de la modification");
+          emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(ClassError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
       }
     });
 
@@ -77,12 +86,15 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
         if (isDeleted){
           originalClasses!.removeWhere((classSchool) => classSchool["id"] == event.id);
           emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
+          showSuccessToast("Classe supprimée avec succès");
         } else {
-          emit(ClassError(errorMessage: "La classe n'a pas pu être supprimé"));
+          showErrorToast("Erreur lors de la suppressions");
+          emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
         }
       } on Exception catch (e) {
-        emit(ClassError(errorMessage: "La classe n'a pas pu être supprimé"));
-      }
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(ClassLoaded(classes: originalClasses!, paths: originalPaths!));
+      }   
     });
   }
 }

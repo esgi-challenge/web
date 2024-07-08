@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/campus_service.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'campus_event.dart';
 part 'campus_state.dart';
@@ -34,11 +35,16 @@ class CampusBloc extends Bloc<CampusEvent, CampusState> {
           originalCampus ??= [];
           originalCampus!.add(campus);
           emit(CampusLoaded(campus: originalCampus!));
+          showSuccessToast("Campus ajouté avec succès");
         } else {
-          emit(CampusError(errorMessage: "Le campus n'a pas pu être crée"));
+          showErrorToast("Erreur lors de l'ajout");
+          originalCampus ??= [];
+          emit(CampusLoaded(campus: originalCampus!));
         }
       } on Exception catch (e) {
-        emit(CampusError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        originalCampus ??= [];
+        emit(CampusLoaded(campus: originalCampus!));
       }
     });
 
@@ -51,11 +57,14 @@ class CampusBloc extends Bloc<CampusEvent, CampusState> {
           final userIndex = originalCampus!.indexWhere((element) => element["id"] == event.id); 
           originalCampus![userIndex] = updatedCampus;
           emit(CampusLoaded(campus: originalCampus!));
+          showSuccessToast("Campus modifié avec succès");
         } else {
-          emit(CampusError(errorMessage: "Le campus n'a pas pu être modifié"));
+          showSuccessToast("Erreur lors de la modification");
+          emit(CampusLoaded(campus: originalCampus!));
         }
       } on Exception catch (e) {
-        emit(CampusError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(CampusLoaded(campus: originalCampus!));
       }
     });
 
@@ -67,11 +76,14 @@ class CampusBloc extends Bloc<CampusEvent, CampusState> {
         if (isDeleted){
           originalCampus!.removeWhere((campus) => campus["id"] == event.id);
           emit(CampusLoaded(campus: originalCampus!));
+          showSuccessToast("Campus supprimé avec succès");
         } else {
-          emit(CampusError(errorMessage: "Le campus n'a pas pu être supprimé"));
+          showSuccessToast("Erreur lors de la suppressions");
+          emit(CampusLoaded(campus: originalCampus!));
         }
       } on Exception catch (e) {
-        emit(CampusError(errorMessage: "Le campus n'a pas pu être supprimé"));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(CampusLoaded(campus: originalCampus!));
       }
     });
   }

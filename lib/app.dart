@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:toastification/toastification.dart';
 import 'package:web/absence/absence_screen.dart';
 import 'package:web/campus/campus_screen.dart';
 import 'package:web/class/class_screen.dart';
@@ -171,30 +172,31 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      debugShowCheckedModeBanner: true,
-      title: 'Studies',
-      theme: ThemeData(
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
-            unselectedLabelStyle:
-                TextStyle(color: Color.fromRGBO(190, 191, 190, 1)),
-            unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
-            unselectedIconTheme:
-                IconThemeData(color: Color.fromRGBO(190, 191, 190, 1)),
-            selectedIconTheme:
-                IconThemeData(color: Color.fromRGBO(109, 53, 172, 1))),
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(
-            color: Colors.amber,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        routerConfig: _router,
+        title: 'Studies',
+        theme: ThemeData(
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
+              unselectedLabelStyle:
+                  TextStyle(color: Color.fromRGBO(190, 191, 190, 1)),
+              unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
+              unselectedIconTheme:
+                  IconThemeData(color: Color.fromRGBO(190, 191, 190, 1)),
+              selectedIconTheme:
+                  IconThemeData(color: Color.fromRGBO(109, 53, 172, 1))),
+          textTheme: const TextTheme(
+            displayLarge: TextStyle(
+              color: Colors.amber,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 }

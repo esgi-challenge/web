@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/class_service.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'class_id_event.dart';
 part 'class_id_state.dart';
@@ -40,11 +41,16 @@ class ClassIdBloc extends Bloc<ClassIdEvent, ClassIdState> {
           classLessStudents!.removeWhere((student) => student["id"] == event.id);
 
           emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
+          showSuccessToast("Étudiant ajouté à la classe");
         } else {
-          emit(ClassIdError(errorMessage: "L'étudiant n'a pas pu être ajouté"));
+          showErrorToast("Erreur lors de l'ajout");
+          classId["students"] ??= [];
+          emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
         }
       } on Exception catch (e) {
-        emit(ClassIdError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        classId["students"] ??= [];
+          emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
       }
     });
 
@@ -70,11 +76,16 @@ class ClassIdBloc extends Bloc<ClassIdEvent, ClassIdState> {
           classLessStudents ??= [];
           classLessStudents!.add(removedStudent);
           emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
+          showSuccessToast("Étudiant retiré avec succès");
         } else {
-          emit(ClassIdError(errorMessage: "L'étudiant n'a pas pu être retiré"));
+          showErrorToast("Erreur lors du retrait");
+          classLessStudents ??= [];
+          emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
         }
       } on Exception catch (e) {
-        emit(ClassIdError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        classLessStudents ??= [];
+        emit(ClassIdLoaded(classId: classId, classLessStudents: classLessStudents!));
       }
     });
   }

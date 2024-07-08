@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/teacher_service.dart';
+import 'package:web/shared/toaster.dart';
 
 part 'teacher_event.dart';
 part 'teacher_state.dart';
@@ -46,11 +47,16 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
           originalTeachers ??= [];
           originalTeachers!.add(teacher);
           emit(TeacherLoaded(teachers: originalTeachers!));
+          showSuccessToast("Professeur ajouté avec succès");
         } else {
-          emit(TeacherError(errorMessage: "Le professeur n'a pas pu être crée"));
+          showErrorToast("Erreur lors de l'ajout");
+          originalTeachers ??= [];
+          emit(TeacherLoaded(teachers: originalTeachers!));
         }
       } on Exception catch (e) {
-        emit(TeacherError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        originalTeachers ??= [];
+        emit(TeacherLoaded(teachers: originalTeachers!));
       }
     });
 
@@ -63,11 +69,14 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
           final userIndex = originalTeachers!.indexWhere((element) => element["id"] == event.id); 
           originalTeachers![userIndex] = updatedTeacher;
           emit(TeacherLoaded(teachers: originalTeachers!));
+          showSuccessToast("Professeur modifié avec succès");
         } else {
-          emit(TeacherError(errorMessage: "Le professeur n'a pas pu être modifié"));
+          showErrorToast("Erreur lors de la modification");
+          emit(TeacherLoaded(teachers: originalTeachers!));
         }
       } on Exception catch (e) {
-        emit(TeacherError(errorMessage: e.toString()));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(TeacherLoaded(teachers: originalTeachers!));
       }
     });
 
@@ -79,11 +88,14 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
         if (isDeleted){
           originalTeachers!.removeWhere((teacher) => teacher["id"] == event.id);
           emit(TeacherLoaded(teachers: originalTeachers!));
+          showSuccessToast("Professeur supprimé avec succès");
         } else {
-          emit(TeacherError(errorMessage: "Le professeur n'a pas pu être supprimé"));
+          showErrorToast("Erreur lors de la suppression");
+          emit(TeacherLoaded(teachers: originalTeachers!));
         }
       } on Exception catch (e) {
-        emit(TeacherError(errorMessage: "Le professeur n'a pas pu être supprimé"));
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(TeacherLoaded(teachers: originalTeachers!));
       }
     });
   }
