@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:heroicons/heroicons.dart';
@@ -11,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:web/shared/input_validator.dart';
 
 class CampusScreen extends StatefulWidget {
-  CampusScreen({super.key});
+  const CampusScreen({super.key});
 
   @override
   _CampusScreenState createState() => _CampusScreenState();

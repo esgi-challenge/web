@@ -14,7 +14,11 @@ class ClassLoaded extends ClassState {
   ClassLoaded({required this.classes, required this.paths});
 }
 
-class ClassNotFound extends ClassState {}
+class ClassNotFound extends ClassState {
+  final List<dynamic> paths;
+
+  ClassNotFound({required this.paths});
+}
 
 class ClassError extends ClassState {
   final String errorMessage;

@@ -10,6 +10,7 @@ import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
 import 'package:web/path/path_screen.dart';
+import 'package:web/profile/profile_screen.dart';
 import 'package:web/register/register_screen.dart';
 import 'package:web/schedule/schedule_screen.dart';
 import 'package:web/school/school_screen.dart';
@@ -72,6 +73,13 @@ final _router = GoRouter(
           ),
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
+            path: '/profile',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: ProfileScreen());
+            },
+          ),          
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
             path: '/schools',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: SchoolScreen());
@@ -88,7 +96,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/campus',
             pageBuilder: (context, state) {
-              return NoTransitionPage(child: CampusScreen());
+              return const NoTransitionPage(child: CampusScreen());
             },
           ),
           GoRoute(
@@ -356,6 +364,18 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                       );
                     },
                   ),
+                ),
+                ListTile(
+                  leading: const HeroIcon(
+                    HeroIcons.user,
+                  ),
+                  title: const Text(
+                    'Profil',
+                  ),
+                  onTap: () {
+                    GoRouter router = GoRouter.of(context);
+                    router.go('/profile');
+                  },
                 ),
                 ListTile(
                   leading: const HeroIcon(

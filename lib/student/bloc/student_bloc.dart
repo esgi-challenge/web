@@ -51,6 +51,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (student != null) {
           originalStudents ??= [];
           originalStudents!.add(student);
+          originalClasses ??= [];
           emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
         } else {
           emit(StudentError(errorMessage: "L'élève n'a pas pu être crée"));

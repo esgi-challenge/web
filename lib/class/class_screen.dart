@@ -44,12 +44,18 @@ class ClassScreen extends StatelessWidget {
                   const SizedBox(width: 50),
                   BlocBuilder<ClassBloc, ClassState>(
                     builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _showCreateDialog(context);
-                        },
-                        child: const Text('Créer'),
-                      );
+                        return ElevatedButton(
+                          onPressed: () {
+                            if (state is ClassLoaded && state.paths.isNotEmpty) {
+                              _showCreateDialog(context, state.paths);
+                            } else if (state is ClassNotFound && state.paths.isNotEmpty) {
+                              _showCreateDialog(context, state.paths);
+                            } else {
+                              _showEmptyDialog(context);
+                            }
+                          },
+                          child: const Text('Créer'),
+                        );
                     },
                   )
                 ],
@@ -79,7 +85,27 @@ class ClassScreen extends StatelessWidget {
     );
   }
 
-  void _showCreateDialog(BuildContext context) {
+  void _showEmptyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Ajouter une classe'),
+          content: const Text("Créez des filières avant de créer des classes"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+            ),
+          ]
+        );
+      }
+    );
+  }
+
+  void _showCreateDialog(BuildContext context, dynamic paths) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -91,7 +117,6 @@ class ClassScreen extends StatelessWidget {
                 title: const Text('Ajouter une classe'),
                 content: BlocBuilder<ClassBloc, ClassState>(
                   builder: (context, state) {
-                    if (state is ClassLoaded) {
                       return Form(
                         key: _createFormKey,
                         child: Padding(
@@ -108,7 +133,7 @@ class ClassScreen extends StatelessWidget {
                               DropdownButtonFormField<String>(
                                 decoration: const InputDecoration(labelText: 'Filière'),
                                 value: _selectedPathId,
-                                items: state.paths.map<DropdownMenuItem<String>>((path) {
+                                items: paths.map<DropdownMenuItem<String>>((path) {
                                   return DropdownMenuItem<String>(
                                     value: path['id'].toString(),
                                     child: Text(path['shortName']),
@@ -123,9 +148,6 @@ class ClassScreen extends StatelessWidget {
                           ),
                         ),
                       );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
                   },
                 ),
                 actions: [

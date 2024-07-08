@@ -19,12 +19,15 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
         final classes = await classService.getClasses();
         final paths = await pathService.getPaths();
 
-        if (classes != null && classes.isNotEmpty && paths != null && paths.isNotEmpty) {
+        if (classes != null && classes.isNotEmpty) {
           originalClasses = classes;
           originalPaths = paths;
-          emit(ClassLoaded(classes: classes, paths: paths));
+          emit(ClassLoaded(classes: classes, paths: paths!));
+        } else if (paths != null && paths.isNotEmpty) {
+          originalPaths = paths;
+          emit(ClassNotFound(paths: paths));
         } else {
-          emit(ClassNotFound());
+          emit(ClassNotFound(paths: const []));
         }
       } on Exception catch (e) {
         emit(ClassError(errorMessage: e.toString()));
