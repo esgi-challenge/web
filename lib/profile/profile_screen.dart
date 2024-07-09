@@ -88,7 +88,7 @@ void _showUpdatePasswordDialog(BuildContext context) {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Ajouter une filière', style: TextStyle(fontSize: 20.0)),
+                    const Text('Modifier le mot de passe', style: TextStyle(fontSize: 20.0)),
                     const SizedBox(height: 16),
                     Form(
                       key: _updatePasswordFormKey,

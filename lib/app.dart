@@ -4,6 +4,8 @@ import 'package:heroicons/heroicons.dart';
 import 'package:toastification/toastification.dart';
 import 'package:web/absence/absence_screen.dart';
 import 'package:web/campus/campus_screen.dart';
+import 'package:web/chat/chat_screen.dart';
+import 'package:web/chat_id/chat_id_screen.dart';
 import 'package:web/class/class_screen.dart';
 import 'package:web/class_id/class_id_screen.dart';
 import 'package:web/core/services/auth_services.dart';
@@ -123,6 +125,20 @@ final _router = GoRouter(
           ),
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
+            path: '/chat',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: ChannelScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/chat/:id',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: ChannelIdScreen(id: int.parse(state.pathParameters['id']!)));
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
             path: '/teachers',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: TeacherScreen());
@@ -220,7 +236,6 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
     super.initState();
     Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
     int userKind = decodedToken['user']['userKind'];
-    firstname = decodedToken['user']['firstname'];
 
     tabs = _getTabsForUserKind(userKind);
   }
@@ -244,7 +259,12 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
             icon: HeroIcon(HeroIcons.document),
             label: 'Documents',
             initialLocation: '/documents',
-          ),        
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.chatBubbleOvalLeft),
+            label: 'Discussions',
+            initialLocation: '/chat',
+          ),
         ];
       case 3:
         //Superadmin
@@ -350,7 +370,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   backgroundImage: AssetImage('default-picture.jpg'),
                 ),
                 const SizedBox(height: 10),
-                Text('Bonjour $firstname', style: const TextStyle(fontSize: 20)),
+                const Text('Bonjour', style: TextStyle(fontSize: 20)),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(

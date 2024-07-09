@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/path_service.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web/shared/toaster.dart';
 
 part 'path_event.dart';

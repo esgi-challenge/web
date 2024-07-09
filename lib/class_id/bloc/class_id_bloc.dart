@@ -65,7 +65,6 @@ class ClassIdBloc extends Bloc<ClassIdEvent, ClassIdState> {
       emit(ClassIdLoaded(classId: classId, classLessStudents: filteredStudents));
     });
 
-
     on<RemoveStudent>((event, emit) async {
       emit(ClassIdLoading());
       try {
