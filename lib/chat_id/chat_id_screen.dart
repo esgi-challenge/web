@@ -1,26 +1,78 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web/chat_id/bloc/chat_id_bloc.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:web/core/services/chat_service.dart';
 
-class ChannelIdScreen extends StatelessWidget {
+class ChannelIdScreen extends StatefulWidget {
   final int id;
 
   ChannelIdScreen({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context) {
+  _ChannelIdScreenState createState() => _ChannelIdScreenState();
+}
+
+class _ChannelIdScreenState extends State<ChannelIdScreen> {
+  late WebSocketChannel channel;
+  late TextEditingController messageController;
+  late ScrollController _scrollController;
+  late int userId;
+
+  @override
+  void initState() {
+    super.initState();
+    messageController = TextEditingController();
+    _scrollController = ScrollController();
     Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
-    int userId = decodedToken['user']['id'];
+    userId = decodedToken['user']['id'];
+    channel = WebSocketChannel.connect(
+      Uri.parse('ws://localhost:8080/api/ws/chat/${widget.id}'),
+    );
 
-    final TextEditingController messageController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
 
+  @override
+  void dispose() {
+    channel.sink.close();
+    messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    if (messageController.text.isNotEmpty) {
+      String token = AuthService.jwt!;
+      final msg = {
+        'content': messageController.text,
+        'jwt': token
+      };
+      channel.sink.add(json.encode(msg));
+      messageController.clear();
+    }
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 50, // Ajoutez une marge supplémentaire de 50 pixels
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChannelIdBloc(ChatService())..add(LoadChannelId(id)),
+      create: (context) => ChannelIdBloc(ChatService())..add(LoadChannelId(widget.id)),
       child: Scaffold(
         backgroundColor: const Color.fromRGBO(245, 242, 249, 1),
         appBar: AppBar(
@@ -59,79 +111,88 @@ class ChannelIdScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ChannelIdLoaded) {
               var messages = state.channelId['messages'];
+              WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
               return Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 32.0),
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        var message = messages[index];
-                        var isOwnMessage = message['senderId'] == userId;
-                        return Column(
-                          crossAxisAlignment:
-                              isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment:
-                                  isOwnMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                    child: StreamBuilder(
+                      stream: channel.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var data = json.decode(snapshot.data as String);
+                          messages.add({
+                            'content': data['content'],
+                            'senderId': data['senderId'],
+                            'createdAt': data['createdAt'],
+                          });
+                          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                        }
+                        return ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 32.0),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            var message = messages[index];
+                            var isOwnMessage = message['senderId'] == userId;
+                            return Column(
+                              crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints(maxWidth: 230),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: isOwnMessage
-                                            ? const Color.fromRGBO(72, 2, 151, 1)
-                                            : const Color.fromRGBO(249, 178, 53, 1),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: const Radius.circular(8),
-                                          topRight: const Radius.circular(8),
-                                          bottomLeft: isOwnMessage
-                                              ? const Radius.circular(8)
-                                              : Radius.zero,
-                                          bottomRight: isOwnMessage
-                                              ? Radius.zero
-                                              : const Radius.circular(8),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              message['content'],
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                              softWrap: true,
-                                              overflow: TextOverflow.clip,
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: isOwnMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: ConstrainedBox(
+                                        constraints: const BoxConstraints(maxWidth: 230),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: isOwnMessage
+                                                ? const Color.fromRGBO(72, 2, 151, 1)
+                                                : const Color.fromRGBO(249, 178, 53, 1),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: const Radius.circular(8),
+                                              topRight: const Radius.circular(8),
+                                              bottomLeft: isOwnMessage ? const Radius.circular(8) : Radius.zero,
+                                              bottomRight: isOwnMessage ? Radius.zero : const Radius.circular(8),
                                             ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              "${message['createdAt'].substring(8, 10)}/${message['createdAt'].substring(5, 7)}/${message['createdAt'].substring(0, 4)} - ${message['createdAt'].substring(11, 16)}",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                              ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Column(
+                                              crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  message['content'],
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                  ),
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.clip,
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  "${message['createdAt'].substring(8, 10)}/${message['createdAt'].substring(5, 7)}/${message['createdAt'].substring(0, 4)} - ${message['createdAt'].substring(11, 16)}",
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 8),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(height: 16),
                               ],
-                            ),
-                            const SizedBox(height: 16),
-                          ],
+                            );
+                          },
                         );
                       },
                     ),
@@ -163,13 +224,7 @@ class ChannelIdScreen extends StatelessWidget {
                               HeroIcons.paperAirplane,
                               color: Color.fromRGBO(72, 2, 151, 1),
                             ),
-                            onPressed: () {
-                              String messageContent = messageController.text;
-                              if (messageContent.isNotEmpty) {
-                                print(messageContent);
-                                messageController.clear();
-                              }
-                            },
+                            onPressed: _sendMessage,
                           ),
                         ],
                       ),

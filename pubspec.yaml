@@ -47,6 +47,7 @@ dependencies:
   google_maps_flutter_web: ^0.5.4+3
   google_maps_flutter: ^2.5.3
   toastification: ^2.0.0
+  web_socket_channel: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +72,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - .env
+    - dotenv
     - assets/login.png
     - assets/default-picture.jpg
 

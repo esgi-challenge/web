@@ -9,6 +9,7 @@ import 'package:web/chat_id/chat_id_screen.dart';
 import 'package:web/class/class_screen.dart';
 import 'package:web/class_id/class_id_screen.dart';
 import 'package:web/core/services/auth_services.dart';
+import 'package:web/course/course_screen.dart';
 import 'package:web/document/document_screen.dart';
 import 'package:web/grade/grade_screen.dart';
 import 'package:web/information/information_screen.dart';
@@ -93,6 +94,13 @@ final _router = GoRouter(
             path: '/paths',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: PathScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/courses',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: CourseScreen());
             },
           ),
           GoRoute(
@@ -306,8 +314,13 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.user),
-            label: 'Intervenants',
+            label: 'Professeurs',
             initialLocation: '/teachers',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.bookOpen),
+            label: 'Cours',
+            initialLocation: '/courses',
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.calendarDays),

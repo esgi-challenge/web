@@ -33,7 +33,7 @@ jobs:
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
       - name: Set api url
-        run: echo API_URL="$API_URL" > .env
+        run: echo API_URL="$API_URL" > dotenv
         env:
           API_URL: ${{ secrets.API_URL }}
 
