@@ -47,7 +47,8 @@ class ChannelScreen extends StatelessWidget {
                   builder: (context, state) {
                     if (state is ChannelAdded) {
                       GoRouter.of(context).go('/chat/${state.channelId}');
-                    } if (state is ChannelLoading) {
+                    } 
+                    if (state is ChannelLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is ChannelLoaded && state.channels.isNotEmpty) {
                       return _buildChannelTable(context, state.channels);

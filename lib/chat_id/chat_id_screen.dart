@@ -9,11 +9,12 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web/chat_id/bloc/chat_id_bloc.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:web/core/services/chat_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChannelIdScreen extends StatefulWidget {
   final int id;
 
-  ChannelIdScreen({super.key, required this.id});
+  const ChannelIdScreen({super.key, required this.id});
 
   @override
   _ChannelIdScreenState createState() => _ChannelIdScreenState();
@@ -30,10 +31,12 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
     super.initState();
     messageController = TextEditingController();
     _scrollController = ScrollController();
+    String? wsUrl = dotenv.env['WS_URL'];
+
     Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
     userId = decodedToken['user']['id'];
     channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8080/api/ws/chat/${widget.id}'),
+      Uri.parse('$wsUrl/api/ws/chat/${widget.id}'),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -62,8 +65,8 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 50, // Ajoutez une marge supplémentaire de 50 pixels
-        duration: Duration(milliseconds: 300),
+        _scrollController.position.maxScrollExtent + 50,
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }

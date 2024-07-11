@@ -130,7 +130,7 @@ class CourseScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           TextFormField(
                             controller: _descriptionController,
-                            maxLines: 5, // Agrandir le champ de texte
+                            maxLines: 5,
                             decoration: const InputDecoration(labelText: 'Description'),
                             validator: InputValidator.validateName,
                           ),
@@ -141,7 +141,7 @@ class CourseScreen extends StatelessWidget {
                             items: paths.map<DropdownMenuItem<String>>((path) {
                               return DropdownMenuItem<String>(
                                 value: path['id'].toString(),
-                                child: Text(path['shortName'].isNotEmpty ? path['shortName'] : 'N/A'), // Remplacer les valeurs vides par N/A
+                                child: Text(path['shortName'].isNotEmpty ? path['shortName'] : 'N/A'),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -157,7 +157,7 @@ class CourseScreen extends StatelessWidget {
                               final fullName = '${teacher['firstname']} ${teacher['lastname']}';
                               return DropdownMenuItem<String>(
                                 value: teacher['id'].toString(),
-                                child: Text(fullName.isNotEmpty ? fullName : 'N/A'), // Remplacer les valeurs vides par N/A
+                                child: Text(fullName.isNotEmpty ? fullName : 'N/A'),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -247,7 +247,7 @@ class CourseScreen extends StatelessWidget {
                                 const SizedBox(height: 16),
                                 TextFormField(
                                   controller: _descriptionController,
-                                  maxLines: 5, // Agrandir le champ de texte
+                                  maxLines: 5,
                                   decoration: const InputDecoration(labelText: 'Description'),
                                   validator: InputValidator.validateName,
                                 ),
@@ -258,7 +258,7 @@ class CourseScreen extends StatelessWidget {
                                   items: state.paths.map<DropdownMenuItem<String>>((path) {
                                     return DropdownMenuItem<String>(
                                       value: path['id'].toString(),
-                                      child: Text(path['shortName'].isNotEmpty ? path['shortName'] : 'N/A'), // Remplacer les valeurs vides par N/A
+                                      child: Text(path['shortName'].isNotEmpty ? path['shortName'] : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
@@ -274,7 +274,7 @@ class CourseScreen extends StatelessWidget {
                                     final fullName = '${teacher['firstname']} ${teacher['lastname']}';
                                     return DropdownMenuItem<String>(
                                       value: teacher['id'].toString(),
-                                      child: Text(fullName.isNotEmpty ? fullName : 'N/A'), // Remplacer les valeurs vides par N/A
+                                      child: Text(fullName.isNotEmpty ? fullName : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
@@ -392,8 +392,8 @@ class CourseScreen extends StatelessWidget {
                 return DataRow(
                   cells: [
                     DataCell(Text(course['name'])),
-                    DataCell(Text(pathName)), // Remplacer les valeurs vides par N/A
-                    DataCell(Text(teacherName)), // Remplacer les valeurs vides par N/A
+                    DataCell(Text(pathName)),
+                    DataCell(Text(teacherName)),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(ElevatedButton(
                       onPressed: () {
