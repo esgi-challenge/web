@@ -28,4 +28,15 @@ class InputValidator {
     }
     return null;
   }
+
+  static String? validateOnlyNumbers(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Veuillez entrer un nombre';
+    }
+    final regex = RegExp(r'^[0-9]+$');
+    if (!regex.hasMatch(value)) {
+      return 'Seuls les chiffres sont autorisés';
+    }
+    return null;
+  }
 }
