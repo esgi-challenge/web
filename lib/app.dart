@@ -156,7 +156,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/schedules',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: ScheduleScreen());
+              return NoTransitionPage(child: ScheduleScreen());
             },
           ),
           GoRoute(
@@ -255,7 +255,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.calendarDays),
-            label: 'Emplois du Temps',
+            label: 'Emplois du temps',
             initialLocation: '/schedules',
           ),
           const MyCustomSideBarItem(

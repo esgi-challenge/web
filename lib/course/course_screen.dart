@@ -67,11 +67,11 @@ class CourseScreen extends StatelessWidget {
                     } else if (state is CourseLoaded) {
                       return _buildCourseTable(context, state.courses);
                     } else if (state is CourseNotFound) {
-                      return const Center(child: Text('Aucune filière dans cette école'));
+                      return const Center(child: Text('Aucun cours dans cette école'));
                     } else if (state is CourseError) {
                       return Center(child: Text('Erreur: ${state.errorMessage}'));
                     } else {
-                      return const Center(child: Text('Filières'));
+                      return const Center(child: Text('Cours'));
                     }
                   },
                 ),
