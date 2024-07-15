@@ -177,7 +177,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/documents',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: DocumentScreen());
+              return NoTransitionPage(child: DocumentScreen());
             },
           ),
           GoRoute(
@@ -326,16 +326,6 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
             icon: HeroIcon(HeroIcons.calendarDays),
             label: 'Emplois du Temps',
             initialLocation: '/schedules',
-          ),
-          const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.pencilSquare),
-            label: 'Notes',
-            initialLocation: '/grades',
-          ),
-          const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.noSymbol),
-            label: 'Absences',
-            initialLocation: '/absences',
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.document),
