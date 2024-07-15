@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           }
 
                                           GoRouter router = GoRouter.of(context);
-                                          router.push('/');
+                                          router.go('/');
                                         });
                                       }
                                     }

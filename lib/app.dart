@@ -2,27 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:toastification/toastification.dart';
-import 'package:web/absence/absence_screen.dart';
-import 'package:web/campus/campus_screen.dart';
-import 'package:web/chat/chat_screen.dart';
-import 'package:web/chat_id/chat_id_screen.dart';
-import 'package:web/class/class_screen.dart';
-import 'package:web/class_id/class_id_screen.dart';
-import 'package:web/core/services/auth_services.dart';
-import 'package:web/course/course_screen.dart';
-import 'package:web/document/document_screen.dart';
-import 'package:web/grade/grade_screen.dart';
-import 'package:web/information/information_screen.dart';
-import 'package:web/path/path_screen.dart';
-import 'package:web/profile/profile_screen.dart';
-import 'package:web/register/register_screen.dart';
-import 'package:web/schedule/schedule_screen.dart';
-import 'package:web/school/school_screen.dart';
-import 'package:web/login/login_screen.dart';
-import 'package:web/student/student_screen.dart';
-import 'package:web/teacher/teacher_screen.dart';
-import 'package:web/welcome/welcome_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:web/core/services/school_services.dart';
+import 'package:web/welcome/welcome_screen.dart';
+
+import 'absence/absence_screen.dart';
+import 'campus/campus_screen.dart';
+import 'chat/chat_screen.dart';
+import 'chat_id/chat_id_screen.dart';
+import 'class/class_screen.dart';
+import 'class_id/class_id_screen.dart';
+import 'core/services/auth_services.dart';
+import 'course/course_screen.dart';
+import 'document/document_screen.dart';
+import 'grade/grade_screen.dart';
+import 'information/information_screen.dart';
+import 'path/path_screen.dart';
+import 'profile/profile_screen.dart';
+import 'register/register_screen.dart';
+import 'schedule/schedule_screen.dart';
+import 'school/school_screen.dart';
+import 'login/login_screen.dart';
+import 'student/student_screen.dart';
+import 'teacher/teacher_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -33,8 +35,15 @@ final _router = GoRouter(
     final jwt = await AuthService.init();
 
     final unprotectedPaths = ['/login', '/register'];
-    if(jwt == null && !unprotectedPaths.contains(state.fullPath)) {
+    if (jwt == null && !unprotectedPaths.contains(state.fullPath)) {
       return '/login';
+    }
+
+    final adminPaths = ['/schools', '/paths', '/courses', '/campus', '/class', '/students', '/teachers'];
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
+    int userKind = decodedToken['user']['userKind'];
+    if (jwt != null && adminPaths.contains(state.fullPath) && userKind < 2) {
+      return '/';
     }
 
     if (jwt != null && (state.fullPath == '/login' || state.fullPath == '/register')) {
@@ -81,7 +90,7 @@ final _router = GoRouter(
             pageBuilder: (context, state) {
               return NoTransitionPage(child: ProfileScreen());
             },
-          ),          
+          ),
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/schools',
@@ -184,7 +193,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/informations',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: InformationScreen());
+              return NoTransitionPage(child: InformationScreen());
             },
           ),
         ])
@@ -197,30 +206,31 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ToastificationWrapper(
-      child: MaterialApp.router(
-        routerConfig: _router,
-        title: 'Studies',
-        theme: ThemeData(
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
-              unselectedLabelStyle:
-                  TextStyle(color: Color.fromRGBO(190, 191, 190, 1)),
-              unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
-              unselectedIconTheme:
-                  IconThemeData(color: Color.fromRGBO(190, 191, 190, 1)),
-              selectedIconTheme:
-                  IconThemeData(color: Color.fromRGBO(109, 53, 172, 1))),
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              color: Colors.amber,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+        child: MaterialApp.router(
+          routerConfig: _router,
+          debugShowCheckedModeBanner: false,
+          title: 'Studies',
+          theme: ThemeData(
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
+                unselectedLabelStyle:
+                TextStyle(color: Color.fromRGBO(190, 191, 190, 1)),
+                unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
+                unselectedIconTheme:
+                IconThemeData(color: Color.fromRGBO(190, 191, 190, 1)),
+                selectedIconTheme:
+                IconThemeData(color: Color.fromRGBO(109, 53, 172, 1))),
+            textTheme: const TextTheme(
+              displayLarge: TextStyle(
+                color: Colors.amber,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      )
+        )
     );
   }
 }
@@ -235,9 +245,10 @@ class SideNavigationBar extends StatefulWidget {
 }
 
 class _SideNavigationBarBarState extends State<SideNavigationBar> {
-  int _selectedIndex = 0;
   late List<MyCustomSideBarItem> tabs;
+  bool isLoading = true;
   late String firstname;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -245,13 +256,22 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
     int userKind = decodedToken['user']['userKind'];
 
-    tabs = _getTabsForUserKind(userKind);
+    _initializeTabs(userKind);
   }
 
-  List<MyCustomSideBarItem> _getTabsForUserKind(int? userKind) {
+  void _initializeTabs(int userKind) async {
+    tabs = await _getTabsForUserKind(userKind);
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<List<MyCustomSideBarItem>> _getTabsForUserKind(int? userKind) async {
     switch (userKind) {
       case 1:
-        //Teacher
+      //Teacher
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.calendarDays),
@@ -275,17 +295,27 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
           ),
         ];
       case 3:
-        //Superadmin
+      //Superadmin
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.academicCap),
             label: 'Écoles',
             initialLocation: '/schools',
           ),
-        ];   
+        ];
       case 2:
       default:
-        //Admin
+      //Admin
+        final school = await SchoolService().getSchool();
+        if (school == null) {
+          return [
+            const MyCustomSideBarItem(
+              icon: HeroIcon(HeroIcons.academicCap),
+              label: 'École',
+              initialLocation: '/schools',
+            ),
+          ];       
+        }
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.academicCap),
@@ -337,18 +367,17 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
             label: 'Informations',
             initialLocation: '/informations',
           ),
-        ];    
+        ];
     }
   }
 
   void _goOtherTab(BuildContext context, int index) {
-    if (index == _selectedIndex) return;
-    GoRouter router = GoRouter.of(context);
-    String location = tabs[index].initialLocation;
-
     setState(() {
       _selectedIndex = index;
     });
+    GoRouter router = GoRouter.of(context);
+    String location = tabs[index].initialLocation;
+
     router.go(location);
   }
 
@@ -359,6 +388,11 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final currentLocation = GoRouter.of(context).routerDelegate.currentConfiguration.uri.toString();
+
     return Scaffold(
       body: Row(
         children: [
@@ -382,7 +416,8 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                       return ListTile(
                         leading: tabs[index].icon,
                         title: Text(tabs[index].label),
-                        selected: index == _selectedIndex,
+                        selected: _selectedIndex == index && !currentLocation.startsWith('/profile'),
+                        selectedTileColor: Colors.blueGrey[100],
                         onTap: () {
                           _goOtherTab(context, index);
                         },
@@ -397,6 +432,8 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   title: const Text(
                     'Profil',
                   ),
+                  selected: currentLocation.startsWith('/profile'),
+                  selectedTileColor: Colors.blueGrey[100],
                   onTap: () {
                     GoRouter router = GoRouter.of(context);
                     router.go('/profile');
@@ -410,7 +447,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   title: const Text(
                     'Déconnexion',
                     style: TextStyle(
-                      color: Colors.red
+                        color: Colors.red
                     ),
                   ),
                   onTap: () {

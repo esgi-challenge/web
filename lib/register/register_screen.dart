@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           }
 
                                           GoRouter router = GoRouter.of(context);
-                                          router.push('/');
+                                          router.go('/schools');
                                         });
                                       }
                                     }

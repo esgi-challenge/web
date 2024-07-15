@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web/core/services/school_services.dart';
+import 'dart:html' as html;
 
 part 'school_event.dart';
 part 'school_state.dart';
@@ -29,6 +30,7 @@ class SchoolBloc extends Bloc<SchoolEvent, SchoolState> {
         await schoolService.createSchool(event.name);
         emit(SchoolCreated());
         add(LoadSchool());
+        html.window.location.reload();
       } on Exception catch (e) {
         emit(SchoolError(errorMessage: e.toString()));
       }
