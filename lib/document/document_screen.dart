@@ -302,10 +302,34 @@ class DocumentScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Cours')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('Actions'))
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Cours',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(label: Text('')),
               ],
               rows: documents.map((document) {
                 DateTime parsedDate = DateTime.parse(document['createdAt']);

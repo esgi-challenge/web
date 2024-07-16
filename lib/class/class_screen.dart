@@ -25,7 +25,7 @@ class ClassScreen extends StatelessWidget {
   void _navigateToClassId(BuildContext context, int classId) {
     GoRouter router = GoRouter.of(context);
     router.go('/class/$classId');
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -355,10 +355,42 @@ class ClassScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('Filière')),
-                DataColumn(label: Text('Nb d\'élève')),
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Filière',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Nb d\'élèves',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
                 DataColumn(label: Text('')),
                 DataColumn(label: Text(''))

@@ -87,10 +87,8 @@ class _CampusScreenState extends State<CampusScreen> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: const Text(
-                            'Créer',
-                            style: TextStyle(fontSize: 16)
-                        ),
+                        child:
+                            const Text('Créer', style: TextStyle(fontSize: 16)),
                       );
                     },
                   )
@@ -105,9 +103,11 @@ class _CampusScreenState extends State<CampusScreen> {
                     } else if (state is CampusLoaded) {
                       return _buildCampusTable(context, state.campus);
                     } else if (state is CampusNotFound) {
-                      return const Center(child: Text('Aucun campus dans cette école'));
+                      return const Center(
+                          child: Text('Aucun campus dans cette école'));
                     } else if (state is CampusError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Campus'));
                     }
@@ -127,7 +127,7 @@ class _CampusScreenState extends State<CampusScreen> {
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: BlocProvider.of<CampusBloc>(context),
-          child: Builder (
+          child: Builder(
             builder: (context) {
               List<dynamic> predictions = [];
               double choosedLatitude = 0.0;
@@ -137,95 +137,106 @@ class _CampusScreenState extends State<CampusScreen> {
                 builder: (context, setState) {
                   return StatefulBuilder(
                     builder: (context, setState) {
-                    return AlertDialog(
-                      title: const Text('Ajouter un campus'),
-                      content: Form(
-                        key: _createFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Nom'),
-                                validator: InputValidator.validateName,
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _locationController,
-                                focusNode: _searchFocusNode,
-                                decoration: const InputDecoration(labelText: 'Localisation'),
-                                onChanged: (query) {
-                                  if (_debounce?.isActive ?? false) _debounce?.cancel();
-                                  _debounce = Timer(const Duration(milliseconds: 600), () async {
-                                    if (query.isNotEmpty) {
-                                      final response = await CampusService().getLocationPredictions(query);
-                                      setState(() {
-                                        predictions = response;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        predictions.clear();
-                                      });
-                                    }
-                                  });
-                                },
-                              ),
-                              if (predictions.isNotEmpty)
-                                SizedBox(
-                                  height: 250,
-                                  width: 300,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    padding: const EdgeInsets.all(8),
-                                    itemCount: predictions.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      final prediction = predictions[index];
-                                      return ListTile(
-                                        title: Text(prediction['description']),
-                                        onTap: () {
-                                          setState(() {
-                                            predictions.clear();
-                                          });
-
-                                          _locationController.text = prediction['description'];
-                                          choosedLatitude = prediction['latitude'];
-                                          choosedLongitude = prediction['longitude'];
-                                        },
-                                      );
-                                    },
-                                  ),
+                      return AlertDialog(
+                        title: const Text('Ajouter un campus'),
+                        content: Form(
+                          key: _createFormKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: _nameController,
+                                  decoration:
+                                      const InputDecoration(labelText: 'Nom'),
+                                  validator: InputValidator.validateName,
                                 ),
-                            ],
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _locationController,
+                                  focusNode: _searchFocusNode,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Localisation'),
+                                  onChanged: (query) {
+                                    if (_debounce?.isActive ?? false)
+                                      _debounce?.cancel();
+                                    _debounce =
+                                        Timer(const Duration(milliseconds: 600),
+                                            () async {
+                                      if (query.isNotEmpty) {
+                                        final response = await CampusService()
+                                            .getLocationPredictions(query);
+                                        setState(() {
+                                          predictions = response;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          predictions.clear();
+                                        });
+                                      }
+                                    });
+                                  },
+                                ),
+                                if (predictions.isNotEmpty)
+                                  SizedBox(
+                                    height: 250,
+                                    width: 300,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: const EdgeInsets.all(8),
+                                      itemCount: predictions.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final prediction = predictions[index];
+                                        return ListTile(
+                                          title:
+                                              Text(prediction['description']),
+                                          onTap: () {
+                                            setState(() {
+                                              predictions.clear();
+                                            });
+
+                                            _locationController.text =
+                                                prediction['description'];
+                                            choosedLatitude =
+                                                prediction['latitude'];
+                                            choosedLongitude =
+                                                prediction['longitude'];
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      actions: [
-                        TextButton(
-                          child: const Text('Annuler'),
-                          onPressed: () {
-                            _clearInputs();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('Ajouter'),
-                          onPressed: () {
-                            if (_createFormKey.currentState!.validate()) {
-                              context.read<CampusBloc>().add(AddCampus(
-                                choosedLatitude,
-                                choosedLongitude,
-                                _locationController.text,
-                                _nameController.text,
-                              ));
+                        actions: [
+                          TextButton(
+                            child: const Text('Annuler'),
+                            onPressed: () {
                               _clearInputs();
                               Navigator.of(context).pop();
-                            }
-                          },
-                        ),
-                      ],
-                    );
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Ajouter'),
+                            onPressed: () {
+                              if (_createFormKey.currentState!.validate()) {
+                                context.read<CampusBloc>().add(AddCampus(
+                                      choosedLatitude,
+                                      choosedLongitude,
+                                      _locationController.text,
+                                      _nameController.text,
+                                    ));
+                                _clearInputs();
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                        ],
+                      );
                     },
                   );
                 },
@@ -247,80 +258,78 @@ class _CampusScreenState extends State<CampusScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
-          value: BlocProvider.of<CampusBloc>(context),
-          child: Builder(
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Détails du campus'),
-                content: SingleChildScrollView(
-                  child: Form(
-                    key: _updateFormKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(labelText: 'Nom'),
-                            validator: InputValidator.validateName,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Localisation: $location',
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            height: 400,
-                            width: 1000,
-                            child: GoogleMap(
-                              onMapCreated: _onMapCreated,
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(latitude, longitude),
-                                zoom: 11.0
-                              ),
-                              markers: {
-                                Marker(
-                                  markerId: MarkerId(location),
-                                  position: LatLng(latitude, longitude)
-                                )
-                              },
-                            )
-                          )
-                        ],
+            value: BlocProvider.of<CampusBloc>(context),
+            child: Builder(
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Détails du campus'),
+                  content: SingleChildScrollView(
+                    child: Form(
+                      key: _updateFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _nameController,
+                              decoration:
+                                  const InputDecoration(labelText: 'Nom'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Localisation: $location',
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                                height: 400,
+                                width: 1000,
+                                child: GoogleMap(
+                                  onMapCreated: _onMapCreated,
+                                  initialCameraPosition: CameraPosition(
+                                      target: LatLng(latitude, longitude),
+                                      zoom: 11.0),
+                                  markers: {
+                                    Marker(
+                                        markerId: MarkerId(location),
+                                        position: LatLng(latitude, longitude))
+                                  },
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      _clearInputs();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_updateFormKey.currentState!.validate()) {
-                        context.read<CampusBloc>().add(UpdateCampus(
-                          campus['id'],
-                          campus['latitude'],
-                          campus['longitude'],
-                          campus['location'],
-                          _nameController.text,
-                        ));
+                  actions: [
+                    TextButton(
+                      onPressed: () {
                         _clearInputs();
                         Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text('Modifier'),
-                  ),
-                ],
-              );
-            },
-          )
-        );
+                      },
+                      child: const Text('Fermer',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_updateFormKey.currentState!.validate()) {
+                          context.read<CampusBloc>().add(UpdateCampus(
+                                campus['id'],
+                                campus['latitude'],
+                                campus['longitude'],
+                                campus['location'],
+                                _nameController.text,
+                              ));
+                          _clearInputs();
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text('Modifier'),
+                    ),
+                  ],
+                );
+              },
+            ));
       },
     );
   }
@@ -350,14 +359,18 @@ class _CampusScreenState extends State<CampusScreen> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                    child: const Text('Annuler',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<CampusBloc>().add(DeleteCampus(campus['id']));
+                      context
+                          .read<CampusBloc>()
+                          .add(DeleteCampus(campus['id']));
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Supprimer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               );
@@ -370,67 +383,82 @@ class _CampusScreenState extends State<CampusScreen> {
 
   Widget _buildCampusTable(BuildContext context, List<dynamic> campuss) {
     return SizedBox(
-      width: double.infinity,
-      child: BlocBuilder<CampusBloc, CampusState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Localisation')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
-              ],
-              rows: campuss.map((campus) {
-                DateTime parsedDate = DateTime.parse(campus['createdAt']);
-                return DataRow(
-                  cells: [
-                    DataCell(Text(campus['name'])),
-                    DataCell(Text(campus['location'])),
-                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(
-                      SizedBox(
-                        width: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _showCampusDetailDialog(context, campus);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+        width: double.infinity,
+        child: BlocBuilder<CampusBloc, CampusState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(
+                      label: Text('Nom',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)))),
+                  DataColumn(
+                      label: Text('Localisation',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)))),
+                  DataColumn(
+                      label: Text('Date de création',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)))),
+                  DataColumn(label: Text('')),
+                  DataColumn(label: Text(''))
+                ],
+                rows: campuss.map((campus) {
+                  DateTime parsedDate = DateTime.parse(campus['createdAt']);
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(campus['name'])),
+                      DataCell(Text(campus['location'])),
+                      DataCell(
+                          Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                      DataCell(
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showCampusDetailDialog(context, campus);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
                             ),
-                            padding: EdgeInsets.all(0),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: HeroIcon(
-                              HeroIcons.pencil,
-                              size: 16,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showCampusDeleteDialog(context, campus);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
-                    )),
-                  ],
-                );
-              }).toList(),
-            ),
-          );
-        },
-      )
-    );
+                      DataCell(ElevatedButton(
+                        onPressed: () {
+                          _showCampusDeleteDialog(context, campus);
+                        },
+                        child: const HeroIcon(
+                          HeroIcons.trash,
+                          color: Colors.red,
+                        ),
+                      )),
+                    ],
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        ));
   }
 }

@@ -427,11 +427,51 @@ class StudentScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Prénom')),
-                DataColumn(label: Text('Classe')),
-                DataColumn(label: Text('Email')),
-                DataColumn(label: Text('Date de création')),
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Prénom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Classe',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Email',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
                 DataColumn(label: Text(''))
               ],

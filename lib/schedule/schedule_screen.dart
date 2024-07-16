@@ -125,10 +125,8 @@ class ScheduleScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: const Text(
-                            'Créer',
-                            style: TextStyle(fontSize: 16)
-                        ),
+                        child:
+                            const Text('Créer', style: TextStyle(fontSize: 16)),
                       );
                     },
                   )

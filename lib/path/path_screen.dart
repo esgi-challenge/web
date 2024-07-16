@@ -284,9 +284,33 @@ class PathScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom raccourci')),
-                DataColumn(label: Text('Nom complet')),
-                DataColumn(label: Text('Date de création')),
+                DataColumn(
+                    label: Text('Nom raccourci',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Nom complet',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
                 DataColumn(label: Text(''))
               ],
