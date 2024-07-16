@@ -20,6 +20,14 @@ class AddStudent extends StudentEvent {
   AddStudent(this.email, this.firstname, this.lastname, this.password);
 }
 
+class InviteStudent extends StudentEvent {
+  final String email;
+  final String firstname;
+  final String lastname;
+
+  InviteStudent(this.email, this.firstname, this.lastname);
+}
+
 class UpdateStudent extends StudentEvent {
   final int id;
   final String email;

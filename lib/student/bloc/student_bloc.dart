@@ -14,7 +14,8 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   List<dynamic>? originalStudents;
   List<dynamic>? originalClasses;
 
-  StudentBloc(this.studentService, this.classService) : super(StudentInitial()) {
+  StudentBloc(this.studentService, this.classService)
+      : super(StudentInitial()) {
     on<LoadStudents>((event, emit) async {
       emit(StudentLoading());
       try {
@@ -42,51 +43,90 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         return student['lastname'].toLowerCase().startsWith(query);
       }).toList();
 
-      emit(StudentLoaded(students: filteredStudents, classes: originalClasses!));
+      emit(
+          StudentLoaded(students: filteredStudents, classes: originalClasses!));
     });
 
     on<AddStudent>((event, emit) async {
       emit(StudentLoading());
       try {
-        final student = await studentService.addStudent(event.email, event.firstname, event.lastname, event.password);
+        final student = await studentService.addStudent(
+            event.email, event.firstname, event.lastname, event.password);
 
         if (student != null) {
           originalStudents ??= [];
           originalStudents!.add(student);
           originalClasses ??= [];
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
           showSuccessToast("Étudiant ajouté avec succès");
         } else {
           showErrorToast("Erreur lors de l'ajout");
           originalStudents ??= [];
           originalClasses ??= [];
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
         showErrorToast("Erreur: ${e.toString()}");
         originalStudents ??= [];
         originalClasses ??= [];
-        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+        emit(StudentLoaded(
+            students: originalStudents!, classes: originalClasses!));
+      }
+    });
+
+    on<InviteStudent>((event, emit) async {
+      emit(StudentLoading());
+      try {
+        final student = await studentService.inviteUser(
+            event.email, event.firstname, event.lastname);
+
+        if (student != null) {
+          originalStudents ??= [];
+          originalStudents!.add(student);
+          originalClasses ??= [];
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
+          showSuccessToast("Étudiant ajouté avec succès");
+        } else {
+          showErrorToast("Erreur lors de l'ajout");
+          originalStudents ??= [];
+          originalClasses ??= [];
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
+        }
+      } on Exception catch (e) {
+        showErrorToast("Erreur: ${e.toString()}");
+        originalStudents ??= [];
+        originalClasses ??= [];
+        emit(StudentLoaded(
+            students: originalStudents!, classes: originalClasses!));
       }
     });
 
     on<UpdateStudent>((event, emit) async {
       emit(StudentLoading());
       try {
-        final updatedStudent = await studentService.updateStudent(event.id, event.email, event.firstname, event.lastname);
+        final updatedStudent = await studentService.updateStudent(
+            event.id, event.email, event.firstname, event.lastname);
 
         if (updatedStudent != null) {
-          final userIndex = originalStudents!.indexWhere((element) => element["id"] == event.id); 
+          final userIndex = originalStudents!
+              .indexWhere((element) => element["id"] == event.id);
           originalStudents![userIndex] = updatedStudent;
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
           showSuccessToast("Étudiant modifié avec succès");
         } else {
           showErrorToast("Erreur lors de la modification");
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
         showErrorToast("Erreur: ${e.toString()}");
-        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+        emit(StudentLoaded(
+            students: originalStudents!, classes: originalClasses!));
       }
     });
 
@@ -95,17 +135,20 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       try {
         final isDeleted = await studentService.removeStudent(event.id);
 
-        if (isDeleted){
+        if (isDeleted) {
           originalStudents!.removeWhere((student) => student["id"] == event.id);
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
           showSuccessToast("Étudiant supprimé avec succès");
         } else {
           showErrorToast("Erreur lors de la suppression");
-          emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+          emit(StudentLoaded(
+              students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
         showErrorToast("Erreur: ${e.toString()}");
-        emit(StudentLoaded(students: originalStudents!, classes: originalClasses!));
+        emit(StudentLoaded(
+            students: originalStudents!, classes: originalClasses!));
       }
     });
   }
