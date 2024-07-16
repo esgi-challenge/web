@@ -41,7 +41,31 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
     on<AddTeacher>((event, emit) async {
       emit(TeacherLoading());
       try {
-        final teacher = await teacherService.addTeacher(event.email, event.firstname, event.lastname, event.password);
+        final teacher = await teacherService.addTeacher(
+            event.email, event.firstname, event.lastname, event.password);
+
+        if (teacher != null) {
+          originalTeachers ??= [];
+          originalTeachers!.add(teacher);
+          emit(TeacherLoaded(teachers: originalTeachers!));
+          showSuccessToast("Professeur ajouté avec succès");
+        } else {
+          showErrorToast("Erreur lors de l'ajout");
+          originalTeachers ??= [];
+          emit(TeacherLoaded(teachers: originalTeachers!));
+        }
+      } on Exception catch (e) {
+        showErrorToast("Erreur: ${e.toString()}");
+        originalTeachers ??= [];
+        emit(TeacherLoaded(teachers: originalTeachers!));
+      }
+    });
+
+    on<InviteTeacher>((event, emit) async {
+      emit(TeacherLoading());
+      try {
+        final teacher = await teacherService.inviteTeacher(
+            event.email, event.firstname, event.lastname);
 
         if (teacher != null) {
           originalTeachers ??= [];
@@ -63,10 +87,12 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
     on<UpdateTeacher>((event, emit) async {
       emit(TeacherLoading());
       try {
-        final updatedTeacher = await teacherService.updateTeacher(event.id, event.email, event.firstname, event.lastname);
+        final updatedTeacher = await teacherService.updateTeacher(
+            event.id, event.email, event.firstname, event.lastname);
 
         if (updatedTeacher != null) {
-          final userIndex = originalTeachers!.indexWhere((element) => element["id"] == event.id); 
+          final userIndex = originalTeachers!
+              .indexWhere((element) => element["id"] == event.id);
           originalTeachers![userIndex] = updatedTeacher;
           emit(TeacherLoaded(teachers: originalTeachers!));
           showSuccessToast("Professeur modifié avec succès");
@@ -85,7 +111,7 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
       try {
         final isDeleted = await teacherService.removeTeacher(event.id);
 
-        if (isDeleted){
+        if (isDeleted) {
           originalTeachers!.removeWhere((teacher) => teacher["id"] == event.id);
           emit(TeacherLoaded(teachers: originalTeachers!));
           showSuccessToast("Professeur supprimé avec succès");

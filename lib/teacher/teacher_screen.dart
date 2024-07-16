@@ -57,19 +57,25 @@ class TeacherScreen extends StatelessWidget {
                             ),
                           ),
                           onChanged: (query) {
-                            context.read<TeacherBloc>().add(SearchTeachers(query));
+                            context
+                                .read<TeacherBloc>()
+                                .add(SearchTeachers(query));
                           },
                         );
                       },
                     ),
                   ),
                   const SizedBox(width: 500),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showInviteDialog(context);
-                    },
-                    child: const Text('Inviter'),
-                  ),
+                  // BlocBuilder<TeacherBloc, TeacherState>(
+                  //   builder: (context, state) {
+                  //     return ElevatedButton(
+                  //       onPressed: () {
+                  //         _showInviteDialog(context);
+                  //       },
+                  //       child: const Text('Inviter'),
+                  //     );
+                  //   },
+                  // ),
                   const SizedBox(width: 50),
                   BlocBuilder<TeacherBloc, TeacherState>(
                     builder: (context, state) {
@@ -92,9 +98,11 @@ class TeacherScreen extends StatelessWidget {
                     } else if (state is TeacherLoaded) {
                       return _buildTeacherTable(context, state.teachers);
                     } else if (state is TeacherNotFound) {
-                      return const Center(child: Text('Aucun professeur dans cette école'));
+                      return const Center(
+                          child: Text('Aucun professeur dans cette école'));
                     } else if (state is TeacherError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Teachers'));
                     }
@@ -111,55 +119,69 @@ class TeacherScreen extends StatelessWidget {
   void _showInviteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Nouvel professeur'),
-          content: Form(
-            key: _inviteFormKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: InputValidator.validateEmail,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: BlocProvider.of<TeacherBloc>(context),
+          child: Builder(
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Inviter un professeur'),
+                content: Form(
+                  key: _createFormKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          validator: InputValidator.validateEmail,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _firstnameController,
+                          decoration:
+                              const InputDecoration(labelText: 'Prénom'),
+                          validator: InputValidator.validateName,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _lastnameController,
+                          decoration: const InputDecoration(labelText: 'Nom'),
+                          validator: InputValidator.validateName,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _firstnameController,
-                    decoration: const InputDecoration(labelText: 'Prénom'),
-                    validator: InputValidator.validateName,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _clearInputs();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _lastnameController,
-                    decoration: const InputDecoration(labelText: 'Nom'),
-                    validator: InputValidator.validateName,
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_createFormKey.currentState!.validate()) {
+                        context.read<TeacherBloc>().add(InviteTeacher(
+                              _emailController.text,
+                              _firstnameController.text,
+                              _lastnameController.text,
+                            ));
+                        _clearInputs();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Inviter'),
                   ),
                 ],
-              ),
-            ),
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _clearInputs();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_inviteFormKey.currentState!.validate()) {
-                  _clearInputs();
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Inviter'),
-            ),
-          ],
         );
       },
     );
@@ -171,7 +193,7 @@ class TeacherScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: BlocProvider.of<TeacherBloc>(context),
-          child: Builder (
+          child: Builder(
             builder: (context) {
               return AlertDialog(
                 title: const Text('Ajouter un professeur'),
@@ -190,7 +212,8 @@ class TeacherScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _firstnameController,
-                          decoration: const InputDecoration(labelText: 'Prénom'),
+                          decoration:
+                              const InputDecoration(labelText: 'Prénom'),
                           validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
@@ -202,7 +225,8 @@ class TeacherScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
-                          decoration: const InputDecoration(labelText: 'Mot de passe'),
+                          decoration:
+                              const InputDecoration(labelText: 'Mot de passe'),
                           obscureText: true,
                           validator: InputValidator.validatePassword,
                         ),
@@ -216,17 +240,18 @@ class TeacherScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_createFormKey.currentState!.validate()) {
                         context.read<TeacherBloc>().add(AddTeacher(
-                          _emailController.text,
-                          _firstnameController.text,
-                          _lastnameController.text,
-                          _passwordController.text,
-                        ));
+                              _emailController.text,
+                              _firstnameController.text,
+                              _lastnameController.text,
+                              _passwordController.text,
+                            ));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -251,67 +276,69 @@ class TeacherScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
-          value: BlocProvider.of<TeacherBloc>(context),
-          child: Builder(
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Détails de l\'professeur'),
-                content: Form(
-                  key: _updateFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(labelText: 'Email'),
-                          validator: InputValidator.validateEmail,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _firstnameController,
-                          decoration: const InputDecoration(labelText: 'Prénom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _lastnameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+            value: BlocProvider.of<TeacherBloc>(context),
+            child: Builder(
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Détails de l\'professeur'),
+                  content: Form(
+                    key: _updateFormKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            controller: _emailController,
+                            decoration:
+                                const InputDecoration(labelText: 'Email'),
+                            validator: InputValidator.validateEmail,
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _firstnameController,
+                            decoration:
+                                const InputDecoration(labelText: 'Prénom'),
+                            validator: InputValidator.validateName,
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _lastnameController,
+                            decoration: const InputDecoration(labelText: 'Nom'),
+                            validator: InputValidator.validateName,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      _clearInputs();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_updateFormKey.currentState!.validate()) {
-                        context.read<TeacherBloc>().add(UpdateTeacher(
-                          teacher['id'],
-                          _emailController.text,
-                          _firstnameController.text,
-                          _lastnameController.text,
-                        ));
+                  actions: [
+                    TextButton(
+                      onPressed: () {
                         _clearInputs();
                         Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text('Modifier'),
-                  ),
-                ],
-              );
-            },
-          )
-        );
+                      },
+                      child: const Text('Fermer',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_updateFormKey.currentState!.validate()) {
+                          context.read<TeacherBloc>().add(UpdateTeacher(
+                                teacher['id'],
+                                _emailController.text,
+                                _firstnameController.text,
+                                _lastnameController.text,
+                              ));
+                          _clearInputs();
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text('Modifier'),
+                    ),
+                  ],
+                );
+              },
+            ));
       },
     );
   }
@@ -333,7 +360,8 @@ class TeacherScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Voulez vous vraiment supprimer l\'professeur $firstname $lastname?')
+                      Text(
+                          'Voulez vous vraiment supprimer l\'professeur $firstname $lastname?')
                     ],
                   ),
                 ),
@@ -342,14 +370,18 @@ class TeacherScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                    child: const Text('Annuler',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<TeacherBloc>().add(DeleteTeacher(teacher['id']));
+                      context
+                          .read<TeacherBloc>()
+                          .add(DeleteTeacher(teacher['id']));
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Supprimer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               );
@@ -362,52 +394,52 @@ class TeacherScreen extends StatelessWidget {
 
   Widget _buildTeacherTable(BuildContext context, List<dynamic> teachers) {
     return SizedBox(
-      width: double.infinity,
-      child: BlocBuilder<TeacherBloc, TeacherState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Prénom')),
-                DataColumn(label: Text('Email')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
-              ],
-              rows: teachers.map((teacher) {
-                DateTime parsedDate = DateTime.parse(teacher['createdAt']);
-                return DataRow(
-                  cells: [
-                    DataCell(Text(teacher['lastname'])),
-                    DataCell(Text(teacher['firstname'])),
-                    DataCell(Text(teacher['email'])),
-                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showTeacherDetailDialog(context, teacher);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showTeacherDeleteDialog(context, teacher);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
-                    )),
-                  ],
-                );
-              }).toList(),
-            ),
-          );
-        },
-      )
-    );
+        width: double.infinity,
+        child: BlocBuilder<TeacherBloc, TeacherState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Nom')),
+                  DataColumn(label: Text('Prénom')),
+                  DataColumn(label: Text('Email')),
+                  DataColumn(label: Text('Date de création')),
+                  DataColumn(label: Text('')),
+                  DataColumn(label: Text(''))
+                ],
+                rows: teachers.map((teacher) {
+                  DateTime parsedDate = DateTime.parse(teacher['createdAt']);
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(teacher['lastname'])),
+                      DataCell(Text(teacher['firstname'])),
+                      DataCell(Text(teacher['email'])),
+                      DataCell(
+                          Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                      DataCell(ElevatedButton(
+                        onPressed: () {
+                          _showTeacherDetailDialog(context, teacher);
+                        },
+                        child: const HeroIcon(
+                          HeroIcons.pencil,
+                        ),
+                      )),
+                      DataCell(ElevatedButton(
+                        onPressed: () {
+                          _showTeacherDeleteDialog(context, teacher);
+                        },
+                        child: const HeroIcon(
+                          HeroIcons.trash,
+                          color: Colors.red,
+                        ),
+                      )),
+                    ],
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        ));
   }
 }
