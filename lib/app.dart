@@ -40,10 +40,13 @@ final _router = GoRouter(
     }
 
     final adminPaths = ['/schools', '/paths', '/courses', '/campus', '/class', '/students', '/teachers'];
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
-    int userKind = decodedToken['user']['userKind'];
-    if (jwt != null && adminPaths.contains(state.fullPath) && userKind < 2) {
-      return '/';
+    if (jwt != null && adminPaths.contains(state.fullPath)) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(jwt!);
+      int userKind = decodedToken['user']['userKind'];
+
+      if (userKind < 2) {
+        return '/';
+      }
     }
 
     if (jwt != null && (state.fullPath == '/login' || state.fullPath == '/register')) {
@@ -101,6 +104,13 @@ final _router = GoRouter(
           GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/paths',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: PathScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/projects',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: PathScreen());
             },
@@ -277,6 +287,11 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
             icon: HeroIcon(HeroIcons.calendarDays),
             label: 'Emplois du temps',
             initialLocation: '/schedules',
+          ),
+          const MyCustomSideBarItem(
+            icon: HeroIcon(HeroIcons.adjustmentsHorizontal),
+            label: 'Projets',
+            initialLocation: '/projects',
           ),
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.pencilSquare),
