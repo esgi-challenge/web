@@ -17,7 +17,7 @@ import 'class_id/class_id_screen.dart';
 import 'core/services/auth_services.dart';
 import 'course/course_screen.dart';
 import 'document/document_screen.dart';
-import 'grade/grade_screen.dart';
+import 'note/note_screen.dart';
 import 'information/information_screen.dart';
 import 'path/path_screen.dart';
 import 'profile/profile_screen.dart';
@@ -206,7 +206,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/grades',
             pageBuilder: (context, state) {
-              return const NoTransitionPage(child: GradeScreen());
+              return NoTransitionPage(child: NoteScreen());
             },
           ),
           GoRoute(
