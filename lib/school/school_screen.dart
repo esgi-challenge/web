@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:web/core/services/school_services.dart';
 import 'package:web/school/bloc/school_bloc.dart';
 
@@ -14,7 +15,31 @@ class SchoolScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => SchoolBloc(SchoolService())..add(LoadSchool()),
       child: Scaffold(
-        appBar: AppBar(title: const Text('École')),
+        appBar: AppBar(
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HeroIcon(
+                    HeroIcons.academicCap,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'École',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
+        ),
         body: BlocBuilder<SchoolBloc, SchoolState>(
           builder: (context, state) {
             if (state is SchoolLoading) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:web/core/services/profile_service.dart';
 import 'package:web/profile/bloc/profile_bloc.dart';
@@ -37,7 +38,29 @@ class ProfileScreen extends StatelessWidget {
       create: (context) => ProfileBloc(ProfileService())..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Profil'),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HeroIcon(
+                    HeroIcons.user,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Profile',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

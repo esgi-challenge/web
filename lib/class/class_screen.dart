@@ -33,7 +33,29 @@ class ClassScreen extends StatelessWidget {
       create: (context) => ClassBloc(ClassService(), PathService())..add(LoadClasses()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Classes'),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HeroIcon(
+                    HeroIcons.presentationChartBar,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Classes',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

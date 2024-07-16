@@ -43,7 +43,29 @@ class _CampusScreenState extends State<CampusScreen> {
       create: (context) => CampusBloc(CampusService())..add(LoadCampus()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Campus'),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HeroIcon(
+                    HeroIcons.buildingOffice,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Campus',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -58,6 +80,13 @@ class _CampusScreenState extends State<CampusScreen> {
                         onPressed: () {
                           _showCreateDialog(context);
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
                         child: const Text('Créer'),
                       );
                     },
@@ -362,6 +391,13 @@ class _CampusScreenState extends State<CampusScreen> {
                       onPressed: () {
                         _showCampusDetailDialog(context, campus);
                       },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
                       child: const HeroIcon(
                         HeroIcons.pencil,
                       ),

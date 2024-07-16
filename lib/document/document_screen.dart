@@ -41,7 +41,29 @@ class DocumentScreen extends StatelessWidget {
       create: (context) => DocumentBloc(DocumentService(), CourseService())..add(LoadDocuments()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Documents'),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  HeroIcon(
+                    HeroIcons.document,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Documents',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
