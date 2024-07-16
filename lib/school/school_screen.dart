@@ -99,7 +99,17 @@ class SchoolScreen extends StatelessWidget {
                           context.read<SchoolBloc>().add(CreateSchool(name: name.text));
                         }
                       },
-                      child: const Text('Créer'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: const Text(
+                          'Créer',
+                          style: TextStyle(fontSize: 16)
+                      ),
                     ),
                   ],
                 )
