@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:web/core/services/campus_service.dart';
 import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/course_service.dart';
@@ -60,7 +61,9 @@ class ScheduleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ScheduleBloc(ScheduleService(), CourseService(), CampusService(), ClassService())..add(LoadSchedules()),
+      create: (context) => ScheduleBloc(
+          ScheduleService(), CourseService(), CampusService(), ClassService())
+        ..add(LoadSchedules()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Emplois du temps'),
@@ -76,10 +79,18 @@ class ScheduleScreen extends StatelessWidget {
                     builder: (context, state) {
                       return ElevatedButton(
                         onPressed: () {
-                          if (state is ScheduleLoaded && state.courses.isNotEmpty && state.campuses.isNotEmpty && state.classes.isNotEmpty) {
-                            _showCreateDialog(context, state.courses, state.campuses, state.classes);
-                          } else if (state is ScheduleNotFound && state.courses.isNotEmpty && state.campuses.isNotEmpty && state.classes.isNotEmpty) {
-                            _showCreateDialog(context, state.courses, state.campuses, state.classes);
+                          if (state is ScheduleLoaded &&
+                              state.courses.isNotEmpty &&
+                              state.campuses.isNotEmpty &&
+                              state.classes.isNotEmpty) {
+                            _showCreateDialog(context, state.courses,
+                                state.campuses, state.classes);
+                          } else if (state is ScheduleNotFound &&
+                              state.courses.isNotEmpty &&
+                              state.campuses.isNotEmpty &&
+                              state.classes.isNotEmpty) {
+                            _showCreateDialog(context, state.courses,
+                                state.campuses, state.classes);
                           } else {
                             _showEmptyDialog(context);
                           }
@@ -99,9 +110,11 @@ class ScheduleScreen extends StatelessWidget {
                     } else if (state is ScheduleLoaded) {
                       return _buildScheduleTable(context, state.schedules);
                     } else if (state is ScheduleNotFound) {
-                      return const Center(child: Text('Aucun créneau d\'ajouté'));
+                      return const Center(
+                          child: Text('Aucun créneau d\'ajouté'));
                     } else if (state is ScheduleError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Emplois du temps'));
                     }
@@ -121,7 +134,8 @@ class ScheduleScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Ajouter un créneau'),
-          content: const Text("Pour créer des créneaux vous devez avoir au moins un cours, un campus et une classe"),
+          content: const Text(
+              "Pour créer des créneaux vous devez avoir au moins un cours, un campus et une classe"),
           actions: [
             TextButton(
               onPressed: () {
@@ -135,8 +149,8 @@ class ScheduleScreen extends StatelessWidget {
     );
   }
 
-
-  void _showCreateDialog(BuildContext context, dynamic courses, dynamic campuses, dynamic classes) {
+  void _showCreateDialog(BuildContext context, dynamic courses,
+      dynamic campuses, dynamic classes) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -156,60 +170,80 @@ class ScheduleScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(labelText: 'Cours'),
+                            decoration:
+                                const InputDecoration(labelText: 'Cours'),
                             value: _selectedCourseId,
-                            items: courses.map<DropdownMenuItem<String>>((course) {
+                            items:
+                                courses.map<DropdownMenuItem<String>>((course) {
                               return DropdownMenuItem<String>(
                                 value: course['id'].toString(),
-                                child: Text(course['name'].isNotEmpty ? course['name'] : 'N/A'),
+                                child: Text(course['name'].isNotEmpty
+                                    ? course['name']
+                                    : 'N/A'),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
                               _selectedCourseId = newValue;
                             },
-                            validator: (value) => value == null ? 'Sélectionnez un cours' : null,
+                            validator: (value) =>
+                                value == null ? 'Sélectionnez un cours' : null,
                           ),
                           const SizedBox(height: 16),
                           DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(labelText: 'Campus'),
+                            decoration:
+                                const InputDecoration(labelText: 'Campus'),
                             value: _selectedCampusId,
-                            items: campuses.map<DropdownMenuItem<String>>((campus) {
+                            items: campuses
+                                .map<DropdownMenuItem<String>>((campus) {
                               return DropdownMenuItem<String>(
                                 value: campus['id'].toString(),
-                                child: Text(campus['name'].isNotEmpty ? campus['name'] : 'N/A'),
+                                child: Text(campus['name'].isNotEmpty
+                                    ? campus['name']
+                                    : 'N/A'),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
                               _selectedCampusId = newValue;
                             },
-                            validator: (value) => value == null ? 'Sélectionnez un campus' : null,
+                            validator: (value) =>
+                                value == null ? 'Sélectionnez un campus' : null,
                           ),
                           const SizedBox(height: 16),
                           DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(labelText: 'Classe'),
+                            decoration:
+                                const InputDecoration(labelText: 'Classe'),
                             value: _selectedClassId,
-                            items: classes.map<DropdownMenuItem<String>>((classSchool) {
+                            items: classes
+                                .map<DropdownMenuItem<String>>((classSchool) {
                               return DropdownMenuItem<String>(
                                 value: classSchool['id'].toString(),
-                                child: Text(classSchool['name'].isNotEmpty ? classSchool['name'] : 'N/A'),
+                                child: Text(classSchool['name'].isNotEmpty
+                                    ? classSchool['name']
+                                    : 'N/A'),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
                               _selectedClassId = newValue;
                             },
-                            validator: (value) => value == null ? 'Sélectionnez une classe' : null,
+                            validator: (value) => value == null
+                                ? 'Sélectionnez une classe'
+                                : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
-                            decoration: const InputDecoration(labelText: 'Date'),
+                            decoration:
+                                const InputDecoration(labelText: 'Date'),
                             readOnly: true,
                             onTap: () => _selectDateTime(context),
-                            validator: (value) => _selectedTime == null ? 'Sélectionnez une date' : null,
+                            validator: (value) => _selectedTime == null
+                                ? 'Sélectionnez une date'
+                                : null,
                             controller: _timeController,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
-                            decoration: const InputDecoration(labelText: 'Durée (minutes)'),
+                            decoration: const InputDecoration(
+                                labelText: 'Durée (minutes)'),
                             controller: _durationController,
                             validator: InputValidator.validateOnlyNumbers,
                           ),
@@ -224,18 +258,18 @@ class ScheduleScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_createFormKey.currentState!.validate()) {
                         context.read<ScheduleBloc>().add(AddSchedule(
-                          _selectedTime!.millisecondsSinceEpoch ~/ 1000,
-                          int.parse(_durationController.text),
-                          int.parse(_selectedCourseId!),
-                          int.parse(_selectedCampusId!),
-                          int.parse(_selectedClassId!)
-                        ));
+                            _selectedTime!.millisecondsSinceEpoch ~/ 1000,
+                            int.parse(_durationController.text),
+                            int.parse(_selectedCourseId!),
+                            int.parse(_selectedCampusId!),
+                            int.parse(_selectedClassId!)));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -251,16 +285,57 @@ class ScheduleScreen extends StatelessWidget {
     );
   }
 
+  void _showQrCode(BuildContext context, int scheduleId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider(
+          create: (context) => ScheduleBloc(ScheduleService(), CourseService(),
+              CampusService(), ClassService())
+            ..add(LoadScheduleCode(scheduleId)),
+          child: AlertDialog(
+            title: const Text('QRCode de Signature'),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: BlocBuilder<ScheduleBloc, ScheduleState>(
+                builder: (context, state) {
+                  if (state is ScheduleLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (state is ScheduleCode) {
+                    return QrImageView(
+                      data: state.code,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    );
+                  }
+
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _showScheduleDetailDialog(BuildContext context, dynamic schedule) {
     final ScheduleBloc scheduleBloc = BlocProvider.of<ScheduleBloc>(context);
     final ScheduleState currentState = scheduleBloc.state;
 
     if (currentState is ScheduleLoaded) {
-      final courseExists = currentState.courses.any((course) => course['id'] == schedule['courseId']);
+      final courseExists = currentState.courses
+          .any((course) => course['id'] == schedule['courseId']);
       _selectedCourseId = courseExists ? schedule['courseId'].toString() : null;
-      final campusExists = currentState.campuses.any((campus) => campus['id'] == schedule['campusId']);
+      final campusExists = currentState.campuses
+          .any((campus) => campus['id'] == schedule['campusId']);
       _selectedCampusId = campusExists ? schedule['campusId'].toString() : null;
-      final classExists = currentState.classes.any((classSchool) => classSchool['id'] == schedule['classId']);
+      final classExists = currentState.classes
+          .any((classSchool) => classSchool['id'] == schedule['classId']);
       _selectedClassId = classExists ? schedule['classId'].toString() : null;
     } else {
       _selectedCourseId = null;
@@ -268,8 +343,12 @@ class ScheduleScreen extends StatelessWidget {
       _selectedClassId = null;
     }
 
-    _timeController.text = DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000).toLocal().toString();
-    _selectedTime = DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000);
+    _timeController.text =
+        DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000)
+            .toLocal()
+            .toString();
+    _selectedTime =
+        DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000);
     _durationController.text = schedule['duration'].toString();
 
     showDialog(
@@ -294,60 +373,83 @@ class ScheduleScreen extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Cours'),
+                                  decoration:
+                                      const InputDecoration(labelText: 'Cours'),
                                   value: _selectedCourseId,
-                                  items: state.courses.map<DropdownMenuItem<String>>((course) {
+                                  items: state.courses
+                                      .map<DropdownMenuItem<String>>((course) {
                                     return DropdownMenuItem<String>(
                                       value: course['id'].toString(),
-                                      child: Text(course['name'].isNotEmpty ? course['name'] : 'N/A'),
+                                      child: Text(course['name'].isNotEmpty
+                                          ? course['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedCourseId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez un cours' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez un cours'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Campus'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Campus'),
                                   value: _selectedCampusId,
-                                  items: state.campuses.map<DropdownMenuItem<String>>((campus) {
+                                  items: state.campuses
+                                      .map<DropdownMenuItem<String>>((campus) {
                                     return DropdownMenuItem<String>(
                                       value: campus['id'].toString(),
-                                      child: Text(campus['name'].isNotEmpty ? campus['name'] : 'N/A'),
+                                      child: Text(campus['name'].isNotEmpty
+                                          ? campus['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedCampusId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez un campus' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez un campus'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Classe'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Classe'),
                                   value: _selectedClassId,
-                                  items: state.classes.map<DropdownMenuItem<String>>((classSchool) {
+                                  items: state.classes
+                                      .map<DropdownMenuItem<String>>(
+                                          (classSchool) {
                                     return DropdownMenuItem<String>(
                                       value: classSchool['id'].toString(),
-                                      child: Text(classSchool['name'].isNotEmpty ? classSchool['name'] : 'N/A'),
+                                      child: Text(classSchool['name'].isNotEmpty
+                                          ? classSchool['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedClassId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez une classe' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez une classe'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
-                                  decoration: const InputDecoration(labelText: 'Date'),
+                                  decoration:
+                                      const InputDecoration(labelText: 'Date'),
                                   readOnly: true,
                                   onTap: () => _selectDateTime(context),
-                                  validator: (value) => _selectedTime == null ? 'Sélectionnez une date' : null,
+                                  validator: (value) => _selectedTime == null
+                                      ? 'Sélectionnez une date'
+                                      : null,
                                   controller: _timeController,
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
-                                  decoration: const InputDecoration(labelText: 'Durée (minutes)'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Durée (minutes)'),
                                   controller: _durationController,
                                   validator: InputValidator.validateOnlyNumbers,
                                 ),
@@ -367,7 +469,8 @@ class ScheduleScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -379,13 +482,12 @@ class ScheduleScreen extends StatelessWidget {
                         // print(int.parse(_selectedCampusId!));
                         // print(int.parse(_selectedClassId!));
                         context.read<ScheduleBloc>().add(UpdateSchedule(
-                          schedule['id'],
-                          _selectedTime!.millisecondsSinceEpoch ~/ 1000,
-                          int.parse(_durationController.text),
-                          int.parse(_selectedCourseId!),
-                          int.parse(_selectedCampusId!),
-                          int.parse(_selectedClassId!)
-                        ));
+                            schedule['id'],
+                            _selectedTime!.millisecondsSinceEpoch ~/ 1000,
+                            int.parse(_durationController.text),
+                            int.parse(_selectedCourseId!),
+                            int.parse(_selectedCampusId!),
+                            int.parse(_selectedClassId!)));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -424,14 +526,18 @@ class ScheduleScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                    child: const Text('Annuler',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<ScheduleBloc>().add(DeleteSchedule(schedule['id']));
+                      context
+                          .read<ScheduleBloc>()
+                          .add(DeleteSchedule(schedule['id']));
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Supprimer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               );
@@ -457,13 +563,23 @@ class ScheduleScreen extends StatelessWidget {
                 DataColumn(label: Text('Date')),
                 DataColumn(label: Text('Durée')),
                 DataColumn(label: Text('')),
+                DataColumn(label: Text('')),
                 DataColumn(label: Text(''))
               ],
               rows: schedules.map((schedule) {
-                final courseName = schedule['course']['name'].isNotEmpty ? schedule['course']['name'] : 'N/A';
-                final campusName = schedule['campus']['name'].isNotEmpty ? schedule['campus']['name'] : 'N/A';
-                final className = schedule['class']['name'].isNotEmpty ? schedule['class']['name'] : 'N/A';
-                final time = DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000).toLocal().toString();
+                final courseName = schedule['course']['name'].isNotEmpty
+                    ? schedule['course']['name']
+                    : 'N/A';
+                final campusName = schedule['campus']['name'].isNotEmpty
+                    ? schedule['campus']['name']
+                    : 'N/A';
+                final className = schedule['class']['name'].isNotEmpty
+                    ? schedule['class']['name']
+                    : 'N/A';
+                final time =
+                    DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000)
+                        .toLocal()
+                        .toString();
                 final duration = schedule['duration'].toString();
 
                 return DataRow(
@@ -473,6 +589,14 @@ class ScheduleScreen extends StatelessWidget {
                     DataCell(Text(className)),
                     DataCell(Text(time)),
                     DataCell(Text('$duration min')),
+                    DataCell(ElevatedButton(
+                      onPressed: () {
+                        _showQrCode(context, schedule['id']);
+                      },
+                      child: const HeroIcon(
+                        HeroIcons.qrCode,
+                      ),
+                    )),
                     DataCell(ElevatedButton(
                       onPressed: () {
                         _showScheduleDetailDialog(context, schedule);

@@ -11,6 +11,12 @@ class DeleteSchedule extends ScheduleEvent {
   DeleteSchedule(this.id);
 }
 
+class LoadScheduleCode extends ScheduleEvent {
+  final int id;
+
+  LoadScheduleCode(this.id);
+}
+
 class AddSchedule extends ScheduleEvent {
   final int time;
   final int duration;
@@ -18,7 +24,8 @@ class AddSchedule extends ScheduleEvent {
   final int campusId;
   final int classId;
 
-  AddSchedule(this.time, this.duration, this.courseId, this.campusId, this.classId);
+  AddSchedule(
+      this.time, this.duration, this.courseId, this.campusId, this.classId);
 }
 
 class UpdateSchedule extends ScheduleEvent {
@@ -29,5 +36,6 @@ class UpdateSchedule extends ScheduleEvent {
   final int campusId;
   final int classId;
 
-  UpdateSchedule(this.id, this.time, this.duration, this.courseId, this.campusId, this.classId);
+  UpdateSchedule(this.id, this.time, this.duration, this.courseId,
+      this.campusId, this.classId);
 }
