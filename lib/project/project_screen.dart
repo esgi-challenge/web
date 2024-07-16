@@ -24,6 +24,7 @@ class ProjectScreen extends StatelessWidget {
   final TextEditingController _timeController = TextEditingController();
 
   void _clearInputs() {
+    _titleController.clear();
     _selectedDocumentId = null;
     _selectedCourseId = null;
     _selectedClassId = null;

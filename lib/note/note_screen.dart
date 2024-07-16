@@ -20,6 +20,8 @@ class NoteScreen extends StatelessWidget {
 
   void _clearInputs() {
     _valueController.clear();
+    _selectedProjectId = null;
+    _selectedStudentId = null;
   }
 
   @override
