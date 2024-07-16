@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: const Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      "Se Connecter",
+                                      "Se connecter",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 18,

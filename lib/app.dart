@@ -245,6 +245,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Studies',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromRGBO(245, 242, 249, 1),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: Colors.white,
             elevation: 0,
@@ -437,7 +438,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         children: [
           Container(
             width: 250,
-            color: Colors.grey[200],
+            color: Colors.white,
             child: Column(
               children: [
                 const SizedBox(height: 50),
