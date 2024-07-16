@@ -93,9 +93,11 @@ class _CampusScreenState extends State<CampusScreen> {
                     } else if (state is CampusLoaded) {
                       return _buildCampusTable(context, state.campus);
                     } else if (state is CampusNotFound) {
-                      return const Center(child: Text('Aucun campus dans cette école'));
+                      return const Center(
+                          child: Text('Aucun campus dans cette école'));
                     } else if (state is CampusError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Campus'));
                     }
