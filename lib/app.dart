@@ -4,6 +4,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:toastification/toastification.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:web/core/services/school_services.dart';
+import 'package:web/project/project_screen.dart';
 import 'package:web/welcome/welcome_screen.dart';
 
 import 'absence/absence_screen.dart';
@@ -112,7 +113,7 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/projects',
             pageBuilder: (context, state) {
-              return NoTransitionPage(child: PathScreen());
+              return NoTransitionPage(child: ProjectScreen());
             },
           ),
           GoRoute(
