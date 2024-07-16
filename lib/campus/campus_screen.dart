@@ -390,21 +390,31 @@ class _CampusScreenState extends State<CampusScreen> {
                     DataCell(Text(campus['name'])),
                     DataCell(Text(campus['location'])),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showCampusDetailDialog(context, campus);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showCampusDetailDialog(context, campus);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.pencil,
+                              size: 16,
+                            ),
+                          ),
                         ),
                       ),
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
+                    ),
                     DataCell(ElevatedButton(
                       onPressed: () {
                         _showCampusDeleteDialog(context, campus);

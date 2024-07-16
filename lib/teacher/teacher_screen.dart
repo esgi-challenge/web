@@ -405,52 +405,69 @@ class TeacherScreen extends StatelessWidget {
 
   Widget _buildTeacherTable(BuildContext context, List<dynamic> teachers) {
     return SizedBox(
-        width: double.infinity,
-        child: BlocBuilder<TeacherBloc, TeacherState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Nom')),
-                  DataColumn(label: Text('Prénom')),
-                  DataColumn(label: Text('Email')),
-                  DataColumn(label: Text('Date de création')),
-                  DataColumn(label: Text('')),
-                  DataColumn(label: Text(''))
-                ],
-                rows: teachers.map((teacher) {
-                  DateTime parsedDate = DateTime.parse(teacher['createdAt']);
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(teacher['lastname'])),
-                      DataCell(Text(teacher['firstname'])),
-                      DataCell(Text(teacher['email'])),
-                      DataCell(
-                          Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                      DataCell(ElevatedButton(
-                        onPressed: () {
-                          _showTeacherDetailDialog(context, teacher);
-                        },
-                        child: const HeroIcon(
-                          HeroIcons.pencil,
+      width: double.infinity,
+      child: BlocBuilder<TeacherBloc, TeacherState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Nom')),
+                DataColumn(label: Text('Prénom')),
+                DataColumn(label: Text('Email')),
+                DataColumn(label: Text('Date de création')),
+                DataColumn(label: Text('')),
+                DataColumn(label: Text(''))
+              ],
+              rows: teachers.map((teacher) {
+                DateTime parsedDate = DateTime.parse(teacher['createdAt']);
+                return DataRow(
+                  cells: [
+                    DataCell(Text(teacher['lastname'])),
+                    DataCell(Text(teacher['firstname'])),
+                    DataCell(Text(teacher['email'])),
+                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showTeacherDetailDialog(context, teacher);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.pencil,
+                              size: 16,
+                            ),
+                          ),
                         ),
-                      )),
-                      DataCell(ElevatedButton(
-                        onPressed: () {
-                          _showTeacherDeleteDialog(context, teacher);
-                        },
-                        child: const HeroIcon(
-                          HeroIcons.trash,
-                          color: Colors.red,
-                        ),
-                      )),
-                    ],
-                  );
-                }).toList(),
-              ),
-            );
-          },
-        ));
+                      ),
+                    ),
+                    DataCell(ElevatedButton(
+                      onPressed: () {
+                        _showTeacherDeleteDialog(context, teacher);
+                      },
+                      child: const HeroIcon(
+                        HeroIcons.trash,
+                        color: Colors.red,
+                      ),
+                    )),
+                  ],
+                );
+              }).toList(),
+            ),
+          );
+        },
+      )
+    );
   }
 }

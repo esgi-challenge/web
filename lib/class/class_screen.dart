@@ -375,14 +375,31 @@ class ClassScreen extends StatelessWidget {
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Text(pathName)),
                     DataCell(Text(classSchool['students'].length.toString())),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showClassDetailDialog(context, classSchool);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showClassDetailDialog(context, classSchool);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.pencil,
+                              size: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
+                    ),
                     DataCell(ElevatedButton(
                       onPressed: () => {
                         _navigateToClassId(context, classSchool['id'])

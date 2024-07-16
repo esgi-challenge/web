@@ -297,14 +297,31 @@ class PathScreen extends StatelessWidget {
                     DataCell(Text(path['shortName'])),
                     DataCell(Text(path['longName'])),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showPathDetailDialog(context, path);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showPathDetailDialog(context, path);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.pencil,
+                              size: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
+                    ),
                     DataCell(ElevatedButton(
                       onPressed: () {
                         _showPathDeleteDialog(context, path);
