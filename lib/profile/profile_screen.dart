@@ -50,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    'Profile',
+                    'Profil',
                     style: TextStyle(
                       color: Color.fromRGBO(72, 2, 151, 1),
                       fontWeight: FontWeight.bold,

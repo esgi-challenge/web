@@ -87,7 +87,10 @@ class _CampusScreenState extends State<CampusScreen> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: const Text('Créer'),
+                        child: const Text(
+                            'Créer',
+                            style: TextStyle(fontSize: 16)
+                        ),
                       );
                     },
                   )
