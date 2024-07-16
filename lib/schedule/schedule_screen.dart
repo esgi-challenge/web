@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:web/core/services/campus_service.dart';
@@ -564,7 +565,8 @@ class ScheduleScreen extends StatelessWidget {
                 DataColumn(label: Text('Durée')),
                 DataColumn(label: Text('')),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
+                DataColumn(label: Text('')),
+                DataColumn(label: Text('')),
               ],
               rows: schedules.map((schedule) {
                 final courseName = schedule['course']['name'].isNotEmpty
@@ -591,10 +593,23 @@ class ScheduleScreen extends StatelessWidget {
                     DataCell(Text('$duration min')),
                     DataCell(ElevatedButton(
                       onPressed: () {
-                        _showQrCode(context, schedule['id']);
+                        GoRouter.of(context).go('/schedules/${schedule['id']}');
                       },
                       child: const HeroIcon(
+                        HeroIcons.userGroup,
+                      ),
+                    )),
+                    DataCell(ElevatedButton(
+                      onPressed: () {
+                        if (schedule['qrCodeEnabled']) {
+                          _showQrCode(context, schedule['id']);
+                        }
+                      },
+                      child: HeroIcon(
                         HeroIcons.qrCode,
+                        color: schedule['qrCodeEnabled']
+                            ? Colors.black
+                            : Colors.grey,
                       ),
                     )),
                     DataCell(ElevatedButton(

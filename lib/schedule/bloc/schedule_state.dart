@@ -13,6 +13,13 @@ class ScheduleCode extends ScheduleState {
   ScheduleCode({required this.code});
 }
 
+class ScheduleSignatures extends ScheduleState {
+  final String code;
+  final dynamic signatures;
+
+  ScheduleSignatures({required this.signatures, required this.code});
+}
+
 class ScheduleLoaded extends ScheduleState {
   final List<dynamic> schedules;
   final List<dynamic> courses;

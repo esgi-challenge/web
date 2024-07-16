@@ -112,4 +112,39 @@ class ScheduleService {
       return null;
     }
   }
+
+  Future getSignatures(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      final response = await dio.get(
+        '$apiUrl/api/schedules/$id/students',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+
+      return null;
+    } on DioException {
+      return null;
+    }
+  }
+
+  Future sign(int scheduleId, int userId, String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('kAuth');
+    try {
+      await dio.post(
+        '$apiUrl/api/schedules/$scheduleId/sign',
+        data: {"code": code, "userId": userId},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      return null;
+    } on DioException {
+      return null;
+    }
+  }
 }

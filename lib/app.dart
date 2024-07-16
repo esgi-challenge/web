@@ -5,6 +5,7 @@ import 'package:toastification/toastification.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:web/core/services/school_services.dart';
 import 'package:web/project/project_screen.dart';
+import 'package:web/schedule_id/schedule_id.dart';
 import 'package:web/welcome/welcome_screen.dart';
 
 import 'absence/absence_screen.dart';
@@ -40,7 +41,15 @@ final _router = GoRouter(
       return '/login';
     }
 
-    final adminPaths = ['/schools', '/paths', '/courses', '/campus', '/class', '/students', '/teachers'];
+    final adminPaths = [
+      '/schools',
+      '/paths',
+      '/courses',
+      '/campus',
+      '/class',
+      '/students',
+      '/teachers'
+    ];
     if (jwt != null && adminPaths.contains(state.fullPath)) {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(jwt!);
       int userKind = decodedToken['user']['userKind'];
@@ -50,7 +59,8 @@ final _router = GoRouter(
       }
     }
 
-    if (jwt != null && (state.fullPath == '/login' || state.fullPath == '/register')) {
+    if (jwt != null &&
+        (state.fullPath == '/login' || state.fullPath == '/register')) {
       return '/';
     }
 
@@ -141,7 +151,9 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/class/:id',
             pageBuilder: (context, state) {
-              return NoTransitionPage(child: ClassIdScreen(id: int.parse(state.pathParameters['id']!)));
+              return NoTransitionPage(
+                  child: ClassIdScreen(
+                      id: int.parse(state.pathParameters['id']!)));
             },
           ),
           GoRoute(
@@ -162,7 +174,9 @@ final _router = GoRouter(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/chat/:id',
             pageBuilder: (context, state) {
-              return NoTransitionPage(child: ChannelIdScreen(id: int.parse(state.pathParameters['id']!)));
+              return NoTransitionPage(
+                  child: ChannelIdScreen(
+                      id: int.parse(state.pathParameters['id']!)));
             },
           ),
           GoRoute(
@@ -177,6 +191,15 @@ final _router = GoRouter(
             path: '/schedules',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: ScheduleScreen());
+            },
+          ),
+          GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
+            path: '/schedules/:id',
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                  child: ScheduleIdScreen(
+                      scheduleId: int.parse(state.pathParameters['id']!)));
             },
           ),
           GoRoute(
@@ -218,31 +241,30 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return ToastificationWrapper(
         child: MaterialApp.router(
-          routerConfig: _router,
-          debugShowCheckedModeBanner: false,
-          title: 'Studies',
-          theme: ThemeData(
-            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-                backgroundColor: Colors.white,
-                elevation: 0,
-                selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
-                unselectedLabelStyle:
+      routerConfig: _router,
+      debugShowCheckedModeBanner: false,
+      title: 'Studies',
+      theme: ThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            selectedItemColor: Color.fromRGBO(109, 53, 172, 1),
+            unselectedLabelStyle:
                 TextStyle(color: Color.fromRGBO(190, 191, 190, 1)),
-                unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
-                unselectedIconTheme:
+            unselectedItemColor: Color.fromRGBO(190, 191, 190, 1),
+            unselectedIconTheme:
                 IconThemeData(color: Color.fromRGBO(190, 191, 190, 1)),
-                selectedIconTheme:
+            selectedIconTheme:
                 IconThemeData(color: Color.fromRGBO(109, 53, 172, 1))),
-            textTheme: const TextTheme(
-              displayLarge: TextStyle(
-                color: Colors.amber,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            color: Colors.amber,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-        )
-    );
+        ),
+      ),
+    ));
   }
 }
 
@@ -282,7 +304,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
   Future<List<MyCustomSideBarItem>> _getTabsForUserKind(int? userKind) async {
     switch (userKind) {
       case 1:
-      //Teacher
+        //Teacher
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.calendarDays),
@@ -311,7 +333,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
           ),
         ];
       case 3:
-      //Superadmin
+        //Superadmin
         return [
           const MyCustomSideBarItem(
             icon: HeroIcon(HeroIcons.academicCap),
@@ -321,7 +343,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         ];
       case 2:
       default:
-      //Admin
+        //Admin
         final school = await SchoolService().getSchool();
         if (school == null) {
           return [
@@ -330,7 +352,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
               label: 'École',
               initialLocation: '/schools',
             ),
-          ];       
+          ];
         }
         return [
           const MyCustomSideBarItem(
@@ -407,7 +429,8 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    final currentLocation = GoRouter.of(context).routerDelegate.currentConfiguration.uri.toString();
+    final currentLocation =
+        GoRouter.of(context).routerDelegate.currentConfiguration.uri.toString();
 
     return Scaffold(
       body: Row(
@@ -432,7 +455,8 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                       return ListTile(
                         leading: tabs[index].icon,
                         title: Text(tabs[index].label),
-                        selected: _selectedIndex == index && !currentLocation.startsWith('/profile'),
+                        selected: _selectedIndex == index &&
+                            !currentLocation.startsWith('/profile'),
                         selectedTileColor: Colors.blueGrey[100],
                         onTap: () {
                           _goOtherTab(context, index);
@@ -462,9 +486,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   ),
                   title: const Text(
                     'Déconnexion',
-                    style: TextStyle(
-                        color: Colors.red
-                    ),
+                    style: TextStyle(color: Colors.red),
                   ),
                   onTap: () {
                     _logout(context);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/campus_service.dart';
 import 'package:web/core/services/class_service.dart';
@@ -174,6 +176,41 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         final code = await scheduleService.getCode(event.id);
         emit(ScheduleCode(code: code!));
+      } on Exception catch (e) {
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(ScheduleLoaded(
+            schedules: originalSchedules!,
+            courses: originalCourses!,
+            campuses: originalCampuses!,
+            classes: originalClasses!));
+      }
+    });
+
+    on<LoadSchedule>((event, emit) async {
+      emit(ScheduleLoading());
+      try {
+        final signatures = await scheduleService.getSignatures(event.id);
+        final code = await scheduleService.getCode(event.id);
+        emit(ScheduleSignatures(signatures: signatures, code: code!));
+      } on Exception catch (e) {
+        showErrorToast("Erreur: ${e.toString()}");
+        emit(ScheduleLoaded(
+            schedules: originalSchedules!,
+            courses: originalCourses!,
+            campuses: originalCampuses!,
+            classes: originalClasses!));
+      }
+    });
+
+    on<SignSchedule>((event, emit) async {
+      emit(ScheduleLoading());
+      try {
+        await scheduleService.sign(
+            event.scheduleId, event.studentId, event.code);
+        final signatures =
+            await scheduleService.getSignatures(event.scheduleId);
+        final code = await scheduleService.getCode(event.scheduleId);
+        emit(ScheduleSignatures(signatures: signatures, code: code!));
       } on Exception catch (e) {
         showErrorToast("Erreur: ${e.toString()}");
         emit(ScheduleLoaded(

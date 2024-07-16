@@ -11,10 +11,25 @@ class DeleteSchedule extends ScheduleEvent {
   DeleteSchedule(this.id);
 }
 
+class LoadSchedule extends ScheduleEvent {
+  final int id;
+
+  LoadSchedule(this.id);
+}
+
 class LoadScheduleCode extends ScheduleEvent {
   final int id;
 
   LoadScheduleCode(this.id);
+}
+
+class SignSchedule extends ScheduleEvent {
+  final int scheduleId;
+  final int studentId;
+  final String code;
+
+  SignSchedule(
+      {required this.scheduleId, required this.studentId, required this.code});
 }
 
 class AddSchedule extends ScheduleEvent {
