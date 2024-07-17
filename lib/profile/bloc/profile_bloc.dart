@@ -31,7 +31,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfile>((event, emit) async {
       emit(ProfileLoading());
       try {
-        final updatedProfile = await profileService.updateProfile(event.firstname, event.lastname, event.email);
+        final updatedProfile = await profileService.updateProfile(
+            event.firstname, event.lastname, event.email);
 
         if (updatedProfile != null) {
           emit(ProfileLoaded(profile: updatedProfile));
@@ -41,7 +42,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           emit(ProfileLoaded(profile: originalProfile));
         }
       } on Exception catch (e) {
-        showErrorToast("Erreur: ${e.toString()}");
+        showErrorToast("Erreur: ${e.toString().replaceAll('Exception: ', '')}");
         emit(ProfileLoaded(profile: originalProfile));
       }
     });
@@ -49,7 +50,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfilePassword>((event, emit) async {
       emit(ProfileLoading());
       try {
-        final updatedProfile = await profileService.updateProfilePassword(event.oldPassword, event.newPassword);
+        final updatedProfile = await profileService.updateProfilePassword(
+            event.oldPassword, event.newPassword);
 
         if (updatedProfile != null) {
           emit(ProfilePasswordUpdated());

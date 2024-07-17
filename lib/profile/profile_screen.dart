@@ -53,7 +53,8 @@ class ProfileScreen extends StatelessWidget {
                     } else if (state is ProfileNotFound) {
                       return const Center(child: Text('Profil non trouvé'));
                     } else if (state is ProfileError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else if (state is ProfilePasswordUpdated) {
                       _logout(context);
                       return const Center(child: Text('Profil'));
@@ -70,102 +71,110 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-void _showUpdatePasswordDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext dialogContext) {
-      return BlocProvider.value(
-        value: BlocProvider.of<ProfileBloc>(context),
-        child: Builder(
-          builder: (context) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Modifier le mot de passe', style: TextStyle(fontSize: 20.0)),
-                    const SizedBox(height: 16),
-                    Form(
-                      key: _updatePasswordFormKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+  void _showUpdatePasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider.value(
+          value: BlocProvider.of<ProfileBloc>(context),
+          child: Builder(
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Modifier le mot de passe',
+                          style: TextStyle(fontSize: 20.0)),
+                      const SizedBox(height: 16),
+                      Form(
+                        key: _updatePasswordFormKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _oldPasswordController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Ancien mot de passe'),
+                              obscureText: true,
+                              validator: InputValidator.validatePassword,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _newPasswordController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Nouveau mot de passe'),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value != _newPasswordController.text) {
+                                  return "Les mots de passe doivent correspondre";
+                                } else {
+                                  return InputValidator.validatePassword(value);
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _newPasswordRepeatController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Répéter nouveau mot de passe'),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value != _newPasswordController.text) {
+                                  return "Les mots de passe doivent correspondre";
+                                } else {
+                                  return InputValidator.validatePassword(value);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TextFormField(
-                            controller: _oldPasswordController,
-                            decoration: const InputDecoration(labelText: 'Ancien mot de passe'),
-                            obscureText: true,
-                            validator: InputValidator.validatePassword,
+                          TextButton(
+                            onPressed: () {
+                              _clearInputs();
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Fermer',
+                                style: TextStyle(color: Colors.red)),
                           ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _newPasswordController,
-                            decoration: const InputDecoration(labelText: 'Nouveau mot de passe'),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value != _newPasswordController.text) {
-                                return "Les mots de passe doivent correspondre";
-                              } else {
-                                return InputValidator.validatePassword(value);
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_updatePasswordFormKey.currentState!
+                                  .validate()) {
+                                context
+                                    .read<ProfileBloc>()
+                                    .add(UpdateProfilePassword(
+                                      _oldPasswordController.text,
+                                      _newPasswordController.text,
+                                    ));
+                                _clearInputs();
+                                Navigator.of(context).pop();
                               }
                             },
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _newPasswordRepeatController,
-                            decoration: const InputDecoration(labelText: 'Répéter nouveau mot de passe'),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value != _newPasswordController.text) {
-                                return "Les mots de passe doivent correspondre";
-                              } else {
-                                return InputValidator.validatePassword(value);
-                              }
-                            },
+                            child: const Text('Modifier'),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            _clearInputs();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Fermer', style: TextStyle(color: Colors.red)),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_updatePasswordFormKey.currentState!.validate()) {
-                              context.read<ProfileBloc>().add(UpdateProfilePassword(
-                                _oldPasswordController.text,
-                                _newPasswordController.text,
-                              ));
-                              _clearInputs();
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: const Text('Modifier'),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-      );
-    },
-  );
-}
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildProfileForm(BuildContext context, dynamic profile) {
     _firstnameController.text = profile['firstname'];
@@ -173,137 +182,131 @@ void _showUpdatePasswordDialog(BuildContext context) {
     _emailController.text = profile['email'];
 
     return SizedBox(
-      width: double.infinity,
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          return Form(
-            key: _updateFormKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _firstnameController,
-                    decoration: const InputDecoration(labelText: 'Prénom'),
-                    validator: InputValidator.validateName,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _lastnameController,
-                    decoration: const InputDecoration(labelText: 'Nom'),
-                    validator: InputValidator.validateName,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: InputValidator.validateEmail,
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () {
-                      if (_updateFormKey.currentState!.validate()) {
-                        context.read<ProfileBloc>().add(UpdateProfile(
-                          _firstnameController.text,
-                          _lastnameController.text,
-                          _emailController.text
-                        ));
-                      }
-                    },
-                    style: TextButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
+        width: double.infinity,
+        child: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            return Form(
+              key: _updateFormKey,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: _firstnameController,
+                      decoration: const InputDecoration(labelText: 'Prénom'),
+                      validator: InputValidator.validateName,
                     ),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(249, 178, 53, 1),
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(4)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(249, 178, 53, 0.1),
-                            spreadRadius: 0,
-                            blurRadius: 5,
-                            offset: Offset(
-                                0, 3),
-                          ),
-                        ],
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _lastnameController,
+                      decoration: const InputDecoration(labelText: 'Nom'),
+                      validator: InputValidator.validateName,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      validator: InputValidator.validateEmail,
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () {
+                        if (_updateFormKey.currentState!.validate()) {
+                          context.read<ProfileBloc>().add(UpdateProfile(
+                              _firstnameController.text,
+                              _lastnameController.text,
+                              _emailController.text));
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Modifier le profil",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(249, 178, 53, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromRGBO(249, 178, 53, 0.1),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Modifier le profil",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  const Text(
-                    "ou",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                    const SizedBox(
+                      height: 18,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _showUpdatePasswordDialog(context);
-                    },
-                    style: TextButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(249, 178, 53, 1),
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(4)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(249, 178, 53, 0.1),
-                            spreadRadius: 0,
-                            blurRadius: 5,
-                            offset: Offset(
-                                0, 3),
-                          ),
-                        ],
+                    const Text(
+                      "ou",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Modifier le mot de passe",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                    ),
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _showUpdatePasswordDialog(context);
+                      },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(249, 178, 53, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromRGBO(249, 178, 53, 0.1),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Modifier le mot de passe",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      )
-    );
+            );
+          },
+        ));
   }
 }
