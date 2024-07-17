@@ -33,66 +33,57 @@ class ClassScreen extends StatelessWidget {
       create: (context) => ClassBloc(ClassService(), PathService())..add(LoadClasses()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  HeroIcon(
-                    HeroIcons.presentationChartBar,
-                    color: Color.fromRGBO(72, 2, 151, 1),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Classes',
-                    style: TextStyle(
-                      color: Color.fromRGBO(72, 2, 151, 1),
-                      fontWeight: FontWeight.bold,
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.buildingOffice,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Classes',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<ClassBloc, ClassState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is ClassLoaded && state.paths.isNotEmpty) {
+                      _showCreateDialog(context, state.paths);
+                    } else if (state is ClassNotFound && state.paths.isNotEmpty) {
+                      _showCreateDialog(context, state.paths);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                ],
-              ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
             ),
-          ),
+            SizedBox(width: 16),
+          ],
           toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<ClassBloc, ClassState>(
-                    builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: () {
-                            if (state is ClassLoaded && state.paths.isNotEmpty) {
-                              _showCreateDialog(context, state.paths);
-                            } else if (state is ClassNotFound && state.paths.isNotEmpty) {
-                              _showCreateDialog(context, state.paths);
-                            } else {
-                              _showEmptyDialog(context);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Color.fromRGBO(72, 2, 151, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          child: const Text(
-                              'Créer',
-                              style: TextStyle(fontSize: 16)
-                          ),
-                        );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<ClassBloc, ClassState>(
                   builder: (context, state) {

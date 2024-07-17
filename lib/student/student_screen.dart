@@ -34,28 +34,56 @@ class StudentScreen extends StatelessWidget {
           StudentBloc(StudentService(), ClassService())..add(LoadStudents()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  HeroIcon(
-                    HeroIcons.userGroup,
-                    color: Color.fromRGBO(72, 2, 151, 1),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Élèves',
-                    style: TextStyle(
-                      color: Color.fromRGBO(72, 2, 151, 1),
-                      fontWeight: FontWeight.bold,
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.userGroup,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Élèves',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                _showInviteDialog(context);
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: const Text('Inviter', style: TextStyle(fontSize: 16)),
+            ),
+            const SizedBox(width: 8),
+            BlocBuilder<StudentBloc, StudentState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showCreateDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                ],
-              ),
+                  child: const Text('Ajouter', style: TextStyle(fontSize: 16)),
+                );
+              },
             ),
-          ),
+            const SizedBox(width: 16),
+          ],
           toolbarHeight: 64.0,
         ),
         body: Padding(
@@ -90,30 +118,9 @@ class StudentScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 500),
-                  BlocBuilder<StudentBloc, StudentState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _showInviteDialog(context);
-                        },
-                        child: const Text('Inviter'),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 50),
-                  BlocBuilder<StudentBloc, StudentState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _showCreateDialog(context);
-                        },
-                        child: const Text('Ajouter'),
-                      );
-                    },
-                  )
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               Expanded(
                 child: BlocBuilder<StudentBloc, StudentState>(
                   builder: (context, state) {

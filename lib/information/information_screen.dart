@@ -25,29 +25,44 @@ class InformationScreen extends StatelessWidget {
       create: (context) => InformationBloc(InformationService())..add(LoadInformations()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Informations'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 60.0, top: 20.0),
-              child: BlocBuilder<InformationBloc, InformationState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      _showCreateDialog(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(249, 178, 53, 1),
-                      foregroundColor: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4))
-                      )
-                    ),
-                    child: const Text('Publier'),
-                  );
-                },
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.informationCircle,
+                color: Color.fromRGBO(72, 2, 151, 1),
               ),
-            )
+              SizedBox(width: 8),
+              Text(
+                'Informations',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<InformationBloc, InformationState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showCreateDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child:
+                  const Text('Publier', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            SizedBox(width: 16),
           ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

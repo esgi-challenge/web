@@ -42,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Center(
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   HeroIcon(
                     HeroIcons.user,

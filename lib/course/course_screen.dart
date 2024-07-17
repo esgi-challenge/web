@@ -31,66 +31,57 @@ class CourseScreen extends StatelessWidget {
       create: (context) => CourseBloc(CourseService(), TeacherService(), PathService())..add(LoadCourses()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  HeroIcon(
-                    HeroIcons.bookOpen,
-                    color: Color.fromRGBO(72, 2, 151, 1),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Cours',
-                    style: TextStyle(
-                      color: Color.fromRGBO(72, 2, 151, 1),
-                      fontWeight: FontWeight.bold,
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.bookOpen,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Cours',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<CourseBloc, CourseState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is CourseLoaded && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
+                      _showCreateDialog(context, state.paths, state.teachers);
+                    } else if (state is CourseNotFound && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
+                      _showCreateDialog(context, state.paths, state.teachers);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                ],
-              ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
             ),
-          ),
+            SizedBox(width: 16),
+          ],
           toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<CourseBloc, CourseState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (state is CourseLoaded && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
-                            _showCreateDialog(context, state.paths, state.teachers);
-                          } else if (state is CourseNotFound && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
-                            _showCreateDialog(context, state.paths, state.teachers);
-                          } else {
-                            _showEmptyDialog(context);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Color.fromRGBO(72, 2, 151, 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        child: const Text(
-                            'Créer',
-                            style: TextStyle(fontSize: 16)
-                        ),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<CourseBloc, CourseState>(
                   builder: (context, state) {
