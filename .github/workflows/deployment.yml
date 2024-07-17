@@ -29,7 +29,7 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
 
-      - name: Configure docker to use gcp 
+      - name: Configure docker to use gcp
         run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
       - name: Set api url
@@ -40,7 +40,7 @@ jobs:
       - name: Set ws url
         run: echo WS_URL="$WS_URL" >> dotenv
         env:
-          API_URL: ${{ secrets.WS_URL }}
+          WS_URL: ${{ secrets.WS_URL }}
 
       - name: Set gmap api url
         run: sed -i 's|<script src="https://maps.googleapis.com/maps/api/js?key="></script>|<script src="https://maps.googleapis.com/maps/api/js?key='$GMAP_API_KEY'"></script>|' ./web/index.html
