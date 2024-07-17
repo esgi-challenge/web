@@ -25,8 +25,8 @@ class ScheduleService {
     }
   }
 
-  Future addSchedule(
-      int time, int duration, int courseId, int campusId, int classId, bool qrCodeEnabled) async {
+  Future addSchedule(int time, int duration, int courseId, int campusId,
+      int classId, bool qrCodeEnabled) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
@@ -43,10 +43,15 @@ class ScheduleService {
 
       if (response.statusCode == 201) {
         return response.data;
+      } else if (response.statusCode == 400) {
+        throw Exception(response.data['error']);
       } else {
         return null;
       }
-    } on DioException {
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.statusCode == 400) {
+        throw Exception(e.response!.data['error']);
+      }
       return null;
     }
   }

@@ -64,8 +64,13 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<AddSchedule>((event, emit) async {
       emit(ScheduleLoading());
       try {
-        final schedule = await scheduleService.addSchedule(event.time,
-            event.duration, event.courseId, event.campusId, event.classId, event.qrCodeEnabled);
+        final schedule = await scheduleService.addSchedule(
+            event.time,
+            event.duration,
+            event.courseId,
+            event.campusId,
+            event.classId,
+            event.qrCodeEnabled);
 
         if (schedule != null) {
           originalSchedules ??= [];
@@ -86,7 +91,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
               classes: originalClasses!));
         }
       } on Exception catch (e) {
-        showErrorToast("Erreur: ${e.toString()}");
+        showErrorToast("Erreur: ${e.toString().replaceAll('Exception: ', '')}");
         originalSchedules ??= [];
         emit(ScheduleLoaded(
             schedules: originalSchedules!,

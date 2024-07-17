@@ -55,7 +55,7 @@ class TeacherBloc extends Bloc<TeacherEvent, TeacherState> {
           emit(TeacherLoaded(teachers: originalTeachers!));
         }
       } on Exception catch (e) {
-        showErrorToast("Erreur: ${e.toString()}");
+        showErrorToast("Erreur: ${e.toString().replaceAll('Exception: ', '')}");
         originalTeachers ??= [];
         emit(TeacherLoaded(teachers: originalTeachers!));
       }

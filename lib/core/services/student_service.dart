@@ -44,7 +44,10 @@ class StudentService {
       } else {
         return null;
       }
-    } on DioException {
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.statusCode == 409) {
+        throw Exception('Email is already used');
+      }
       return null;
     }
   }
