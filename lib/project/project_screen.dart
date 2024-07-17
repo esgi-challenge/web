@@ -121,7 +121,7 @@ class ProjectScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Ajouter un créneau'),
-          content: const Text("Pour créer des projets il faut au moins une classe, un cours et un document"),
+          content: const Text("Pour créer des projets il faut au moins une classe, un cours et un document, contactez votre admin pour ajouter des classes et cours"),
           actions: [
             TextButton(
               onPressed: () {

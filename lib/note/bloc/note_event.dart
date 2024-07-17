@@ -3,7 +3,7 @@ part of 'note_bloc.dart';
 @immutable
 abstract class NoteEvent {}
 
-class LoadNotees extends NoteEvent {}
+class LoadNotes extends NoteEvent {}
 
 class DeleteNote extends NoteEvent {
   final int id;
@@ -26,4 +26,10 @@ class UpdateNote extends NoteEvent {
   final int studentId;
 
   UpdateNote(this.id, this.value, this.projectId, this.studentId);
+}
+
+class SearchStudent extends NoteEvent {
+  final String query;
+
+  SearchStudent(this.query);
 }

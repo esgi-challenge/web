@@ -17,7 +17,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   List<dynamic>? originalStudents;
 
   NoteBloc(this.noteService, this.projectService, this.studentService) : super(NoteInitial()) {
-    on<LoadNotees>((event, emit) async {
+    on<LoadNotes>((event, emit) async {
       emit(NoteLoading());
       try {
         final notes = await noteService.getNotes();
@@ -39,6 +39,19 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       } on Exception catch (e) {
         emit(NoteError(errorMessage: e.toString()));
       }
+    });
+
+    on<SearchStudent>((event, emit) {
+      emit(NoteLoading());
+      if (originalNotes == null) return;
+
+      final query = event.query.toLowerCase();
+      final filteredNotes = originalNotes!.where((note) {
+        return note['student']['lastname'].toLowerCase().startsWith(query);
+      }).toList();
+
+      emit(
+          NoteLoaded(notes: filteredNotes, projects: originalProjects!, students: originalStudents!));
     });
 
     on<AddNote>((event, emit) async {

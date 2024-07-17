@@ -66,17 +66,6 @@ class TeacherScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 500),
-                  // BlocBuilder<TeacherBloc, TeacherState>(
-                  //   builder: (context, state) {
-                  //     return ElevatedButton(
-                  //       onPressed: () {
-                  //         _showInviteDialog(context);
-                  //       },
-                  //       child: const Text('Inviter'),
-                  //     );
-                  //   },
-                  // ),
-                  const SizedBox(width: 50),
                   BlocBuilder<TeacherBloc, TeacherState>(
                     builder: (context, state) {
                       return ElevatedButton(

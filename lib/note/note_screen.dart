@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:web/class_id/bloc/class_id_bloc.dart';
 import 'package:web/core/services/note_service.dart';
 import 'package:web/core/services/project_service.dart';
 import 'package:web/core/services/student_service.dart';
@@ -12,6 +13,8 @@ class NoteScreen extends StatelessWidget {
   NoteScreen({super.key});
 
   final _valueController = TextEditingController();
+  final _searchController = TextEditingController();
+
   final GlobalKey<FormState> _createFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _updateFormKey = GlobalKey<FormState>();
 
@@ -27,7 +30,7 @@ class NoteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NoteBloc(NoteService(), ProjectService(), StudentService())..add(LoadNotees()),
+      create: (context) => NoteBloc(NoteService(), ProjectService(), StudentService())..add(LoadNotes()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Notes'),
@@ -38,6 +41,31 @@ class NoteScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  Flexible(
+                    flex: 1,
+                    child: BlocBuilder<NoteBloc, NoteState>(
+                      builder: (context, state) {
+                        return TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            labelText: 'Rechercher un élève',
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                context.read<NoteBloc>().add(LoadNotes());
+                              },
+                            ),
+                          ),
+                          onChanged: (query) {
+                            context
+                                .read<NoteBloc>()
+                                .add(SearchStudent(query));
+                          },
+                        );
+                      },
+                    ),
+                  ),
                   const SizedBox(width: 50),
                   BlocBuilder<NoteBloc, NoteState>(
                     builder: (context, state) {
@@ -88,7 +116,7 @@ class NoteScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Ajouter une note'),
-          content: const Text("Il faut un projet et des élèves pour ajouter une note"),
+          content: const Text("Il faut un projet et des élèves pour ajouter une note, contactez votre admin pour que des élèves soient ajoutés"),
           actions: [
             TextButton(
               onPressed: () {
@@ -362,8 +390,8 @@ class NoteScreen extends StatelessWidget {
                 return DataRow(
                   cells: [
                     DataCell(Text(note['value'].toString())),
-                    DataCell(Text(note['projectId'].toString())),
-                    DataCell(Text(note['studentId'].toString())),
+                    DataCell(Text(note['project']['title'])),
+                    DataCell(Text('${note['student']['firstname']} ${note['student']['lastname']}')),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(ElevatedButton(
                       onPressed: () {
