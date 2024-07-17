@@ -124,7 +124,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
               students: originalStudents!, classes: originalClasses!));
         }
       } on Exception catch (e) {
-        showErrorToast("Erreur: ${e.toString()}");
+        showErrorToast("Erreur: ${e.toString().replaceAll('Exception: ', '')}");
         emit(StudentLoaded(
             students: originalStudents!, classes: originalClasses!));
       }
