@@ -22,7 +22,7 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
         if (channels != null && channels.isNotEmpty) {
           originalChannels = channels;
           originalStudents = students;
-          emit(ChannelLoaded(channels: channels, students: students!));
+          emit(ChannelLoaded(channels: channels, students: students ?? []));
         } else if (students != null && students.isNotEmpty) {
           originalStudents = students;
           originalChannels ??= [];
