@@ -603,14 +603,36 @@ class ScheduleScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Cours')),
-                DataColumn(label: Text('Campus')),
-                DataColumn(label: Text('Classe')),
-                DataColumn(label: Text('Date')),
-                DataColumn(label: Text('Durée')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text('')),
+                DataColumn(
+                    label: Text('Cours',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Campus',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Classe',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Date',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Durée',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
                 DataColumn(label: Text('')),
               ],
               rows: schedules.map((schedule) {
@@ -636,43 +658,108 @@ class ScheduleScreen extends StatelessWidget {
                     DataCell(Text(className)),
                     DataCell(Text(time)),
                     DataCell(Text('$duration min')),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        GoRouter.of(context).go('/schedules/${schedule['id']}');
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.userGroup,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        if (schedule['qrCodeEnabled']) {
-                          _showQrCode(context, schedule['id']);
-                        }
-                      },
-                      child: HeroIcon(
-                        HeroIcons.qrCode,
-                        color: schedule['qrCodeEnabled']
-                            ? Colors.black
-                            : Colors.grey,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showScheduleDetailDialog(context, schedule);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showScheduleDeleteDialog(context, schedule);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              GoRouter.of(context).go('/schedules/${schedule['id']}');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.userGroup,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (schedule['qrCodeEnabled']) {
+                                _showQrCode(context, schedule['id']);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: schedule['qrCodeEnabled']
+                                  ? Color.fromRGBO(247, 159, 2, 1)
+                                  : Colors.grey,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.qrCode,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showScheduleDetailDialog(context, schedule);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showScheduleDeleteDialog(context, schedule);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );
