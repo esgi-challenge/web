@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,8 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
 
     Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
     userId = decodedToken['user']['id'];
+    log("ANTOINE");
+    log("wsUrl");
     channel = WebSocketChannel.connect(
       Uri.parse('$wsUrl/api/ws/chat/${widget.id}'),
     );
@@ -53,10 +56,7 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
   void _sendMessage() {
     if (messageController.text.isNotEmpty) {
       String token = AuthService.jwt!;
-      final msg = {
-        'content': messageController.text,
-        'jwt': token
-      };
+      final msg = {'content': messageController.text, 'jwt': token};
       channel.sink.add(json.encode(msg));
       messageController.clear();
     }
@@ -75,14 +75,16 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChannelIdBloc(ChatService())..add(LoadChannelId(widget.id)),
+      create: (context) =>
+          ChannelIdBloc(ChatService())..add(LoadChannelId(widget.id)),
       child: Scaffold(
         backgroundColor: const Color.fromRGBO(245, 242, 249, 1),
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const HeroIcon(HeroIcons.arrowLongLeft, color: Color.fromRGBO(247, 159, 2, 1), size: 32),
+            icon: const HeroIcon(HeroIcons.arrowLongLeft,
+                color: Color.fromRGBO(247, 159, 2, 1), size: 32),
             onPressed: () {
               GoRouter router = GoRouter.of(context);
               router.go('/chat');
@@ -103,7 +105,9 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
                   ),
                 );
               }
-              return const Text('Chat', style: TextStyle(color: Color.fromRGBO(109, 53, 172, 1), fontSize: 32));
+              return const Text('Chat',
+                  style: TextStyle(
+                      color: Color.fromRGBO(109, 53, 172, 1), fontSize: 32));
             },
           ),
           centerTitle: true,
@@ -114,7 +118,8 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ChannelIdLoaded) {
               var messages = state.channelId['messages'];
-              WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+              WidgetsBinding.instance
+                  .addPostFrameCallback((_) => _scrollToBottom());
               return Column(
                 children: [
                   Expanded(
@@ -128,43 +133,59 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
                             'senderId': data['senderId'],
                             'createdAt': data['createdAt'],
                           });
-                          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((_) => _scrollToBottom());
                         }
                         return ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 32.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32.0, vertical: 32.0),
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
                             var message = messages[index];
                             var isOwnMessage = message['senderId'] == userId;
                             return Column(
-                              crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              crossAxisAlignment: isOwnMessage
+                                  ? CrossAxisAlignment.end
+                                  : CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 16),
                                 Row(
-                                  mainAxisAlignment: isOwnMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                  mainAxisAlignment: isOwnMessage
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     const SizedBox(width: 8),
                                     Flexible(
                                       child: ConstrainedBox(
-                                        constraints: const BoxConstraints(maxWidth: 230),
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 230),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: isOwnMessage
-                                                ? const Color.fromRGBO(72, 2, 151, 1)
-                                                : const Color.fromRGBO(249, 178, 53, 1),
+                                                ? const Color.fromRGBO(
+                                                    72, 2, 151, 1)
+                                                : const Color.fromRGBO(
+                                                    249, 178, 53, 1),
                                             borderRadius: BorderRadius.only(
                                               topLeft: const Radius.circular(8),
-                                              topRight: const Radius.circular(8),
-                                              bottomLeft: isOwnMessage ? const Radius.circular(8) : Radius.zero,
-                                              bottomRight: isOwnMessage ? Radius.zero : const Radius.circular(8),
+                                              topRight:
+                                                  const Radius.circular(8),
+                                              bottomLeft: isOwnMessage
+                                                  ? const Radius.circular(8)
+                                                  : Radius.zero,
+                                              bottomRight: isOwnMessage
+                                                  ? Radius.zero
+                                                  : const Radius.circular(8),
                                             ),
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: Column(
-                                              crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                              crossAxisAlignment: isOwnMessage
+                                                  ? CrossAxisAlignment.end
+                                                  : CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   message['content'],
@@ -218,7 +239,8 @@ class _ChannelIdScreenState extends State<ChannelIdScreen> {
                                   color: Color.fromRGBO(141, 143, 142, 1),
                                 ),
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 16.0),
                               ),
                             ),
                           ),
