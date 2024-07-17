@@ -19,14 +19,26 @@ class ClassIdScreen extends StatelessWidget {
       create: (context) => ClassIdBloc(ClassService())..add(LoadClassId(id)),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Liste des étudiants'),
-          leading: BackButton(
-            onPressed: () {
-              GoRouter router = GoRouter.of(context);
-              router.go('/class');
-            },
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const HeroIcon(HeroIcons.arrowLongLeft,
+                  color: Color.fromRGBO(247, 159, 2, 1), size: 32),
+              onPressed: () {
+                GoRouter router = GoRouter.of(context);
+                router.go('/class');
+              },
+            ),
+            title: const Text(
+              "Liste des étudiants",
+              style: TextStyle(
+                color: Color.fromRGBO(72, 2, 151, 1),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
+            toolbarHeight: 64.0,
           ),
-        ),
         body: BlocBuilder<ClassIdBloc, ClassIdState>(
           builder: (context, state) {
             if (state is ClassIdInitial || state is ClassIdLoading) {
@@ -69,8 +81,18 @@ class ClassIdScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Prénom')),
-                DataColumn(label: Text('Nom')),
+                DataColumn(
+                    label: Text('Prénom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
                 DataColumn(label: Text(''))
               ],
               rows: students.map((student) {
@@ -78,15 +100,31 @@ class ClassIdScreen extends StatelessWidget {
                   cells: [
                     DataCell(Text(student['firstname'])),
                     DataCell(Text(student['lastname'])),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showRemoveStudentDialog(context, student);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.userMinus,
-                        color: Colors.red,
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _showRemoveStudentDialog(context, student);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.userMinus,
+                              size: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 );
               }).toList(),
