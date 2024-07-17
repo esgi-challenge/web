@@ -290,7 +290,7 @@ class Signature extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Text(
-                isSigned ? "Present" : "Absent",
+                isSigned ? "Présent" : "Absent",
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

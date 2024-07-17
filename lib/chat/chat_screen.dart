@@ -18,30 +18,50 @@ class ChannelScreen extends StatelessWidget {
       create: (context) => ChannelBloc(ChatService())..add(LoadChannels()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Chat'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.chatBubbleOvalLeft,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Chat',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<ChannelBloc, ChannelState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is ChannelLoaded) {
+                      _showDiscussDialog(context, state.students);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text('Discuter', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<ChannelBloc, ChannelState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (state is ChannelLoaded) {
-                            _showDiscussDialog(context, state.students);
-                          }
-                        },
-                        child: const Text('Discuter'),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<ChannelBloc, ChannelState>(
                   builder: (context, state) {
@@ -178,8 +198,18 @@ class ChannelScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Utilisateur')),
-                DataColumn(label: Text('Dernier message')),
+                DataColumn(
+                    label: Text('Utilisateur',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Dernier message',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
                 DataColumn(label: Text(''))
               ],
               rows: channels.map((channel) {
@@ -207,14 +237,31 @@ class ChannelScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.black.withOpacity(0.8)),
                       ),
                     ),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        GoRouter.of(context).go('/chat/$channelId');
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.chatBubbleOvalLeft,
+                    DataCell(
+                      SizedBox(
+                        width: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            GoRouter.of(context).go('/chat/$channelId');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: HeroIcon(
+                              HeroIcons.chatBubbleOvalLeft,
+                              size: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 );
               }).toList(),
