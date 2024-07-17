@@ -446,7 +446,6 @@ class CourseScreen extends StatelessWidget {
                     )
                 ),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: courses.map((course) {
                 DateTime parsedDate = DateTime.parse(course['createdAt']);
@@ -459,39 +458,56 @@ class CourseScreen extends StatelessWidget {
                     DataCell(Text(pathName)),
                     DataCell(Text(teacherName)),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(
-                      SizedBox(
-                        width: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _showCourseDetailDialog(context, course);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showCourseDetailDialog(context, course);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
                             ),
-                            padding: EdgeInsets.all(0),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: HeroIcon(
-                              HeroIcons.pencil,
-                              size: 16,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showCourseDeleteDialog(context, course);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showCourseDeleteDialog(context, course);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

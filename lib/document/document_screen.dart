@@ -344,22 +344,51 @@ class DocumentScreen extends StatelessWidget {
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Row(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _downloadDocument(document['path']);
-                          },
-                          child: const HeroIcon(
-                            HeroIcons.arrowDownTray,
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _downloadDocument(document['path']);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.arrowDownTray,
+                                size: 16,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showDocumentDeleteDialog(context, document);
-                          },
-                          child: const HeroIcon(
-                            HeroIcons.trash,
-                            color: Colors.red,
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showDocumentDeleteDialog(context, document);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
                           ),
                         ),
                       ],

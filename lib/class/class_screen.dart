@@ -392,8 +392,6 @@ class ClassScreen extends StatelessWidget {
                     )
                 ),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: classes.map((classSchool) {
                 DateTime parsedDate = DateTime.parse(classSchool['createdAt']);
@@ -407,47 +405,80 @@ class ClassScreen extends StatelessWidget {
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Text(pathName)),
                     DataCell(Text(classSchool['students'].length.toString())),
-                    DataCell(
-                      SizedBox(
-                        width: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _showClassDetailDialog(context, classSchool);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showClassDetailDialog(context, classSchool);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
                             ),
-                            padding: EdgeInsets.all(0),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: HeroIcon(
-                              HeroIcons.pencil,
-                              size: 16,
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    DataCell(ElevatedButton(
-                      onPressed: () => {
-                        _navigateToClassId(context, classSchool['id'])
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.userGroup
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showClassDeleteDialog(context, classSchool);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _navigateToClassId(context, classSchool['id']);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.userGroup,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showClassDeleteDialog(context, classSchool);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

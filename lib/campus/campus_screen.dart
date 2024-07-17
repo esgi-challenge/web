@@ -409,7 +409,6 @@ class _CampusScreenState extends State<CampusScreen> {
                               fontSize: 16,
                               color: Color.fromRGBO(72, 2, 151, 1)))),
                   DataColumn(label: Text('')),
-                  DataColumn(label: Text(''))
                 ],
                 rows: campuss.map((campus) {
                   DateTime parsedDate = DateTime.parse(campus['createdAt']);
@@ -419,39 +418,56 @@ class _CampusScreenState extends State<CampusScreen> {
                       DataCell(Text(campus['location'])),
                       DataCell(
                           Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                      DataCell(
-                        SizedBox(
-                          width: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showCampusDetailDialog(context, campus);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
+                      DataCell(Row(
+                        children: [
+                          SizedBox(
+                            width: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showCampusDetailDialog(context, campus);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                padding: EdgeInsets.all(0),
                               ),
-                              padding: EdgeInsets.all(0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: HeroIcon(
-                                HeroIcons.pencil,
-                                size: 16,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: HeroIcon(
+                                  HeroIcons.pencil,
+                                  size: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      DataCell(ElevatedButton(
-                        onPressed: () {
-                          _showCampusDeleteDialog(context, campus);
-                        },
-                        child: const HeroIcon(
-                          HeroIcons.trash,
-                          color: Colors.red,
-                        ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showCampusDeleteDialog(context, campus);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                padding: EdgeInsets.all(0),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: HeroIcon(
+                                  HeroIcons.trash,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       )),
                     ],
                   );
