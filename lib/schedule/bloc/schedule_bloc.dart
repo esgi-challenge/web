@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:web/core/services/campus_service.dart';
 import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/course_service.dart';
 import 'package:web/core/services/schedule_service.dart';
-import 'package:web/core/services/path_service.dart';
-import 'package:web/core/services/teacher_service.dart';
 import 'package:web/shared/toaster.dart';
 
 part 'schedule_event.dart';
@@ -69,7 +65,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       emit(ScheduleLoading());
       try {
         final schedule = await scheduleService.addSchedule(event.time,
-            event.duration, event.courseId, event.campusId, event.classId);
+            event.duration, event.courseId, event.campusId, event.classId, event.qrCodeEnabled);
 
         if (schedule != null) {
           originalSchedules ??= [];
@@ -109,7 +105,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             event.duration,
             event.courseId,
             event.campusId,
-            event.classId);
+            event.classId,
+            event.qrCodeEnabled);
 
         if (updatedSchedule != null) {
           final userIndex = originalSchedules!

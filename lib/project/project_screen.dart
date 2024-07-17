@@ -35,8 +35,8 @@ class ProjectScreen extends StatelessWidget {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2025),
     );
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(

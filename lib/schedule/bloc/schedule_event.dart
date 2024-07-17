@@ -38,9 +38,10 @@ class AddSchedule extends ScheduleEvent {
   final int courseId;
   final int campusId;
   final int classId;
+  final bool qrCodeEnabled;
 
   AddSchedule(
-      this.time, this.duration, this.courseId, this.campusId, this.classId);
+      this.time, this.duration, this.courseId, this.campusId, this.classId, this.qrCodeEnabled);
 }
 
 class UpdateSchedule extends ScheduleEvent {
@@ -50,7 +51,8 @@ class UpdateSchedule extends ScheduleEvent {
   final int courseId;
   final int campusId;
   final int classId;
+  final bool qrCodeEnabled;
 
   UpdateSchedule(this.id, this.time, this.duration, this.courseId,
-      this.campusId, this.classId);
+      this.campusId, this.classId, this.qrCodeEnabled);
 }

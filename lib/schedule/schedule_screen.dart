@@ -37,8 +37,8 @@ class ScheduleScreen extends StatelessWidget {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2025),
     );
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
@@ -152,106 +152,120 @@ class ScheduleScreen extends StatelessWidget {
 
   void _showCreateDialog(BuildContext context, dynamic courses,
       dynamic campuses, dynamic classes) {
+    bool _qrCodeEnabled = false;
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: BlocProvider.of<ScheduleBloc>(context),
-          child: Builder(
-            builder: (context) {
+          child: StatefulBuilder(
+            builder: (context, setState) {
               return AlertDialog(
                 title: const Text('Ajouter un créneau'),
-                content: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: Form(
-                    key: _createFormKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          DropdownButtonFormField<String>(
-                            decoration:
-                                const InputDecoration(labelText: 'Cours'),
-                            value: _selectedCourseId,
-                            items:
-                                courses.map<DropdownMenuItem<String>>((course) {
-                              return DropdownMenuItem<String>(
-                                value: course['id'].toString(),
-                                child: Text(course['name'].isNotEmpty
-                                    ? course['name']
-                                    : 'N/A'),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              _selectedCourseId = newValue;
-                            },
-                            validator: (value) =>
-                                value == null ? 'Sélectionnez un cours' : null,
-                          ),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            decoration:
-                                const InputDecoration(labelText: 'Campus'),
-                            value: _selectedCampusId,
-                            items: campuses
-                                .map<DropdownMenuItem<String>>((campus) {
-                              return DropdownMenuItem<String>(
-                                value: campus['id'].toString(),
-                                child: Text(campus['name'].isNotEmpty
-                                    ? campus['name']
-                                    : 'N/A'),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              _selectedCampusId = newValue;
-                            },
-                            validator: (value) =>
-                                value == null ? 'Sélectionnez un campus' : null,
-                          ),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            decoration:
-                                const InputDecoration(labelText: 'Classe'),
-                            value: _selectedClassId,
-                            items: classes
-                                .map<DropdownMenuItem<String>>((classSchool) {
-                              return DropdownMenuItem<String>(
-                                value: classSchool['id'].toString(),
-                                child: Text(classSchool['name'].isNotEmpty
-                                    ? classSchool['name']
-                                    : 'N/A'),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              _selectedClassId = newValue;
-                            },
-                            validator: (value) => value == null
-                                ? 'Sélectionnez une classe'
-                                : null,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'Date'),
-                            readOnly: true,
-                            onTap: () => _selectDateTime(context),
-                            validator: (value) => _selectedTime == null
-                                ? 'Sélectionnez une date'
-                                : null,
-                            controller: _timeController,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                                labelText: 'Durée (minutes)'),
-                            controller: _durationController,
-                            validator: InputValidator.validateOnlyNumbers,
-                          ),
-                        ],
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            DropdownButtonFormField<String>(
+                              decoration:
+                                  const InputDecoration(labelText: 'Cours'),
+                              value: _selectedCourseId,
+                              items:
+                                  courses.map<DropdownMenuItem<String>>((course) {
+                                return DropdownMenuItem<String>(
+                                  value: course['id'].toString(),
+                                  child: Text(course['name'].isNotEmpty
+                                      ? course['name']
+                                      : 'N/A'),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                _selectedCourseId = newValue;
+                              },
+                              validator: (value) =>
+                                  value == null ? 'Sélectionnez un cours' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              decoration:
+                                  const InputDecoration(labelText: 'Campus'),
+                              value: _selectedCampusId,
+                              items: campuses
+                                  .map<DropdownMenuItem<String>>((campus) {
+                                return DropdownMenuItem<String>(
+                                  value: campus['id'].toString(),
+                                  child: Text(campus['name'].isNotEmpty
+                                      ? campus['name']
+                                      : 'N/A'),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                _selectedCampusId = newValue;
+                              },
+                              validator: (value) =>
+                                  value == null ? 'Sélectionnez un campus' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              decoration:
+                                  const InputDecoration(labelText: 'Classe'),
+                              value: _selectedClassId,
+                              items: classes
+                                  .map<DropdownMenuItem<String>>((classSchool) {
+                                return DropdownMenuItem<String>(
+                                  value: classSchool['id'].toString(),
+                                  child: Text(classSchool['name'].isNotEmpty
+                                      ? classSchool['name']
+                                      : 'N/A'),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                _selectedClassId = newValue;
+                              },
+                              validator: (value) => value == null
+                                  ? 'Sélectionnez une classe'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'Date'),
+                              readOnly: true,
+                              onTap: () => _selectDateTime(context),
+                              validator: (value) => _selectedTime == null
+                                  ? 'Sélectionnez une date'
+                                  : null,
+                              controller: _timeController,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  labelText: 'Durée (minutes)'),
+                              controller: _durationController,
+                              validator: InputValidator.validateOnlyNumbers,
+                            ),
+                            const SizedBox(height: 16),
+                            CheckboxListTile(
+                              title: const Text('Activer le QR Code pour appel'),
+                              value: _qrCodeEnabled,
+                              onChanged: (bool? newValue) {
+                                setState(() {
+                                  _qrCodeEnabled = newValue!;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  )
                 ),
                 actions: [
                   TextButton(
@@ -270,7 +284,8 @@ class ScheduleScreen extends StatelessWidget {
                             int.parse(_durationController.text),
                             int.parse(_selectedCourseId!),
                             int.parse(_selectedCampusId!),
-                            int.parse(_selectedClassId!)));
+                            int.parse(_selectedClassId!),
+                            _qrCodeEnabled));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -344,6 +359,8 @@ class ScheduleScreen extends StatelessWidget {
       _selectedClassId = null;
     }
 
+    bool _qrCodeEnabled = schedule['qrCodeEnabled'] ?? false;
+
     _timeController.text =
         DateTime.fromMillisecondsSinceEpoch(schedule['time'] * 1000)
             .toLocal()
@@ -357,112 +374,124 @@ class ScheduleScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: BlocProvider.of<ScheduleBloc>(context),
-          child: Builder(
-            builder: (context) {
+          child: StatefulBuilder(
+            builder: (context, setState) {
               return AlertDialog(
                 title: const Text('Détails du créneau'),
-                content: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: BlocBuilder<ScheduleBloc, ScheduleState>(
-                    builder: (context, state) {
-                      if (state is ScheduleLoaded) {
-                        return Form(
-                          key: _updateFormKey,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                DropdownButtonFormField<String>(
-                                  decoration:
-                                      const InputDecoration(labelText: 'Cours'),
-                                  value: _selectedCourseId,
-                                  items: state.courses
-                                      .map<DropdownMenuItem<String>>((course) {
-                                    return DropdownMenuItem<String>(
-                                      value: course['id'].toString(),
-                                      child: Text(course['name'].isNotEmpty
-                                          ? course['name']
-                                          : 'N/A'),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    _selectedCourseId = newValue;
-                                  },
-                                  validator: (value) => value == null
-                                      ? 'Sélectionnez un cours'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(
-                                      labelText: 'Campus'),
-                                  value: _selectedCampusId,
-                                  items: state.campuses
-                                      .map<DropdownMenuItem<String>>((campus) {
-                                    return DropdownMenuItem<String>(
-                                      value: campus['id'].toString(),
-                                      child: Text(campus['name'].isNotEmpty
-                                          ? campus['name']
-                                          : 'N/A'),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    _selectedCampusId = newValue;
-                                  },
-                                  validator: (value) => value == null
-                                      ? 'Sélectionnez un campus'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
-                                DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(
-                                      labelText: 'Classe'),
-                                  value: _selectedClassId,
-                                  items: state.classes
-                                      .map<DropdownMenuItem<String>>(
-                                          (classSchool) {
-                                    return DropdownMenuItem<String>(
-                                      value: classSchool['id'].toString(),
-                                      child: Text(classSchool['name'].isNotEmpty
-                                          ? classSchool['name']
-                                          : 'N/A'),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    _selectedClassId = newValue;
-                                  },
-                                  validator: (value) => value == null
-                                      ? 'Sélectionnez une classe'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  decoration:
-                                      const InputDecoration(labelText: 'Date'),
-                                  readOnly: true,
-                                  onTap: () => _selectDateTime(context),
-                                  validator: (value) => _selectedTime == null
-                                      ? 'Sélectionnez une date'
-                                      : null,
-                                  controller: _timeController,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                      labelText: 'Durée (minutes)'),
-                                  controller: _durationController,
-                                  validator: InputValidator.validateOnlyNumbers,
-                                ),
-                              ],
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<ScheduleBloc, ScheduleState>(
+                      builder: (context, state) {
+                        if (state is ScheduleLoaded) {
+                          return Form(
+                            key: _updateFormKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  DropdownButtonFormField<String>(
+                                    decoration:
+                                        const InputDecoration(labelText: 'Cours'),
+                                    value: _selectedCourseId,
+                                    items: state.courses
+                                        .map<DropdownMenuItem<String>>((course) {
+                                      return DropdownMenuItem<String>(
+                                        value: course['id'].toString(),
+                                        child: Text(course['name'].isNotEmpty
+                                            ? course['name']
+                                            : 'N/A'),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      _selectedCourseId = newValue;
+                                    },
+                                    validator: (value) => value == null
+                                        ? 'Sélectionnez un cours'
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  DropdownButtonFormField<String>(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Campus'),
+                                    value: _selectedCampusId,
+                                    items: state.campuses
+                                        .map<DropdownMenuItem<String>>((campus) {
+                                      return DropdownMenuItem<String>(
+                                        value: campus['id'].toString(),
+                                        child: Text(campus['name'].isNotEmpty
+                                            ? campus['name']
+                                            : 'N/A'),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      _selectedCampusId = newValue;
+                                    },
+                                    validator: (value) => value == null
+                                        ? 'Sélectionnez un campus'
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  DropdownButtonFormField<String>(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Classe'),
+                                    value: _selectedClassId,
+                                    items: state.classes
+                                        .map<DropdownMenuItem<String>>(
+                                            (classSchool) {
+                                      return DropdownMenuItem<String>(
+                                        value: classSchool['id'].toString(),
+                                        child: Text(classSchool['name'].isNotEmpty
+                                            ? classSchool['name']
+                                            : 'N/A'),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      _selectedClassId = newValue;
+                                    },
+                                    validator: (value) => value == null
+                                        ? 'Sélectionnez une classe'
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    decoration:
+                                        const InputDecoration(labelText: 'Date'),
+                                    readOnly: true,
+                                    onTap: () => _selectDateTime(context),
+                                    validator: (value) => _selectedTime == null
+                                        ? 'Sélectionnez une date'
+                                        : null,
+                                    controller: _timeController,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Durée (minutes)'),
+                                    controller: _durationController,
+                                    validator: InputValidator.validateOnlyNumbers,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  CheckboxListTile(
+                                    title: const Text('Activer QR Code'),
+                                    value: _qrCodeEnabled,
+                                    onChanged: (bool? newValue) {
+                                      setState(() {
+                                        _qrCodeEnabled = newValue!;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  )
                 ),
                 actions: [
                   TextButton(
@@ -476,19 +505,14 @@ class ScheduleScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (_updateFormKey.currentState!.validate()) {
-                        // print(schedule['id']);
-                        // print(_selectedTime!.millisecondsSinceEpoch ~/ 1000);
-                        // print(int.parse(_selectedDuration!));
-                        // print(int.parse(_selectedCourseId!));
-                        // print(int.parse(_selectedCampusId!));
-                        // print(int.parse(_selectedClassId!));
                         context.read<ScheduleBloc>().add(UpdateSchedule(
                             schedule['id'],
                             _selectedTime!.millisecondsSinceEpoch ~/ 1000,
                             int.parse(_durationController.text),
                             int.parse(_selectedCourseId!),
                             int.parse(_selectedCampusId!),
-                            int.parse(_selectedClassId!)));
+                            int.parse(_selectedClassId!),
+                            _qrCodeEnabled));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }

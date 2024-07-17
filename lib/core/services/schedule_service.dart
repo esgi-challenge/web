@@ -26,7 +26,7 @@ class ScheduleService {
   }
 
   Future addSchedule(
-      int time, int duration, int courseId, int campusId, int classId) async {
+      int time, int duration, int courseId, int campusId, int classId, bool qrCodeEnabled) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
@@ -38,6 +38,7 @@ class ScheduleService {
             'courseId': courseId,
             'campusId': campusId,
             'classId': classId,
+            'qrCodeEnabled': qrCodeEnabled,
           });
 
       if (response.statusCode == 201) {
@@ -51,7 +52,7 @@ class ScheduleService {
   }
 
   Future updateSchedule(int id, int time, int duration, int courseId,
-      int campusId, int classId) async {
+      int campusId, int classId, bool qrCodeEnabled) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
@@ -63,6 +64,7 @@ class ScheduleService {
             'courseId': courseId,
             'campusId': campusId,
             'classId': classId,
+            'qrCodeEnabled': qrCodeEnabled
           });
 
       if (response.statusCode == 200) {
