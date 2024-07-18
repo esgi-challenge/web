@@ -49,20 +49,6 @@ class TeacherScreen extends StatelessWidget {
             ],
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                _showInviteDialog(context);
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(72, 2, 151, 1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child : const Text('Inviter', style: TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(width: 8),
             BlocBuilder<TeacherBloc, TeacherState>(
               builder: (context, state) {
                 return ElevatedButton(
