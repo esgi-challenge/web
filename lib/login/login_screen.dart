@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web/shared/input_validator.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,8 +39,18 @@ class _LoginScreenState extends State<LoginScreen> {
           data: {'password': password.text, 'email': email.text});
 
       if (response.statusCode == 200) {
-        await AuthService.saveJwt(response.data["token"]);
-        onSuccess.call();
+        Map<String, dynamic> decodedToken =
+            JwtDecoder.decode(response.data["token"]);
+        int userKind = decodedToken['user']['userKind'];
+        if (userKind < 1) {
+          setState(() {
+            _isError = true;
+            _isLoading = false;
+          });
+        } else {
+          await AuthService.saveJwt(response.data["token"]);
+          onSuccess.call();
+        }
       } else {
         setState(() {
           _isError = true;
