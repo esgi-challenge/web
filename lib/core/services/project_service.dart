@@ -12,9 +12,7 @@ class ProjectService {
     try {
       final response = await dio.get(
         '$apiUrl/api/projects',
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'}
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
       if (response.statusCode == 200) {
@@ -27,23 +25,25 @@ class ProjectService {
     }
   }
 
-  Future addProject(String title, String endDate, int courseId, int classId, int documentId) async {
+  Future addProject(
+    String title,
+    double endDate,
+    int courseId,
+    int classId,
+    int documentId,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
-      final response = await dio.post(
-        '$apiUrl/api/projects',
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'}
-        ),
-        data: {
-          'title': title,
-          'endDate': endDate,
-          'courseId': courseId,
-          'classId': classId,
-          'documentId': documentId
-        }
-      );
+      final response = await dio.post('$apiUrl/api/projects',
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+          data: {
+            'title': title,
+            'endDate': endDate,
+            'courseId': courseId,
+            'classId': classId,
+            'documentId': documentId
+          });
 
       if (response.statusCode == 201) {
         return response.data;
@@ -55,23 +55,26 @@ class ProjectService {
     }
   }
 
-  Future updateProject(int id, String title, String endDate, int courseId, int classId, int documentId) async {
+  Future updateProject(
+    int id,
+    String title,
+    double endDate,
+    int courseId,
+    int classId,
+    int documentId,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('kAuth');
     try {
-      final response = await dio.put(
-        '$apiUrl/api/projects/$id',
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'}
-        ),
-        data: {
-          'title': title,
-          'endDate': endDate,
-          'courseId': courseId,
-          'classId': classId,
-          'documentId': documentId
-        }
-      );
+      final response = await dio.put('$apiUrl/api/projects/$id',
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+          data: {
+            'title': title,
+            'endDate': endDate,
+            'courseId': courseId,
+            'classId': classId,
+            'documentId': documentId
+          });
 
       if (response.statusCode == 200) {
         return response.data;
@@ -89,9 +92,7 @@ class ProjectService {
     try {
       final response = await dio.delete(
         '$apiUrl/api/projects/$id',
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'}
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
       if (response.statusCode == 200) {

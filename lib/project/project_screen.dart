@@ -60,7 +60,9 @@ class ProjectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProjectBloc(ProjectService(), CourseService(), ClassService(), DocumentService())..add(LoadProjects()),
+      create: (context) => ProjectBloc(
+          ProjectService(), CourseService(), ClassService(), DocumentService())
+        ..add(LoadProjects()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Projets'),
@@ -76,10 +78,18 @@ class ProjectScreen extends StatelessWidget {
                     builder: (context, state) {
                       return ElevatedButton(
                         onPressed: () {
-                          if (state is ProjectLoaded && state.courses.isNotEmpty &&  state.classes.isNotEmpty && state.documents.isNotEmpty) {
-                            _showCreateDialog(context, state.courses, state.classes, state.documents);
-                          } else if (state is ProjectNotFound && state.courses.isNotEmpty && state.classes.isNotEmpty && state.documents.isNotEmpty) {
-                            _showCreateDialog(context, state.courses, state.classes, state.documents);
+                          if (state is ProjectLoaded &&
+                              state.courses.isNotEmpty &&
+                              state.classes.isNotEmpty &&
+                              state.documents.isNotEmpty) {
+                            _showCreateDialog(context, state.courses,
+                                state.classes, state.documents);
+                          } else if (state is ProjectNotFound &&
+                              state.courses.isNotEmpty &&
+                              state.classes.isNotEmpty &&
+                              state.documents.isNotEmpty) {
+                            _showCreateDialog(context, state.courses,
+                                state.classes, state.documents);
                           } else {
                             _showEmptyDialog(context);
                           }
@@ -99,9 +109,11 @@ class ProjectScreen extends StatelessWidget {
                     } else if (state is ProjectLoaded) {
                       return _buildProjectTable(context, state.projects);
                     } else if (state is ProjectNotFound) {
-                      return const Center(child: Text('Aucun projet d\'ajouté'));
+                      return const Center(
+                          child: Text('Aucun projet d\'ajouté'));
                     } else if (state is ProjectError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Projets'));
                     }
@@ -121,7 +133,8 @@ class ProjectScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Ajouter un créneau'),
-          content: const Text("Pour créer des projets il faut au moins une classe, un cours et un document, contactez votre admin pour ajouter des classes et cours"),
+          content: const Text(
+              "Pour créer des projets il faut au moins une classe, un cours et un document, contactez votre admin pour ajouter des classes et cours"),
           actions: [
             TextButton(
               onPressed: () {
@@ -135,8 +148,8 @@ class ProjectScreen extends StatelessWidget {
     );
   }
 
-
-  void _showCreateDialog(BuildContext context, dynamic courses, dynamic classes, dynamic documents) {
+  void _showCreateDialog(BuildContext context, dynamic courses, dynamic classes,
+      dynamic documents) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -158,60 +171,82 @@ class ProjectScreen extends StatelessWidget {
                           children: [
                             TextFormField(
                               controller: _titleController,
-                              decoration: const InputDecoration(labelText: 'Titre'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Titre'),
                               validator: InputValidator.validateName,
                             ),
                             const SizedBox(height: 16),
                             DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(labelText: 'Cours'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Cours'),
                               value: _selectedCourseId,
-                              items: courses.map<DropdownMenuItem<String>>((course) {
+                              items: courses
+                                  .map<DropdownMenuItem<String>>((course) {
                                 return DropdownMenuItem<String>(
                                   value: course['id'].toString(),
-                                  child: Text(course['name'].isNotEmpty ? course['name'] : 'N/A'),
+                                  child: Text(course['name'].isNotEmpty
+                                      ? course['name']
+                                      : 'N/A'),
                                 );
                               }).toList(),
                               onChanged: (String? newValue) {
                                 _selectedCourseId = newValue;
                               },
-                              validator: (value) => value == null ? 'Sélectionnez un cours' : null,
+                              validator: (value) => value == null
+                                  ? 'Sélectionnez un cours'
+                                  : null,
                             ),
                             const SizedBox(height: 16),
                             DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(labelText: 'Classe'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Classe'),
                               value: _selectedClassId,
-                              items: classes.map<DropdownMenuItem<String>>((classSchool) {
+                              items: classes
+                                  .map<DropdownMenuItem<String>>((classSchool) {
                                 return DropdownMenuItem<String>(
                                   value: classSchool['id'].toString(),
-                                  child: Text(classSchool['name'].isNotEmpty ? classSchool['name'] : 'N/A'),
+                                  child: Text(classSchool['name'].isNotEmpty
+                                      ? classSchool['name']
+                                      : 'N/A'),
                                 );
                               }).toList(),
                               onChanged: (String? newValue) {
                                 _selectedClassId = newValue;
                               },
-                              validator: (value) => value == null ? 'Sélectionnez une classe' : null,
+                              validator: (value) => value == null
+                                  ? 'Sélectionnez une classe'
+                                  : null,
                             ),
                             const SizedBox(height: 16),
                             DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(labelText: 'Document'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Document'),
                               value: _selectedDocumentId,
-                              items: documents.map<DropdownMenuItem<String>>((document) {
+                              items: documents
+                                  .map<DropdownMenuItem<String>>((document) {
                                 return DropdownMenuItem<String>(
                                   value: document['id'].toString(),
-                                  child: Text(document['name'].isNotEmpty ? document['name'] : 'N/A'),
+                                  child: Text(document['name'].isNotEmpty
+                                      ? document['name']
+                                      : 'N/A'),
                                 );
                               }).toList(),
                               onChanged: (String? newValue) {
                                 _selectedDocumentId = newValue;
                               },
-                              validator: (value) => value == null ? 'Sélectionnez un document' : null,
+                              validator: (value) => value == null
+                                  ? 'Sélectionnez un document'
+                                  : null,
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
-                              decoration: const InputDecoration(labelText: 'Date de rendu'),
+                              decoration: const InputDecoration(
+                                  labelText: 'Date de rendu'),
                               readOnly: true,
                               onTap: () => _selectDateTime(context),
-                              validator: (value) => _selectedTime == null ? 'Sélectionnez une date limite de rendu' : null,
+                              validator: (value) => _selectedTime == null
+                                  ? 'Sélectionnez une date limite de rendu'
+                                  : null,
                               controller: _timeController,
                             ),
                           ],
@@ -226,18 +261,20 @@ class ProjectScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_createFormKey.currentState!.validate()) {
                         context.read<ProjectBloc>().add(AddProject(
-                          _titleController.text,
-                          _selectedTime.toString(),
-                          int.parse(_selectedCourseId!),
-                          int.parse(_selectedClassId!),
-                          int.parse(_selectedDocumentId!)
-                        ));
+                            _titleController.text,
+                            (_selectedTime?.toUtc().millisecondsSinceEpoch ??
+                                    1000) /
+                                1000,
+                            int.parse(_selectedCourseId!),
+                            int.parse(_selectedClassId!),
+                            int.parse(_selectedDocumentId!)));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -259,12 +296,16 @@ class ProjectScreen extends StatelessWidget {
     final ProjectState currentState = projectBloc.state;
 
     if (currentState is ProjectLoaded) {
-      final courseExists = currentState.courses.any((course) => course['id'] == project['courseId']);
+      final courseExists = currentState.courses
+          .any((course) => course['id'] == project['courseId']);
       _selectedCourseId = courseExists ? project['courseId'].toString() : null;
-      final classExists = currentState.classes.any((classSchool) => classSchool['id'] == project['classId']);
+      final classExists = currentState.classes
+          .any((classSchool) => classSchool['id'] == project['classId']);
       _selectedClassId = classExists ? project['classId'].toString() : null;
-      final documentExists = currentState.documents.any((document) => document['id'] == project['documentId']);
-      _selectedDocumentId = documentExists ? project['documentId'].toString() : null;
+      final documentExists = currentState.documents
+          .any((document) => document['id'] == project['documentId']);
+      _selectedDocumentId =
+          documentExists ? project['documentId'].toString() : null;
     } else {
       _selectedCourseId = null;
       _selectedClassId = null;
@@ -296,59 +337,83 @@ class ProjectScreen extends StatelessWidget {
                               children: [
                                 TextFormField(
                                   controller: _titleController,
-                                  decoration: const InputDecoration(labelText: 'Titre'),
+                                  decoration:
+                                      const InputDecoration(labelText: 'Titre'),
                                   validator: InputValidator.validateName,
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Cours'),
+                                  decoration:
+                                      const InputDecoration(labelText: 'Cours'),
                                   value: _selectedCourseId,
-                                  items: state.courses.map<DropdownMenuItem<String>>((course) {
+                                  items: state.courses
+                                      .map<DropdownMenuItem<String>>((course) {
                                     return DropdownMenuItem<String>(
                                       value: course['id'].toString(),
-                                      child: Text(course['name'].isNotEmpty ? course['name'] : 'N/A'),
+                                      child: Text(course['name'].isNotEmpty
+                                          ? course['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedCourseId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez un cours' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez un cours'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Classe'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Classe'),
                                   value: _selectedClassId,
-                                  items: state.classes.map<DropdownMenuItem<String>>((classSchool) {
+                                  items: state.classes
+                                      .map<DropdownMenuItem<String>>(
+                                          (classSchool) {
                                     return DropdownMenuItem<String>(
                                       value: classSchool['id'].toString(),
-                                      child: Text(classSchool['name'].isNotEmpty ? classSchool['name'] : 'N/A'),
+                                      child: Text(classSchool['name'].isNotEmpty
+                                          ? classSchool['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedClassId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez une classe' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez une classe'
+                                      : null,
                                 ),
                                 DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(labelText: 'Document'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Document'),
                                   value: _selectedDocumentId,
-                                  items: state.documents.map<DropdownMenuItem<String>>((document) {
+                                  items: state.documents
+                                      .map<DropdownMenuItem<String>>(
+                                          (document) {
                                     return DropdownMenuItem<String>(
                                       value: document['id'].toString(),
-                                      child: Text(document['name'].isNotEmpty ? document['name'] : 'N/A'),
+                                      child: Text(document['name'].isNotEmpty
+                                          ? document['name']
+                                          : 'N/A'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
                                     _selectedDocumentId = newValue;
                                   },
-                                  validator: (value) => value == null ? 'Sélectionnez un document' : null,
+                                  validator: (value) => value == null
+                                      ? 'Sélectionnez un document'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
-                                  decoration: const InputDecoration(labelText: 'Date de rendu'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Date de rendu'),
                                   readOnly: true,
                                   onTap: () => _selectDateTime(context),
-                                  validator: (value) => _selectedTime == null ? 'Sélectionnez une date limite de rendu' : null,
+                                  validator: (value) => _selectedTime == null
+                                      ? 'Sélectionnez une date limite de rendu'
+                                      : null,
                                   controller: _timeController,
                                 ),
                               ],
@@ -367,19 +432,21 @@ class ProjectScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_updateFormKey.currentState!.validate()) {
                         context.read<ProjectBloc>().add(UpdateProject(
-                          project['id'],
-                          _titleController.text,
-                          _selectedTime.toString(),
-                          int.parse(_selectedCourseId!),
-                          int.parse(_selectedClassId!),
-                          int.parse(_selectedDocumentId!)
-                        ));
+                            project['id'],
+                            _titleController.text,
+                            (_selectedTime?.toUtc().millisecondsSinceEpoch ??
+                                    1000) /
+                                1000,
+                            int.parse(_selectedCourseId!),
+                            int.parse(_selectedClassId!),
+                            int.parse(_selectedDocumentId!)));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -420,14 +487,18 @@ class ProjectScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                    child: const Text('Annuler',
+                        style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<ProjectBloc>().add(DeleteProject(project['id']));
+                      context
+                          .read<ProjectBloc>()
+                          .add(DeleteProject(project['id']));
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+                    child: const Text('Supprimer',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               );
@@ -456,9 +527,15 @@ class ProjectScreen extends StatelessWidget {
                 DataColumn(label: Text(''))
               ],
               rows: projects.map((project) {
-                final courseName = project['course']['name'].isNotEmpty ? project['course']['name'] : 'N/A';
-                final className = project['class']['name'].isNotEmpty ? project['class']['name'] : 'N/A';
-                final documentName = project['document']['name'].isNotEmpty ? project['document']['name'] : 'N/A';
+                final courseName = project['course']['name'].isNotEmpty
+                    ? project['course']['name']
+                    : 'N/A';
+                final className = project['class']['name'].isNotEmpty
+                    ? project['class']['name']
+                    : 'N/A';
+                final documentName = project['document']['name'].isNotEmpty
+                    ? project['document']['name']
+                    : 'N/A';
                 final time = project['endDate'];
 
                 return DataRow(
