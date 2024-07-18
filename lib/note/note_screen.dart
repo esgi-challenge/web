@@ -211,7 +211,7 @@ class NoteScreen extends StatelessWidget {
                                   items: students.map<DropdownMenuItem<String>>((student) {
                                     return DropdownMenuItem<String>(
                                       value: student['id'].toString(),
-                                      child: Text(student['firstname']),
+                                      child: Text('${student['firstname']} ${student['lastname']}'),
                                     );
                                   }).toList(),
                                   onChanged: (String? newValue) {
