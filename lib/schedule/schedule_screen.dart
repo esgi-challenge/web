@@ -183,7 +183,13 @@ class ScheduleScreen extends StatelessWidget {
           child: StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                title: const Text('Ajouter un créneau'),
+                title: const Text(
+                  'Ajouter un créneau',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,

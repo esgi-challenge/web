@@ -104,26 +104,37 @@ class PathScreen extends StatelessWidget {
           child: Builder (
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter une filière'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _shortNameController,
-                          decoration: const InputDecoration(labelText: 'Nom raccourci'),
-                          validator: InputValidator.validateName,
+                title: const Text(
+                  'Ajouter une filière',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _shortNameController,
+                              decoration: const InputDecoration(labelText: 'Nom raccourci'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _longNameController,
+                              decoration: const InputDecoration(labelText: 'Nom complet'),
+                              validator: InputValidator.validateName,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _longNameController,
-                          decoration: const InputDecoration(labelText: 'Nom complet'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -169,26 +180,37 @@ class PathScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la filière'),
-                content: Form(
-                  key: _updateFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _shortNameController,
-                          decoration: const InputDecoration(labelText: 'Nom raccourci'),
-                          validator: InputValidator.validateName,
+                title: const Text(
+                  'Détails de la filière',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _updateFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _shortNameController,
+                              decoration: const InputDecoration(labelText: 'Nom raccourci'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _longNameController,
+                              decoration: const InputDecoration(labelText: 'Nom complet'),
+                              validator: InputValidator.validateName,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _longNameController,
-                          decoration: const InputDecoration(labelText: 'Nom complet'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

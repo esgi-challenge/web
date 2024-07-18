@@ -30,8 +30,7 @@ class StudentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          StudentBloc(StudentService(), ClassService())..add(LoadStudents()),
+      create: (context) => StudentBloc(StudentService(), ClassService())..add(LoadStudents()),
       child: Scaffold(
         appBar: AppBar(
           title: const Row(
@@ -51,18 +50,22 @@ class StudentScreen extends StatelessWidget {
             ],
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                _showInviteDialog(context);
+            BlocBuilder<StudentBloc, StudentState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showInviteDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text('Inviter', style: TextStyle(fontSize: 16)),
+                );
               },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(72, 2, 151, 1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: const Text('Inviter', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(width: 8),
             BlocBuilder<StudentBloc, StudentState>(
@@ -109,9 +112,7 @@ class StudentScreen extends StatelessWidget {
                             ),
                           ),
                           onChanged: (query) {
-                            context
-                                .read<StudentBloc>()
-                                .add(SearchStudents(query));
+                            context.read<StudentBloc>().add(SearchStudents(query));
                           },
                         );
                       },
@@ -120,21 +121,18 @@ class StudentScreen extends StatelessWidget {
                   const SizedBox(width: 500),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<StudentBloc, StudentState>(
                   builder: (context, state) {
                     if (state is StudentLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is StudentLoaded) {
-                      return _buildStudentTable(
-                          context, state.students, state.classes);
+                      return _buildStudentTable(context, state.students, state.classes);
                     } else if (state is StudentNotFound) {
-                      return const Center(
-                          child: Text('Aucun élève dans cette école'));
+                      return const Center(child: Text('Aucun élève dans cette école'));
                     } else if (state is StudentError) {
-                      return Center(
-                          child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Students'));
                     }
@@ -174,7 +172,7 @@ class StudentScreen extends StatelessWidget {
                         TextFormField(
                           controller: _firstnameController,
                           decoration:
-                              const InputDecoration(labelText: 'Prénom'),
+                          const InputDecoration(labelText: 'Prénom'),
                           validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
@@ -200,10 +198,10 @@ class StudentScreen extends StatelessWidget {
                     onPressed: () {
                       if (_createFormKey.currentState!.validate()) {
                         context.read<StudentBloc>().add(InviteStudent(
-                              _emailController.text,
-                              _firstnameController.text,
-                              _lastnameController.text,
-                            ));
+                          _emailController.text,
+                          _firstnameController.text,
+                          _lastnameController.text,
+                        ));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -225,7 +223,7 @@ class StudentScreen extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: BlocProvider.of<StudentBloc>(context),
-          child: Builder(
+          child: Builder (
             builder: (context) {
               return AlertDialog(
                 title: const Text('Ajouter un élève'),
@@ -244,8 +242,7 @@ class StudentScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _firstnameController,
-                          decoration:
-                              const InputDecoration(labelText: 'Prénom'),
+                          decoration: const InputDecoration(labelText: 'Prénom'),
                           validator: InputValidator.validateName,
                         ),
                         const SizedBox(height: 16),
@@ -257,8 +254,7 @@ class StudentScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
-                          decoration:
-                              const InputDecoration(labelText: 'Mot de passe'),
+                          decoration: const InputDecoration(labelText: 'Mot de passe'),
                           obscureText: true,
                           validator: InputValidator.validatePassword,
                         ),
@@ -272,18 +268,17 @@ class StudentScreen extends StatelessWidget {
                       _clearInputs();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Fermer',
-                        style: TextStyle(color: Colors.red)),
+                    child: const Text('Fermer', style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       if (_createFormKey.currentState!.validate()) {
                         context.read<StudentBloc>().add(AddStudent(
-                              _emailController.text,
-                              _firstnameController.text,
-                              _lastnameController.text,
-                              _passwordController.text,
-                            ));
+                          _emailController.text,
+                          _firstnameController.text,
+                          _lastnameController.text,
+                          _passwordController.text,
+                        ));
                         _clearInputs();
                         Navigator.of(context).pop();
                       }
@@ -322,15 +317,13 @@ class StudentScreen extends StatelessWidget {
                         children: [
                           TextFormField(
                             controller: _emailController,
-                            decoration:
-                                const InputDecoration(labelText: 'Email'),
+                            decoration: const InputDecoration(labelText: 'Email'),
                             validator: InputValidator.validateEmail,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
                             controller: _firstnameController,
-                            decoration:
-                                const InputDecoration(labelText: 'Prénom'),
+                            decoration: const InputDecoration(labelText: 'Prénom'),
                             validator: InputValidator.validateName,
                           ),
                           const SizedBox(height: 16),
@@ -349,18 +342,17 @@ class StudentScreen extends StatelessWidget {
                         _clearInputs();
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Fermer',
-                          style: TextStyle(color: Colors.red)),
+                      child: const Text('Fermer', style: TextStyle(color: Colors.red)),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         if (_updateFormKey.currentState!.validate()) {
                           context.read<StudentBloc>().add(UpdateStudent(
-                                student['id'],
-                                _emailController.text,
-                                _firstnameController.text,
-                                _lastnameController.text,
-                              ));
+                            student['id'],
+                            _emailController.text,
+                            _firstnameController.text,
+                            _lastnameController.text,
+                          ));
                           _clearInputs();
                           Navigator.of(context).pop();
                         }
@@ -370,7 +362,8 @@ class StudentScreen extends StatelessWidget {
                   ],
                 );
               },
-            ));
+            )
+        );
       },
     );
   }
@@ -392,8 +385,7 @@ class StudentScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                          'Voulez vous vraiment supprimer l\'élève $firstname $lastname?')
+                      Text('Voulez vous vraiment supprimer l\'élève $firstname $lastname?')
                     ],
                   ),
                 ),
@@ -402,18 +394,14 @@ class StudentScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler',
-                        style: TextStyle(color: Colors.red)),
+                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<StudentBloc>()
-                          .add(DeleteStudent(student['id']));
+                      context.read<StudentBloc>().add(DeleteStudent(student['id']));
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Supprimer',
-                        style: TextStyle(color: Colors.red)),
+                    child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
                   ),
                 ],
               );
@@ -427,131 +415,132 @@ class StudentScreen extends StatelessWidget {
   Widget _buildStudentTable(
       BuildContext context, List<dynamic> students, List<dynamic> classes) {
     return SizedBox(
-      width: double.infinity,
-      child: BlocBuilder<StudentBloc, StudentState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: const [
-                DataColumn(
-                    label: Text('Nom',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(
-                    label: Text('Prénom',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(
-                    label: Text('Classe',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(
-                    label: Text('Email',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(
-                    label: Text('Date de création',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(label: Text('')),
-              ],
-              rows: students.map((student) {
-                DateTime parsedDate = DateTime.parse(student['createdAt']);
-                String className = classes.firstWhere(
-                  (classSchool) => classSchool['id'] == student['classRefer'],
-                  orElse: () => {'name': 'N/A'}
-                )['name'];
-                return DataRow(
-                  cells: [
-                    DataCell(Text(student['lastname'])),
-                    DataCell(Text(student['firstname'])),
-                    DataCell(Text(className)),
-                    DataCell(Text(student['email'])),
-                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(Row(
-                      children: [
-                        SizedBox(
-                          width: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showStudentDetailDialog(context, student);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
+        width: double.infinity,
+        child: BlocBuilder<StudentBloc, StudentState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(
+                      label: Text('Nom',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)
+                          )
+                      )
+                  ),
+                  DataColumn(
+                      label: Text('Prénom',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)
+                          )
+                      )
+                  ),
+                  DataColumn(
+                      label: Text('Classe',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)
+                          )
+                      )
+                  ),
+                  DataColumn(
+                      label: Text('Email',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)
+                          )
+                      )
+                  ),
+                  DataColumn(
+                      label: Text('Date de création',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color.fromRGBO(72, 2, 151, 1)
+                          )
+                      )
+                  ),
+                  DataColumn(label: Text('')),
+                ],
+                rows: students.map((student) {
+                  DateTime parsedDate = DateTime.parse(student['createdAt']);
+                  String className = classes.firstWhere(
+                          (classSchool) => classSchool['id'] == student['classRefer'],
+                      orElse: () => {'name': 'N/A'}
+                  )['name'];
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(student['lastname'])),
+                      DataCell(Text(student['firstname'])),
+                      DataCell(Text(className)),
+                      DataCell(Text(student['email'])),
+                      DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                      DataCell(Row(
+                        children: [
+                          SizedBox(
+                            width: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showStudentDetailDialog(context, student);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                padding: EdgeInsets.all(0),
                               ),
-                              padding: EdgeInsets.all(0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: HeroIcon(
-                                HeroIcons.pencil,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showStudentDeleteDialog(context, student);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              padding: EdgeInsets.all(0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: HeroIcon(
-                                HeroIcons.trash,
-                                size: 16,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: HeroIcon(
+                                  HeroIcons.pencil,
+                                  size: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    )),
-                  ],
-                );
-              }).toList(),
-            ),
-          );
-        },
-      )
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showStudentDeleteDialog(context, student);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                padding: EdgeInsets.all(0),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: HeroIcon(
+                                  HeroIcons.trash,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                    ],
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        )
     );
   }
+
 }

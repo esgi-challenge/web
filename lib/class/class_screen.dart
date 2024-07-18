@@ -137,41 +137,52 @@ class ClassScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter une classe'),
-                content: BlocBuilder<ClassBloc, ClassState>(
-                  builder: (context, state) {
-                      return Form(
-                        key: _createFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Nom'),
-                                validator: InputValidator.validateName,
-                              ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Filière'),
-                                value: _selectedPathId,
-                                items: paths.map<DropdownMenuItem<String>>((path) {
-                                  return DropdownMenuItem<String>(
-                                    value: path['id'].toString(),
-                                    child: Text(path['shortName']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedPathId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez une filière' : null,
-                              ),
-                            ],
+                title: const Text(
+                  'Ajouter une classe',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<ClassBloc, ClassState>(
+                      builder: (context, state) {
+                        return Form(
+                          key: _createFormKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: _nameController,
+                                  decoration: const InputDecoration(labelText: 'Nom'),
+                                  validator: InputValidator.validateName,
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(labelText: 'Filière'),
+                                  value: _selectedPathId,
+                                  items: paths.map<DropdownMenuItem<String>>((path) {
+                                    return DropdownMenuItem<String>(
+                                      value: path['id'].toString(),
+                                      child: Text(path['shortName']),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    _selectedPathId = newValue;
+                                  },
+                                  validator: (value) => value == null ? 'Sélectionnez une filière' : null,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -223,45 +234,56 @@ class ClassScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la classe'),
-                content: BlocBuilder<ClassBloc, ClassState>(
-                  builder: (context, state) {
-                    if (state is ClassLoaded) {
-                      return Form(
-                        key: _updateFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Nom'),
-                                validator: InputValidator.validateName,
+                title: const Text(
+                  'Détails de la classe',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<ClassBloc, ClassState>(
+                      builder: (context, state) {
+                        if (state is ClassLoaded) {
+                          return Form(
+                            key: _updateFormKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextFormField(
+                                    controller: _nameController,
+                                    decoration: const InputDecoration(labelText: 'Nom'),
+                                    validator: InputValidator.validateName,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  DropdownButtonFormField<String>(
+                                    decoration: const InputDecoration(labelText: 'Filière'),
+                                    value: _selectedPathId,
+                                    items: state.paths.map<DropdownMenuItem<String>>((path) {
+                                      return DropdownMenuItem<String>(
+                                        value: path['id'].toString(),
+                                        child: Text(path['shortName']),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      _selectedPathId = newValue;
+                                    },
+                                    validator: (value) => value == null ? 'Sélectionnez une filière' : null,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Filière'),
-                                value: _selectedPathId,
-                                items: state.paths.map<DropdownMenuItem<String>>((path) {
-                                  return DropdownMenuItem<String>(
-                                    value: path['id'].toString(),
-                                    child: Text(path['shortName']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedPathId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez une filière' : null,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
+                            ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(

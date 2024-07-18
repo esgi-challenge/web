@@ -126,77 +126,88 @@ class _CampusScreenState extends State<CampusScreen> {
                   return StatefulBuilder(
                     builder: (context, setState) {
                       return AlertDialog(
-                        title: const Text('Ajouter un campus'),
-                        content: Form(
-                          key: _createFormKey,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  controller: _nameController,
-                                  decoration:
+                        title: const Text(
+                          'Ajouter un campus',
+                          style: TextStyle(
+                            color: Color.fromRGBO(72, 2, 151, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: SingleChildScrollView(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: Form(
+                              key: _createFormKey,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextFormField(
+                                      controller: _nameController,
+                                      decoration:
                                       const InputDecoration(labelText: 'Nom'),
-                                  validator: InputValidator.validateName,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _locationController,
-                                  focusNode: _searchFocusNode,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Localisation'),
-                                  onChanged: (query) {
-                                    if (_debounce?.isActive ?? false)
-                                      _debounce?.cancel();
-                                    _debounce =
-                                        Timer(const Duration(milliseconds: 600),
-                                            () async {
-                                      if (query.isNotEmpty) {
-                                        final response = await CampusService()
-                                            .getLocationPredictions(query);
-                                        setState(() {
-                                          predictions = response;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          predictions.clear();
-                                        });
-                                      }
-                                    });
-                                  },
-                                ),
-                                if (predictions.isNotEmpty)
-                                  SizedBox(
-                                    height: 250,
-                                    width: 300,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      padding: const EdgeInsets.all(8),
-                                      itemCount: predictions.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final prediction = predictions[index];
-                                        return ListTile(
-                                          title:
-                                              Text(prediction['description']),
-                                          onTap: () {
-                                            setState(() {
-                                              predictions.clear();
-                                            });
-
-                                            _locationController.text =
-                                                prediction['description'];
-                                            choosedLatitude =
-                                                prediction['latitude'];
-                                            choosedLongitude =
-                                                prediction['longitude'];
-                                          },
-                                        );
+                                      validator: InputValidator.validateName,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    TextFormField(
+                                      controller: _locationController,
+                                      focusNode: _searchFocusNode,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Localisation'),
+                                      onChanged: (query) {
+                                        if (_debounce?.isActive ?? false)
+                                          _debounce?.cancel();
+                                        _debounce =
+                                            Timer(const Duration(milliseconds: 600),
+                                                    () async {
+                                                  if (query.isNotEmpty) {
+                                                    final response = await CampusService()
+                                                        .getLocationPredictions(query);
+                                                    setState(() {
+                                                      predictions = response;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      predictions.clear();
+                                                    });
+                                                  }
+                                                });
                                       },
                                     ),
-                                  ),
-                              ],
+                                    if (predictions.isNotEmpty)
+                                      SizedBox(
+                                        height: 250,
+                                        width: 300,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          padding: const EdgeInsets.all(8),
+                                          itemCount: predictions.length,
+                                          itemBuilder:
+                                              (BuildContext context, int index) {
+                                            final prediction = predictions[index];
+                                            return ListTile(
+                                              title:
+                                              Text(prediction['description']),
+                                              onTap: () {
+                                                setState(() {
+                                                  predictions.clear();
+                                                });
+
+                                                _locationController.text =
+                                                prediction['description'];
+                                                choosedLatitude =
+                                                prediction['latitude'];
+                                                choosedLongitude =
+                                                prediction['longitude'];
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -250,7 +261,13 @@ class _CampusScreenState extends State<CampusScreen> {
             child: Builder(
               builder: (context) {
                 return AlertDialog(
-                  title: const Text('Détails du campus'),
+                  title: const Text(
+                    'Détails du campus',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   content: SingleChildScrollView(
                     child: Form(
                       key: _updateFormKey,
