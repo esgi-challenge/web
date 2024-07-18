@@ -25,29 +25,44 @@ class InformationScreen extends StatelessWidget {
       create: (context) => InformationBloc(InformationService())..add(LoadInformations()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Informations'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 60.0, top: 20.0),
-              child: BlocBuilder<InformationBloc, InformationState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      _showCreateDialog(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(249, 178, 53, 1),
-                      foregroundColor: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4))
-                      )
-                    ),
-                    child: const Text('Publier'),
-                  );
-                },
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.informationCircle,
+                color: Color.fromRGBO(72, 2, 151, 1),
               ),
-            )
+              SizedBox(width: 8),
+              Text(
+                'Informations',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<InformationBloc, InformationState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showCreateDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child:
+                  const Text('Publier', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            SizedBox(width: 16),
           ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -193,50 +208,84 @@ class InformationScreen extends StatelessWidget {
         int reversedIndex = informations.length - 1 - index;
         var information = informations[reversedIndex];
         DateTime parsedDate = DateTime.parse(information['createdAt']);
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  information['title'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  DateFormat('dd/MM/yyyy').format(parsedDate),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(information['description']),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showInformationDeleteDialog(context, information);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4))
-                      )
+        return Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.7,
+            child: Card(
+              elevation: 0,
+              color: Colors.white,
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(50, 50, 50, 0.1),
+                      spreadRadius: 0,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
                     ),
-                    child: const HeroIcon(
-                      HeroIcons.trash,
-                      color: Colors.white,
-                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            information['title'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Color.fromRGBO(72, 2, 151, 1),
+                            ),
+                          ),
+                          Text(
+                            DateFormat('dd/MM/yyyy').format(parsedDate),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(information['description']),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showInformationDeleteDialog(context, information);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );

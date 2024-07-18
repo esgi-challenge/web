@@ -32,7 +32,43 @@ class TeacherScreen extends StatelessWidget {
       create: (context) => TeacherBloc(TeacherService())..add(LoadTeachers()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Professeurs'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.user,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Professeurs',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<TeacherBloc, TeacherState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showCreateDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child : const Text('Ajouter', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            const SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -66,16 +102,6 @@ class TeacherScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 500),
-                  BlocBuilder<TeacherBloc, TeacherState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _showCreateDialog(context);
-                        },
-                        child: const Text('Ajouter'),
-                      );
-                    },
-                  )
                 ],
               ),
               const SizedBox(height: 16),
@@ -383,52 +409,117 @@ class TeacherScreen extends StatelessWidget {
 
   Widget _buildTeacherTable(BuildContext context, List<dynamic> teachers) {
     return SizedBox(
-        width: double.infinity,
-        child: BlocBuilder<TeacherBloc, TeacherState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Nom')),
-                  DataColumn(label: Text('Prénom')),
-                  DataColumn(label: Text('Email')),
-                  DataColumn(label: Text('Date de création')),
-                  DataColumn(label: Text('')),
-                  DataColumn(label: Text(''))
-                ],
-                rows: teachers.map((teacher) {
-                  DateTime parsedDate = DateTime.parse(teacher['createdAt']);
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(teacher['lastname'])),
-                      DataCell(Text(teacher['firstname'])),
-                      DataCell(Text(teacher['email'])),
-                      DataCell(
-                          Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                      DataCell(ElevatedButton(
-                        onPressed: () {
-                          _showTeacherDetailDialog(context, teacher);
-                        },
-                        child: const HeroIcon(
-                          HeroIcons.pencil,
+      width: double.infinity,
+      child: BlocBuilder<TeacherBloc, TeacherState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Prénom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Email',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(label: Text('')),
+              ],
+              rows: teachers.map((teacher) {
+                DateTime parsedDate = DateTime.parse(teacher['createdAt']);
+                return DataRow(
+                  cells: [
+                    DataCell(Text(teacher['lastname'])),
+                    DataCell(Text(teacher['firstname'])),
+                    DataCell(Text(teacher['email'])),
+                    DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showTeacherDetailDialog(context, teacher);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
                         ),
-                      )),
-                      DataCell(ElevatedButton(
-                        onPressed: () {
-                          _showTeacherDeleteDialog(context, teacher);
-                        },
-                        child: const HeroIcon(
-                          HeroIcons.trash,
-                          color: Colors.red,
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showTeacherDeleteDialog(context, teacher);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
                         ),
-                      )),
-                    ],
-                  );
-                }).toList(),
-              ),
-            );
-          },
-        ));
+                      ],
+                    )),
+                  ],
+                );
+              }).toList(),
+            ),
+          );
+        },
+      )
+    );
   }
 }

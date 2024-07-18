@@ -41,34 +41,57 @@ class DocumentScreen extends StatelessWidget {
       create: (context) => DocumentBloc(DocumentService(), CourseService())..add(LoadDocuments()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Documents'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.document,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Documents',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<DocumentBloc, DocumentState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is DocumentLoaded && state.courses.isNotEmpty) {
+                      _showCreateDialog(context, state.courses);
+                    } else if (state is DocumentNotFound && state.courses.isNotEmpty) {
+                      _showCreateDialog(context, state.courses);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<DocumentBloc, DocumentState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (state is DocumentLoaded && state.courses.isNotEmpty) {
-                            _showCreateDialog(context, state.courses);
-                          } else if (state is DocumentNotFound && state.courses.isNotEmpty) {
-                            _showCreateDialog(context, state.courses);
-                          } else {
-                            _showEmptyDialog(context);
-                          }
-                        },
-                        child: const Text('Créer'),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<DocumentBloc, DocumentState>(
                   builder: (context, state) {
@@ -270,10 +293,34 @@ class DocumentScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Cours')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('Actions'))
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Cours',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(label: Text('')),
               ],
               rows: documents.map((document) {
                 DateTime parsedDate = DateTime.parse(document['createdAt']);
@@ -288,22 +335,51 @@ class DocumentScreen extends StatelessWidget {
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Row(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _downloadDocument(document['path']);
-                          },
-                          child: const HeroIcon(
-                            HeroIcons.arrowDownTray,
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _downloadDocument(document['path']);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.arrowDownTray,
+                                size: 16,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showDocumentDeleteDialog(context, document);
-                          },
-                          child: const HeroIcon(
-                            HeroIcons.trash,
-                            color: Colors.red,
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showDocumentDeleteDialog(context, document);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
                           ),
                         ),
                       ],

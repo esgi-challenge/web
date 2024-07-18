@@ -33,7 +33,49 @@ class NoteScreen extends StatelessWidget {
       create: (context) => NoteBloc(NoteService(), ProjectService(), StudentService())..add(LoadNotes()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Notes'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.pencilSquare,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Notes',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<NoteBloc, NoteState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is NoteLoaded && state.projects.isNotEmpty && state.students.isNotEmpty) {
+                      _showCreateDialog(context, state.projects, state.students);
+                    } else if (state is NoteNotFound && state.projects.isNotEmpty && state.students.isNotEmpty) {
+                      _showCreateDialog(context, state.projects, state.students);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text('Ajouter une note', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -66,23 +108,7 @@ class NoteScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(width: 50),
-                  BlocBuilder<NoteBloc, NoteState>(
-                    builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: () {
-                            if (state is NoteLoaded && state.projects.isNotEmpty && state.students.isNotEmpty) {
-                              _showCreateDialog(context, state.projects, state.students);
-                            } else if (state is NoteNotFound && state.projects.isNotEmpty && state.students.isNotEmpty) {
-                              _showCreateDialog(context, state.projects, state.students);
-                            } else {
-                              _showEmptyDialog(context);
-                            }
-                          },
-                          child: const Text('Ajouter une note'),
-                        );
-                    },
-                  )
+                  const SizedBox(width: 500),
                 ],
               ),
               const SizedBox(height: 16),
@@ -378,12 +404,31 @@ class NoteScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Note')),
-                DataColumn(label: Text('Projet')),
-                DataColumn(label: Text('Étudiant')),
-                DataColumn(label: Text('Date de création')),
+                DataColumn(
+                    label: Text('Note',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Projet',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Étudiant',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: notes.map((note) {
                 DateTime parsedDate = DateTime.parse(note['createdAt']);
@@ -393,22 +438,56 @@ class NoteScreen extends StatelessWidget {
                     DataCell(Text(note['project']['title'])),
                     DataCell(Text('${note['student']['firstname']} ${note['student']['lastname']}')),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showNoteDetailDialog(context, note);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showNoteDeleteDialog(context, note);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showNoteDetailDialog(context, note);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showNoteDeleteDialog(context, note);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

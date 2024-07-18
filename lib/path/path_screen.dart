@@ -26,28 +26,51 @@ class PathScreen extends StatelessWidget {
       create: (context) => PathBloc(PathService())..add(LoadPaths()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Filières'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.briefcase,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Filières',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<PathBloc, PathState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _showCreateDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<PathBloc, PathState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _showCreateDialog(context);
-                        },
-                        child: const Text('Créer'),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<PathBloc, PathState>(
                   builder: (context, state) {
@@ -81,26 +104,37 @@ class PathScreen extends StatelessWidget {
           child: Builder (
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter une filière'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _shortNameController,
-                          decoration: const InputDecoration(labelText: 'Nom raccourci'),
-                          validator: InputValidator.validateName,
+                title: const Text(
+                  'Ajouter une filière',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _shortNameController,
+                              decoration: const InputDecoration(labelText: 'Nom raccourci'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _longNameController,
+                              decoration: const InputDecoration(labelText: 'Nom complet'),
+                              validator: InputValidator.validateName,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _longNameController,
-                          decoration: const InputDecoration(labelText: 'Nom complet'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -146,26 +180,37 @@ class PathScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la filière'),
-                content: Form(
-                  key: _updateFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _shortNameController,
-                          decoration: const InputDecoration(labelText: 'Nom raccourci'),
-                          validator: InputValidator.validateName,
+                title: const Text(
+                  'Détails de la filière',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _updateFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _shortNameController,
+                              decoration: const InputDecoration(labelText: 'Nom raccourci'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _longNameController,
+                              decoration: const InputDecoration(labelText: 'Nom complet'),
+                              validator: InputValidator.validateName,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _longNameController,
-                          decoration: const InputDecoration(labelText: 'Nom complet'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -252,11 +297,34 @@ class PathScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom raccourci')),
-                DataColumn(label: Text('Nom complet')),
-                DataColumn(label: Text('Date de création')),
+                DataColumn(
+                    label: Text('Nom raccourci',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Nom complet',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: paths.map((path) {
                 DateTime parsedDate = DateTime.parse(path['createdAt']);
@@ -265,22 +333,56 @@ class PathScreen extends StatelessWidget {
                     DataCell(Text(path['shortName'])),
                     DataCell(Text(path['longName'])),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showPathDetailDialog(context, path);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showPathDeleteDialog(context, path);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showPathDetailDialog(context, path);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showPathDeleteDialog(context, path);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

@@ -31,34 +31,57 @@ class CourseScreen extends StatelessWidget {
       create: (context) => CourseBloc(CourseService(), TeacherService(), PathService())..add(LoadCourses()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Cours'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.bookOpen,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Cours',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<CourseBloc, CourseState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is CourseLoaded && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
+                      _showCreateDialog(context, state.paths, state.teachers);
+                    } else if (state is CourseNotFound && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
+                      _showCreateDialog(context, state.paths, state.teachers);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<CourseBloc, CourseState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (state is CourseLoaded && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
-                            _showCreateDialog(context, state.paths, state.teachers);
-                          } else if (state is CourseNotFound && state.paths.isNotEmpty && state.teachers.isNotEmpty) {
-                            _showCreateDialog(context, state.paths, state.teachers);
-                          } else {
-                            _showEmptyDialog(context);
-                          }
-                        },
-                        child: const Text('Créer'),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<CourseBloc, CourseState>(
                   builder: (context, state) {
@@ -377,12 +400,43 @@ class CourseScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Filière')),
-                DataColumn(label: Text('Professeur')),
-                DataColumn(label: Text('Date de création')),
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Filière',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Professeur',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: courses.map((course) {
                 DateTime parsedDate = DateTime.parse(course['createdAt']);
@@ -395,22 +449,56 @@ class CourseScreen extends StatelessWidget {
                     DataCell(Text(pathName)),
                     DataCell(Text(teacherName)),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showCourseDetailDialog(context, course);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showCourseDeleteDialog(context, course);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showCourseDetailDialog(context, course);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showCourseDeleteDialog(context, course);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

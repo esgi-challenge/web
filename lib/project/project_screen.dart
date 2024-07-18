@@ -65,7 +65,49 @@ class ProjectScreen extends StatelessWidget {
         ..add(LoadProjects()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Projets'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.adjustmentsHorizontal,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Projets',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<ProjectBloc, ProjectState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is ProjectLoaded && state.courses.isNotEmpty &&  state.classes.isNotEmpty && state.documents.isNotEmpty) {
+                      _showCreateDialog(context, state.courses, state.classes, state.documents);
+                    } else if (state is ProjectNotFound && state.courses.isNotEmpty && state.classes.isNotEmpty && state.documents.isNotEmpty) {
+                      _showCreateDialog(context, state.courses, state.classes, state.documents);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text('Ajouter', style: TextStyle(fontSize: 16)),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -518,13 +560,37 @@ class ProjectScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Titre')),
-                DataColumn(label: Text('Cours')),
-                DataColumn(label: Text('Classe')),
-                DataColumn(label: Text('Document')),
-                DataColumn(label: Text('Date de rendu')),
+                DataColumn(
+                    label: Text('Titre',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Cours',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Classe',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Document',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
+                DataColumn(
+                    label: Text('Date de rendu',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)))),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: projects.map((project) {
                 final courseName = project['course']['name'].isNotEmpty
@@ -545,22 +611,56 @@ class ProjectScreen extends StatelessWidget {
                     DataCell(Text(className)),
                     DataCell(Text(documentName)),
                     DataCell(Text(time)),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showProjectDetailDialog(context, project);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showProjectDeleteDialog(context, project);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showProjectDetailDialog(context, project);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showProjectDeleteDialog(context, project);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

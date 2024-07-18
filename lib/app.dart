@@ -245,6 +245,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Studies',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromRGBO(245, 242, 249, 1),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: Colors.white,
             elevation: 0,
@@ -307,27 +308,27 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         //Teacher
         return [
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.calendarDays),
+            icon: HeroIcon(HeroIcons.calendarDays, color: Colors.white),
             label: 'Emplois du temps',
             initialLocation: '/schedules',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.adjustmentsHorizontal),
+            icon: HeroIcon(HeroIcons.adjustmentsHorizontal, color: Colors.white),
             label: 'Projets',
             initialLocation: '/projects',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.pencilSquare),
+            icon: HeroIcon(HeroIcons.pencilSquare, color: Colors.white),
             label: 'Notes',
             initialLocation: '/grades',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.document),
+            icon: HeroIcon(HeroIcons.document, color: Colors.white),
             label: 'Documents',
             initialLocation: '/documents',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.chatBubbleOvalLeft),
+            icon: HeroIcon(HeroIcons.chatBubbleOvalLeft, color: Colors.white),
             label: 'Discussions',
             initialLocation: '/chat',
           ),
@@ -336,7 +337,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         //Superadmin
         return [
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.academicCap),
+            icon: HeroIcon(HeroIcons.academicCap, color: Colors.white),
             label: 'Écoles',
             initialLocation: '/schools',
           ),
@@ -348,7 +349,7 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         if (school == null) {
           return [
             const MyCustomSideBarItem(
-              icon: HeroIcon(HeroIcons.academicCap),
+              icon: HeroIcon(HeroIcons.academicCap, color: Colors.white),
               label: 'École',
               initialLocation: '/schools',
             ),
@@ -356,52 +357,52 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         }
         return [
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.academicCap),
+            icon: HeroIcon(HeroIcons.academicCap, color: Colors.white),
             label: 'École',
             initialLocation: '/schools',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.buildingOffice),
+            icon: HeroIcon(HeroIcons.buildingOffice, color: Colors.white),
             label: 'Campus',
             initialLocation: '/campus',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.briefcase),
+            icon: HeroIcon(HeroIcons.briefcase, color: Colors.white),
             label: 'Filières',
             initialLocation: '/paths',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.presentationChartBar),
+            icon: HeroIcon(HeroIcons.presentationChartBar, color: Colors.white),
             label: 'Classes',
             initialLocation: '/class',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.userGroup),
+            icon: HeroIcon(HeroIcons.userGroup, color: Colors.white),
             label: 'Élèves',
             initialLocation: '/students',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.user),
+            icon: HeroIcon(HeroIcons.user, color: Colors.white),
             label: 'Professeurs',
             initialLocation: '/teachers',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.bookOpen),
+            icon: HeroIcon(HeroIcons.bookOpen, color: Colors.white),
             label: 'Cours',
             initialLocation: '/courses',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.calendarDays),
+            icon: HeroIcon(HeroIcons.calendarDays, color: Colors.white),
             label: 'Emplois du Temps',
             initialLocation: '/schedules',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.document),
+            icon: HeroIcon(HeroIcons.document, color: Colors.white),
             label: 'Documents',
             initialLocation: '/documents',
           ),
           const MyCustomSideBarItem(
-            icon: HeroIcon(HeroIcons.informationCircle),
+            icon: HeroIcon(HeroIcons.informationCircle, color: Colors.white),
             label: 'Informations',
             initialLocation: '/informations',
           ),
@@ -437,7 +438,16 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
         children: [
           Container(
             width: 250,
-            color: Colors.grey[200],
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(72, 2, 151, 1),
+                  Color.fromRGBO(51, 2, 108, 1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
             child: Column(
               children: [
                 const SizedBox(height: 50),
@@ -446,7 +456,12 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                   backgroundImage: AssetImage('default-picture.jpg'),
                 ),
                 const SizedBox(height: 10),
-                const Text('Bonjour', style: TextStyle(fontSize: 20)),
+                const Text('Bonjour',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                  )
+                ),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
@@ -454,7 +469,9 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: tabs[index].icon,
-                        title: Text(tabs[index].label),
+                        title: Text(
+                            tabs[index].label,
+                            style: const TextStyle(color: Colors.white)),
                         selected: _selectedIndex == index &&
                             !currentLocation.startsWith('/profile'),
                         selectedTileColor: Colors.blueGrey[100],
@@ -468,9 +485,11 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                 ListTile(
                   leading: const HeroIcon(
                     HeroIcons.user,
+                    color: Colors.white
                   ),
                   title: const Text(
                     'Profil',
+                    style: TextStyle(color: Colors.white),
                   ),
                   selected: currentLocation.startsWith('/profile'),
                   selectedTileColor: Colors.blueGrey[100],
@@ -482,11 +501,11 @@ class _SideNavigationBarBarState extends State<SideNavigationBar> {
                 ListTile(
                   leading: const HeroIcon(
                     HeroIcons.arrowLeftOnRectangle,
-                    color: Colors.red,
+                    color: Colors.white
                   ),
                   title: const Text(
                     'Déconnexion',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.white),
                   ),
                   onTap: () {
                     _logout(context);

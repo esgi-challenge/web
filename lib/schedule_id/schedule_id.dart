@@ -35,12 +35,12 @@ class ScheduleIdScreen extends StatelessWidget {
           title: const Text(
             "Signature",
             style: TextStyle(
-              color: Color.fromRGBO(109, 53, 172, 1),
-              fontSize: 32,
-              fontWeight: FontWeight.w400,
+              color: Color.fromRGBO(72, 2, 151, 1),
+              fontWeight: FontWeight.bold,
             ),
           ),
           centerTitle: true,
+          toolbarHeight: 64.0,
         ),
         body: BlocBuilder<ScheduleBloc, ScheduleState>(
           builder: (context, state) {
@@ -257,7 +257,7 @@ class Signature extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -274,14 +274,28 @@ class Signature extends StatelessWidget {
                       );
                 }
               },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
               child: const Text('Ajouter'),
             ),
-            Text(
-              isSigned ? "Present" : "Absent",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: !isSigned ? Colors.red : Colors.green,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              decoration: BoxDecoration(
+                color: isSigned ? Color.fromRGBO(191, 255, 189, 1) : Color.fromRGBO(255, 201, 201, 1),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Text(
+                isSigned ? "Présent" : "Absent",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: isSigned ? Color.fromRGBO(42, 153, 40, 1) : Color.fromRGBO(255, 56, 46, 1),
+                ),
               ),
             ),
           ],

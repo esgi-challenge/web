@@ -25,7 +25,7 @@ class ClassScreen extends StatelessWidget {
   void _navigateToClassId(BuildContext context, int classId) {
     GoRouter router = GoRouter.of(context);
     router.go('/class/$classId');
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,34 +33,57 @@ class ClassScreen extends StatelessWidget {
       create: (context) => ClassBloc(ClassService(), PathService())..add(LoadClasses()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Classes'),
+          title: const Row(
+            children: [
+              HeroIcon(
+                HeroIcons.buildingOffice,
+                color: Color.fromRGBO(72, 2, 151, 1),
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Classes',
+                style: TextStyle(
+                  color: Color.fromRGBO(72, 2, 151, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            BlocBuilder<ClassBloc, ClassState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (state is ClassLoaded && state.paths.isNotEmpty) {
+                      _showCreateDialog(context, state.paths);
+                    } else if (state is ClassNotFound && state.paths.isNotEmpty) {
+                      _showCreateDialog(context, state.paths);
+                    } else {
+                      _showEmptyDialog(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: const Text(
+                      'Créer',
+                      style: TextStyle(fontSize: 16)
+                  ),
+                );
+              },
+            ),
+            SizedBox(width: 16),
+          ],
+          toolbarHeight: 64.0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<ClassBloc, ClassState>(
-                    builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: () {
-                            if (state is ClassLoaded && state.paths.isNotEmpty) {
-                              _showCreateDialog(context, state.paths);
-                            } else if (state is ClassNotFound && state.paths.isNotEmpty) {
-                              _showCreateDialog(context, state.paths);
-                            } else {
-                              _showEmptyDialog(context);
-                            }
-                          },
-                          child: const Text('Créer'),
-                        );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<ClassBloc, ClassState>(
                   builder: (context, state) {
@@ -114,41 +137,52 @@ class ClassScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter une classe'),
-                content: BlocBuilder<ClassBloc, ClassState>(
-                  builder: (context, state) {
-                      return Form(
-                        key: _createFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Nom'),
-                                validator: InputValidator.validateName,
-                              ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Filière'),
-                                value: _selectedPathId,
-                                items: paths.map<DropdownMenuItem<String>>((path) {
-                                  return DropdownMenuItem<String>(
-                                    value: path['id'].toString(),
-                                    child: Text(path['shortName']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedPathId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez une filière' : null,
-                              ),
-                            ],
+                title: const Text(
+                  'Ajouter une classe',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<ClassBloc, ClassState>(
+                      builder: (context, state) {
+                        return Form(
+                          key: _createFormKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: _nameController,
+                                  decoration: const InputDecoration(labelText: 'Nom'),
+                                  validator: InputValidator.validateName,
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(labelText: 'Filière'),
+                                  value: _selectedPathId,
+                                  items: paths.map<DropdownMenuItem<String>>((path) {
+                                    return DropdownMenuItem<String>(
+                                      value: path['id'].toString(),
+                                      child: Text(path['shortName']),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    _selectedPathId = newValue;
+                                  },
+                                  validator: (value) => value == null ? 'Sélectionnez une filière' : null,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -200,45 +234,56 @@ class ClassScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la classe'),
-                content: BlocBuilder<ClassBloc, ClassState>(
-                  builder: (context, state) {
-                    if (state is ClassLoaded) {
-                      return Form(
-                        key: _updateFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'Nom'),
-                                validator: InputValidator.validateName,
+                title: const Text(
+                  'Détails de la classe',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<ClassBloc, ClassState>(
+                      builder: (context, state) {
+                        if (state is ClassLoaded) {
+                          return Form(
+                            key: _updateFormKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextFormField(
+                                    controller: _nameController,
+                                    decoration: const InputDecoration(labelText: 'Nom'),
+                                    validator: InputValidator.validateName,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  DropdownButtonFormField<String>(
+                                    decoration: const InputDecoration(labelText: 'Filière'),
+                                    value: _selectedPathId,
+                                    items: state.paths.map<DropdownMenuItem<String>>((path) {
+                                      return DropdownMenuItem<String>(
+                                        value: path['id'].toString(),
+                                        child: Text(path['shortName']),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      _selectedPathId = newValue;
+                                    },
+                                    validator: (value) => value == null ? 'Sélectionnez une filière' : null,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Filière'),
-                                value: _selectedPathId,
-                                items: state.paths.map<DropdownMenuItem<String>>((path) {
-                                  return DropdownMenuItem<String>(
-                                    value: path['id'].toString(),
-                                    child: Text(path['shortName']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedPathId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez une filière' : null,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
+                            ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -323,13 +368,43 @@ class ClassScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Nom')),
-                DataColumn(label: Text('Date de création')),
-                DataColumn(label: Text('Filière')),
-                DataColumn(label: Text('Nb d\'élève')),
+                DataColumn(
+                    label: Text('Nom',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Date de création',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Filière',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
+                DataColumn(
+                    label: Text('Nb d\'élèves',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color.fromRGBO(72, 2, 151, 1)
+                        )
+                    )
+                ),
                 DataColumn(label: Text('')),
-                DataColumn(label: Text('')),
-                DataColumn(label: Text(''))
               ],
               rows: classes.map((classSchool) {
                 DateTime parsedDate = DateTime.parse(classSchool['createdAt']);
@@ -343,30 +418,80 @@ class ClassScreen extends StatelessWidget {
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Text(pathName)),
                     DataCell(Text(classSchool['students'].length.toString())),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showClassDetailDialog(context, classSchool);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.pencil,
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () => {
-                        _navigateToClassId(context, classSchool['id'])
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.userGroup
-                      ),
-                    )),
-                    DataCell(ElevatedButton(
-                      onPressed: () {
-                        _showClassDeleteDialog(context, classSchool);
-                      },
-                      child: const HeroIcon(
-                        HeroIcons.trash,
-                        color: Colors.red,
-                      ),
+                    DataCell(Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showClassDetailDialog(context, classSchool);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.pencil,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _navigateToClassId(context, classSchool['id']);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.userGroup,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showClassDeleteDialog(context, classSchool);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              padding: EdgeInsets.all(0),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: HeroIcon(
+                                HeroIcons.trash,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )),
                   ],
                 );

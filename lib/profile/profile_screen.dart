@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:web/core/services/auth_services.dart';
 import 'package:web/core/services/profile_service.dart';
 import 'package:web/profile/bloc/profile_bloc.dart';
@@ -37,10 +38,32 @@ class ProfileScreen extends StatelessWidget {
       create: (context) => ProfileBloc(ProfileService())..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Profil'),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  HeroIcon(
+                    HeroIcons.user,
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Profil',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          toolbarHeight: 64.0,
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Expanded(
@@ -181,132 +204,148 @@ class ProfileScreen extends StatelessWidget {
     _lastnameController.text = profile['lastname'];
     _emailController.text = profile['email'];
 
-    return SizedBox(
-        width: double.infinity,
-        child: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            return Form(
-              key: _updateFormKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: _firstnameController,
-                      decoration: const InputDecoration(labelText: 'Prénom'),
-                      validator: InputValidator.validateName,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _lastnameController,
-                      decoration: const InputDecoration(labelText: 'Nom'),
-                      validator: InputValidator.validateName,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
-                      validator: InputValidator.validateEmail,
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        if (_updateFormKey.currentState!.validate()) {
-                          context.read<ProfileBloc>().add(UpdateProfile(
-                              _firstnameController.text,
-                              _lastnameController.text,
-                              _emailController.text));
-                        }
-                      },
-                      style: TextButton.styleFrom(
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(249, 178, 53, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(249, 178, 53, 0.1),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            "Modifier le profil",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    const Text(
-                      "ou",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _showUpdatePasswordDialog(context);
-                      },
-                      style: TextButton.styleFrom(
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(249, 178, 53, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(249, 178, 53, 0.1),
-                              spreadRadius: 0,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            "Modifier le mot de passe",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: 0.5,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(50, 50, 50, 0.1),
+                spreadRadius: 0,
+                blurRadius: 5,
+                offset: Offset(0, 3),
               ),
-            );
-          },
-        ));
+            ],
+          ),
+          child: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return Form(
+                key: _updateFormKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: _firstnameController,
+                        decoration: const InputDecoration(labelText: 'Prénom'),
+                        validator: InputValidator.validateName,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _lastnameController,
+                        decoration: const InputDecoration(labelText: 'Nom'),
+                        validator: InputValidator.validateName,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        validator: InputValidator.validateEmail,
+                      ),
+                      const SizedBox(height: 32),
+                      TextButton(
+                        onPressed: () {
+                          if (_updateFormKey.currentState!.validate()) {
+                            context.read<ProfileBloc>().add(UpdateProfile(
+                                _firstnameController.text,
+                                _lastnameController.text,
+                                _emailController.text));
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(249, 178, 53, 1),
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(249, 178, 53, 0.1),
+                                spreadRadius: 0,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Modifier le profil",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 18,
+                      ),
+                      const Text(
+                        "ou",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 18,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          _showUpdatePasswordDialog(context);
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(249, 178, 53, 1),
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(249, 178, 53, 0.1),
+                                spreadRadius: 0,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Modifier le mot de passe",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
+
 }
