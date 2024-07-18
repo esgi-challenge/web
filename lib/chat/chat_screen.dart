@@ -98,7 +98,13 @@ class ChannelScreen extends StatelessWidget {
           child: Builder (
             builder: (context) {
               return AlertDialog(
-                title: const Text('Discuter avec un élève'),
+                title: const Text(
+                  'Discuter avec un élève',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -136,8 +142,18 @@ class ChannelScreen extends StatelessWidget {
                                   scrollDirection: Axis.horizontal,
                                   child: DataTable(
                                     columns: const [
-                                      DataColumn(label: Text('Prénom')),
-                                      DataColumn(label: Text('Nom')),
+                                      DataColumn(
+                                          label: Text('Prénom',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: Color.fromRGBO(72, 2, 151, 1)))),
+                                      DataColumn(
+                                          label: Text('Nom',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: Color.fromRGBO(72, 2, 151, 1)))),
                                       DataColumn(label: Text(''))
                                     ],
                                     rows: state.students.map<DataRow>((student) {
@@ -145,16 +161,32 @@ class ChannelScreen extends StatelessWidget {
                                         cells: [
                                           DataCell(Text(student['firstname'])),
                                           DataCell(Text(student['lastname'])),
-                                          DataCell(ElevatedButton(
-                                            onPressed: () {
-                                              _searchController.clear();
-                                              context.read<ChannelBloc>().add(AddChannel(student['id']));
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const HeroIcon(
-                                              HeroIcons.chatBubbleOvalLeft,
+                                          DataCell(SizedBox(
+                                            width: 40,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                _searchController.clear();
+                                                context.read<ChannelBloc>().add(AddChannel(student['id']));
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: Colors.white,
+                                                backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                padding: EdgeInsets.all(0),
+                                              ),
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(4.0),
+                                                child: HeroIcon(
+                                                  HeroIcons.chatBubbleOvalLeft,
+                                                  size: 16,
+                                                ),
+                                              ),
                                             ),
-                                          )),
+                                          ),
+                                          ),
                                         ],
                                       );
                                     }).toList(),
