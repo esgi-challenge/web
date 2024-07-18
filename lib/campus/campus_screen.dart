@@ -93,9 +93,11 @@ class _CampusScreenState extends State<CampusScreen> {
                     } else if (state is CampusLoaded) {
                       return _buildCampusTable(context, state.campus);
                     } else if (state is CampusNotFound) {
-                      return const Center(child: Text('Aucun campus dans cette école'));
+                      return const Center(
+                          child: Text('Aucun campus dans cette école'));
                     } else if (state is CampusError) {
-                      return Center(child: Text('Erreur: ${state.errorMessage}'));
+                      return Center(
+                          child: Text('Erreur: ${state.errorMessage}'));
                     } else {
                       return const Center(child: Text('Campus'));
                     }
@@ -145,8 +147,8 @@ class _CampusScreenState extends State<CampusScreen> {
                                   children: [
                                     TextFormField(
                                       controller: _nameController,
-                                      decoration:
-                                      const InputDecoration(labelText: 'Nom'),
+                                      decoration: const InputDecoration(
+                                          labelText: 'Nom'),
                                       validator: InputValidator.validateName,
                                     ),
                                     const SizedBox(height: 16),
@@ -158,21 +160,23 @@ class _CampusScreenState extends State<CampusScreen> {
                                       onChanged: (query) {
                                         if (_debounce?.isActive ?? false)
                                           _debounce?.cancel();
-                                        _debounce =
-                                            Timer(const Duration(milliseconds: 600),
-                                                    () async {
-                                                  if (query.isNotEmpty) {
-                                                    final response = await CampusService()
-                                                        .getLocationPredictions(query);
-                                                    setState(() {
-                                                      predictions = response;
-                                                    });
-                                                  } else {
-                                                    setState(() {
-                                                      predictions.clear();
-                                                    });
-                                                  }
-                                                });
+                                        _debounce = Timer(
+                                            const Duration(milliseconds: 600),
+                                            () async {
+                                          if (query.trim().isNotEmpty) {
+                                            final response =
+                                                await CampusService()
+                                                    .getLocationPredictions(
+                                                        query);
+                                            setState(() {
+                                              predictions = response;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              predictions.clear();
+                                            });
+                                          }
+                                        });
                                       },
                                     ),
                                     if (predictions.isNotEmpty)
@@ -183,23 +187,24 @@ class _CampusScreenState extends State<CampusScreen> {
                                           shrinkWrap: true,
                                           padding: const EdgeInsets.all(8),
                                           itemCount: predictions.length,
-                                          itemBuilder:
-                                              (BuildContext context, int index) {
-                                            final prediction = predictions[index];
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            final prediction =
+                                                predictions[index];
                                             return ListTile(
-                                              title:
-                                              Text(prediction['description']),
+                                              title: Text(
+                                                  prediction['description']),
                                               onTap: () {
                                                 setState(() {
                                                   predictions.clear();
                                                 });
 
                                                 _locationController.text =
-                                                prediction['description'];
+                                                    prediction['description'];
                                                 choosedLatitude =
-                                                prediction['latitude'];
+                                                    prediction['latitude'];
                                                 choosedLongitude =
-                                                prediction['longitude'];
+                                                    prediction['longitude'];
                                               },
                                             );
                                           },
@@ -457,7 +462,8 @@ class _CampusScreenState extends State<CampusScreen> {
                               },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
-                                backgroundColor: Color.fromRGBO(249, 141, 53, 1.0),
+                                backgroundColor:
+                                    Color.fromRGBO(249, 141, 53, 1.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
                                 ),
