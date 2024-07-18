@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:web/core/services/auth_services.dart';
 import 'package:web/core/services/campus_service.dart';
 import 'package:web/core/services/class_service.dart';
 import 'package:web/core/services/course_service.dart';
 import 'package:web/core/services/schedule_service.dart';
 import 'package:web/schedule/bloc/schedule_bloc.dart';
 import 'package:web/shared/input_validator.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ScheduleScreen extends StatelessWidget {
   ScheduleScreen({super.key});
@@ -61,6 +63,9 @@ class ScheduleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
+    int userKind = decodedToken['user']['userKind'];
+
     return BlocProvider(
       create: (context) => ScheduleBloc(
           ScheduleService(), CourseService(), CampusService(), ClassService())
@@ -84,38 +89,39 @@ class ScheduleScreen extends StatelessWidget {
             ],
           ),
           actions: [
-            BlocBuilder<ScheduleBloc, ScheduleState>(
-              builder: (context, state) {
-                return ElevatedButton(
-                  onPressed: () {
-                    if (state is ScheduleLoaded &&
-                        state.courses.isNotEmpty &&
-                        state.campuses.isNotEmpty &&
-                        state.classes.isNotEmpty) {
-                      _showCreateDialog(context, state.courses,
-                          state.campuses, state.classes);
-                    } else if (state is ScheduleNotFound &&
-                        state.courses.isNotEmpty &&
-                        state.campuses.isNotEmpty &&
-                        state.classes.isNotEmpty) {
-                      _showCreateDialog(context, state.courses,
-                          state.campuses, state.classes);
-                    } else {
-                      _showEmptyDialog(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color.fromRGBO(72, 2, 151, 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+            if (userKind == 2)
+              BlocBuilder<ScheduleBloc, ScheduleState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (state is ScheduleLoaded &&
+                          state.courses.isNotEmpty &&
+                          state.campuses.isNotEmpty &&
+                          state.classes.isNotEmpty) {
+                        _showCreateDialog(context, state.courses,
+                            state.campuses, state.classes);
+                      } else if (state is ScheduleNotFound &&
+                          state.courses.isNotEmpty &&
+                          state.campuses.isNotEmpty &&
+                          state.classes.isNotEmpty) {
+                        _showCreateDialog(context, state.courses,
+                            state.campuses, state.classes);
+                      } else {
+                        _showEmptyDialog(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
-                  ),
-                  child:
-                  const Text('Créer', style: TextStyle(fontSize: 16)),
-                );
-              },
-            ),
+                    child:
+                    const Text('Créer', style: TextStyle(fontSize: 16)),
+                  );
+                },
+              ),
             SizedBox(width: 16),
           ],
           toolbarHeight: 64.0,
@@ -613,6 +619,9 @@ class ScheduleScreen extends StatelessWidget {
   }
 
   Widget _buildScheduleTable(BuildContext context, List<dynamic> schedules) {
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(AuthService.jwt!);
+    int userKind = decodedToken['user']['userKind'];
+
     return SizedBox(
       width: double.infinity,
       child: BlocBuilder<ScheduleBloc, ScheduleState>(
@@ -730,29 +739,30 @@ class ScheduleScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        SizedBox(
-                          width: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showScheduleDetailDialog(context, schedule);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Color.fromRGBO(247, 159, 2, 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
+                        if (userKind == 2)
+                          SizedBox(
+                            width: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _showScheduleDetailDialog(context, schedule);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color.fromRGBO(247, 159, 2, 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                padding: EdgeInsets.all(0),
                               ),
-                              padding: EdgeInsets.all(0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: HeroIcon(
-                                HeroIcons.pencil,
-                                size: 16,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: HeroIcon(
+                                  HeroIcons.pencil,
+                                  size: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
                         const SizedBox(width: 8),
                         SizedBox(
                           width: 40,
