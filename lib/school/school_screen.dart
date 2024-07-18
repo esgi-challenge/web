@@ -48,7 +48,22 @@ class SchoolScreen extends StatelessWidget {
               return _buildCreateSchoolForm(context);
             } else if (state is SchoolLoaded) {
               return Center(
-                child: Text('Bienvenue sur le portail de votre organisme de formation : ${state.school['name']}'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Bienvenue sur le portail de votre organisme de formation : ${state.school['name']}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Color.fromRGBO(72, 2, 151, 1),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    FractionallySizedBox(
+                      widthFactor: 0.3,
+                      child: Image.asset('assets/teacher-asset.png'),
+                    ),
+                  ],
+                ),
               );
             } else if (state is SchoolError) {
               return Center(child: Text('Erreur: ${state.errorMessage}'));

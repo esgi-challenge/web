@@ -165,56 +165,67 @@ class NoteScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter une note'),
-                content: BlocBuilder<NoteBloc, NoteState>(
-                  builder: (context, state) {
-                      return Form(
-                        key: _createFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _valueController,
-                                decoration: const InputDecoration(labelText: 'Note'),
-                                validator: InputValidator.validateOnlyNumbersRange,
-                              ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Projet'),
-                                value: _selectedProjectId,
-                                items: projects.map<DropdownMenuItem<String>>((project) {
-                                  return DropdownMenuItem<String>(
-                                    value: project['id'].toString(),
-                                    child: Text(project['title']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedProjectId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez un projet' : null,
-                              ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(labelText: 'Étudiant'),
-                                value: _selectedStudentId,
-                                items: students.map<DropdownMenuItem<String>>((student) {
-                                  return DropdownMenuItem<String>(
-                                    value: student['id'].toString(),
-                                    child: Text(student['firstname']),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  _selectedStudentId = newValue;
-                                },
-                                validator: (value) => value == null ? 'Sélectionnez un étudiant' : null,
-                              ),
-                            ],
+                title: const Text(
+                  'Ajouter une note',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<NoteBloc, NoteState>(
+                      builder: (context, state) {
+                        return Form(
+                          key: _createFormKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: _valueController,
+                                  decoration: const InputDecoration(labelText: 'Note'),
+                                  validator: InputValidator.validateOnlyNumbersRange,
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(labelText: 'Projet'),
+                                  value: _selectedProjectId,
+                                  items: projects.map<DropdownMenuItem<String>>((project) {
+                                    return DropdownMenuItem<String>(
+                                      value: project['id'].toString(),
+                                      child: Text(project['title']),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    _selectedProjectId = newValue;
+                                  },
+                                  validator: (value) => value == null ? 'Sélectionnez un projet' : null,
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(labelText: 'Étudiant'),
+                                  value: _selectedStudentId,
+                                  items: students.map<DropdownMenuItem<String>>((student) {
+                                    return DropdownMenuItem<String>(
+                                      value: student['id'].toString(),
+                                      child: Text(student['firstname']),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    _selectedStudentId = newValue;
+                                  },
+                                  validator: (value) => value == null ? 'Sélectionnez un étudiant' : null,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -285,42 +296,53 @@ class NoteScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la note'),
-                content: BlocBuilder<NoteBloc, NoteState>(
-                  builder: (context, state) {
-                    if (state is NoteLoaded) {
-                      return Form(
-                        key: _updateFormKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: _valueController,
-                                decoration: const InputDecoration(labelText: 'Note'),
-                                validator: InputValidator.validateOnlyNumbersRange,
+                title: const Text(
+                  'Détails de la note',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: BlocBuilder<NoteBloc, NoteState>(
+                      builder: (context, state) {
+                        if (state is NoteLoaded) {
+                          return Form(
+                            key: _updateFormKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextFormField(
+                                    controller: _valueController,
+                                    decoration: const InputDecoration(labelText: 'Note'),
+                                    validator: InputValidator.validateOnlyNumbersRange,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    decoration: const InputDecoration(labelText: 'Projet'),
+                                    controller: projectController,
+                                    readOnly: true,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    decoration: const InputDecoration(labelText: 'Étudiant'),
+                                    controller: studentController,
+                                    readOnly: true,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                decoration: const InputDecoration(labelText: 'Projet'),
-                                controller: projectController,
-                                readOnly: true,
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                decoration: const InputDecoration(labelText: 'Étudiant'),
-                                controller: studentController,
-                                readOnly: true,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
+                            ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 actions: [
                   TextButton(

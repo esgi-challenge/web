@@ -337,7 +337,13 @@ class ScheduleScreen extends StatelessWidget {
               CampusService(), ClassService())
             ..add(LoadScheduleCode(scheduleId)),
           child: AlertDialog(
-            title: const Text('QRCode de Signature'),
+            title: const Text(
+              'QRCode de Signature',
+              style: TextStyle(
+                color: Color.fromRGBO(72, 2, 151, 1),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.4,
               child: BlocBuilder<ScheduleBloc, ScheduleState>(
@@ -404,7 +410,13 @@ class ScheduleScreen extends StatelessWidget {
           child: StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                title: const Text('Détails du créneau'),
+                title: const Text(
+                  'Détails du créneau',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,

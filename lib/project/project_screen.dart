@@ -113,36 +113,6 @@ class ProjectScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 50),
-                  BlocBuilder<ProjectBloc, ProjectState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (state is ProjectLoaded &&
-                              state.courses.isNotEmpty &&
-                              state.classes.isNotEmpty &&
-                              state.documents.isNotEmpty) {
-                            _showCreateDialog(context, state.courses,
-                                state.classes, state.documents);
-                          } else if (state is ProjectNotFound &&
-                              state.courses.isNotEmpty &&
-                              state.classes.isNotEmpty &&
-                              state.documents.isNotEmpty) {
-                            _showCreateDialog(context, state.courses,
-                                state.classes, state.documents);
-                          } else {
-                            _showEmptyDialog(context);
-                          }
-                        },
-                        child: const Text('Ajouter'),
-                      );
-                    },
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
               Expanded(
                 child: BlocBuilder<ProjectBloc, ProjectState>(
                   builder: (context, state) {
@@ -200,7 +170,13 @@ class ProjectScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un projet'),
+                title: const Text(
+                  'Ajouter un projet',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
@@ -364,7 +340,13 @@ class ProjectScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails du projet'),
+                title: const Text(
+                  'Détails du projet',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: BlocBuilder<ProjectBloc, ProjectState>(
