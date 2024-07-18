@@ -149,7 +149,13 @@ class DocumentScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un document'),
+                title: const Text(
+                  'Ajouter un document',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.2,
                   child: Form(
@@ -197,6 +203,13 @@ class DocumentScreen extends StatelessWidget {
                                 }
                               }
                             },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color.fromRGBO(72, 2, 151, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
                             child: const Text('Sélectionner un fichier'),
                           ),
                           if (selectedFileName != null)
@@ -303,15 +316,6 @@ class DocumentScreen extends StatelessWidget {
                     )
                 ),
                 DataColumn(
-                    label: Text('Cours',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Color.fromRGBO(72, 2, 151, 1)
-                        )
-                    )
-                ),
-                DataColumn(
                     label: Text('Date de création',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -331,7 +335,6 @@ class DocumentScreen extends StatelessWidget {
                 return DataRow(
                   cells: [
                     DataCell(Text(document['name'])),
-                    DataCell(Text(courseName)),
                     DataCell(Text(DateFormat('dd-MM-yyyy').format(parsedDate))),
                     DataCell(Row(
                       children: [

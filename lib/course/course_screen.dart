@@ -111,7 +111,13 @@ class CourseScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Ajouter un cours'),
+          title: const Text(
+            'Ajouter un cours',
+            style: TextStyle(
+              color: Color.fromRGBO(72, 2, 151, 1),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: const Text("Créez des filières et des professeurs avant de créer des cours"),
           actions: [
             TextButton(
@@ -135,7 +141,13 @@ class CourseScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un cours'),
+                title: const Text(
+                  'Ajouter un cours',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: Form(
@@ -249,7 +261,13 @@ class CourseScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Détails de la classe'),
+                title: const Text(
+                  'Détails du cours',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 content: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: BlocBuilder<CourseBloc, CourseState>(

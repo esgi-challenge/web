@@ -211,41 +211,52 @@ class TeacherScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un professeur'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(labelText: 'Email'),
-                          validator: InputValidator.validateEmail,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _firstnameController,
-                          decoration:
+                title: const Text(
+                  'Ajouter un professeur',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(labelText: 'Email'),
+                              validator: InputValidator.validateEmail,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _firstnameController,
+                              decoration:
                               const InputDecoration(labelText: 'Prénom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _lastnameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration:
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _lastnameController,
+                              decoration: const InputDecoration(labelText: 'Nom'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration:
                               const InputDecoration(labelText: 'Mot de passe'),
-                          obscureText: true,
-                          validator: InputValidator.validatePassword,
+                              obscureText: true,
+                              validator: InputValidator.validatePassword,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -295,34 +306,45 @@ class TeacherScreen extends StatelessWidget {
             child: Builder(
               builder: (context) {
                 return AlertDialog(
-                  title: const Text('Détails de l\'professeur'),
-                  content: Form(
-                    key: _updateFormKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            controller: _emailController,
-                            decoration:
+                  title: const Text(
+                    'Détails du professeur',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: SingleChildScrollView(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Form(
+                        key: _updateFormKey,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                controller: _emailController,
+                                decoration:
                                 const InputDecoration(labelText: 'Email'),
-                            validator: InputValidator.validateEmail,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _firstnameController,
-                            decoration:
+                                validator: InputValidator.validateEmail,
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _firstnameController,
+                                decoration:
                                 const InputDecoration(labelText: 'Prénom'),
-                            validator: InputValidator.validateName,
+                                validator: InputValidator.validateName,
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _lastnameController,
+                                decoration: const InputDecoration(labelText: 'Nom'),
+                                validator: InputValidator.validateName,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _lastnameController,
-                            decoration: const InputDecoration(labelText: 'Nom'),
-                            validator: InputValidator.validateName,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),

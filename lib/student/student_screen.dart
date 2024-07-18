@@ -155,33 +155,44 @@ class StudentScreen extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return AlertDialog(
-                title: const Text('Inviter un élève'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(labelText: 'Email'),
-                          validator: InputValidator.validateEmail,
+                title: const Text(
+                  'Inviter un élève',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(labelText: 'Email'),
+                              validator: InputValidator.validateEmail,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _firstnameController,
+                              decoration:
+                              const InputDecoration(labelText: 'Prénom'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _lastnameController,
+                              decoration: const InputDecoration(labelText: 'Nom'),
+                              validator: InputValidator.validateName,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _firstnameController,
-                          decoration:
-                          const InputDecoration(labelText: 'Prénom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _lastnameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: InputValidator.validateName,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -226,39 +237,50 @@ class StudentScreen extends StatelessWidget {
           child: Builder (
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un élève'),
-                content: Form(
-                  key: _createFormKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(labelText: 'Email'),
-                          validator: InputValidator.validateEmail,
+                title: const Text(
+                  'Ajouter un élève',
+                  style: TextStyle(
+                    color: Color.fromRGBO(72, 2, 151, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Form(
+                      key: _createFormKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(labelText: 'Email'),
+                              validator: InputValidator.validateEmail,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _firstnameController,
+                              decoration: const InputDecoration(labelText: 'Prénom'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _lastnameController,
+                              decoration: const InputDecoration(labelText: 'Nom'),
+                              validator: InputValidator.validateName,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration: const InputDecoration(labelText: 'Mot de passe'),
+                              obscureText: true,
+                              validator: InputValidator.validatePassword,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _firstnameController,
-                          decoration: const InputDecoration(labelText: 'Prénom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _lastnameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
-                          validator: InputValidator.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: const InputDecoration(labelText: 'Mot de passe'),
-                          obscureText: true,
-                          validator: InputValidator.validatePassword,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -307,32 +329,43 @@ class StudentScreen extends StatelessWidget {
             child: Builder(
               builder: (context) {
                 return AlertDialog(
-                  title: const Text('Détails de l\'élève'),
-                  content: Form(
-                    key: _updateFormKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            controller: _emailController,
-                            decoration: const InputDecoration(labelText: 'Email'),
-                            validator: InputValidator.validateEmail,
+                  title: const Text(
+                    'Détails de l\'élève',
+                    style: TextStyle(
+                      color: Color.fromRGBO(72, 2, 151, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: SingleChildScrollView(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Form(
+                        key: _updateFormKey,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(labelText: 'Email'),
+                                validator: InputValidator.validateEmail,
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _firstnameController,
+                                decoration: const InputDecoration(labelText: 'Prénom'),
+                                validator: InputValidator.validateName,
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _lastnameController,
+                                decoration: const InputDecoration(labelText: 'Nom'),
+                                validator: InputValidator.validateName,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _firstnameController,
-                            decoration: const InputDecoration(labelText: 'Prénom'),
-                            validator: InputValidator.validateName,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _lastnameController,
-                            decoration: const InputDecoration(labelText: 'Nom'),
-                            validator: InputValidator.validateName,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
