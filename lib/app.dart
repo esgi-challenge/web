@@ -8,7 +8,6 @@ import 'package:web/project/project_screen.dart';
 import 'package:web/schedule_id/schedule_id.dart';
 import 'package:web/welcome/welcome_screen.dart';
 
-import 'absence/absence_screen.dart';
 import 'campus/campus_screen.dart';
 import 'chat/chat_screen.dart';
 import 'chat_id/chat_id_screen.dart';
@@ -207,13 +206,6 @@ final _router = GoRouter(
             path: '/grades',
             pageBuilder: (context, state) {
               return NoTransitionPage(child: NoteScreen());
-            },
-          ),
-          GoRoute(
-            parentNavigatorKey: _shellNavigatorKey,
-            path: '/absences',
-            pageBuilder: (context, state) {
-              return const NoTransitionPage(child: AbsenceScreen());
             },
           ),
           GoRoute(
